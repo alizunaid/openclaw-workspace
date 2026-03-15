@@ -1,0 +1,23 @@
+logs/
+data/
+*.json
+*.sqlite
+*.db
+*.csv
+*.bak
+
+# OpenClaw generated artifacts (do not commit)
+*.bak.*
+*.jsonl
+*.pyc
+.aider*
+.venv/
+WORK_ITEMS_REGISTER.upgraded.v4_1.csv
+logs/
+logs/next_step_upgrades.v4_1.jsonl
+scripts/__pycache__/
+tools/_oc_last.patch
+tools/_oc_last_model_output.txt
+# Generated task outputs
+logs/*.json
+logs/task_registry_run.log

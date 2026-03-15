@@ -1,0 +1,23 @@
+tasks:
+  - name: pharmacy_supplier_monitor
+    description: Monitor supplier data and status changes for pharmacy build vendors
+    script: tools/pharmacy/supplier_monitor.py
+    frequency: daily
+    enabled: true
+
+  - name: pharmacy_regulatory_updates
+    description: Track regulatory and compliance-related updates relevant to pharmacy operations
+    script: tools/pharmacy/regulatory_updates.py
+    frequency: weekly
+    enabled: true
+
+  - name: project_status_snapshot
+    description: Build a current project snapshot from canonical files and logs
+    script: tools/analysis/project_status_snapshot.py
+    frequency: daily
+    enabled: true
+  - name: build_priority_watch
+    description: Summarize priority signals from TODAY_TOP10 and WORK_ITEMS_REGISTER.upgraded.v4_1.csv
+    script: tools/analysis/build_priority_watch.py
+    frequency: daily
+    enabled: true

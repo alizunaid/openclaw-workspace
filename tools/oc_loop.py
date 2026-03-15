@@ -1,0 +1,449 @@
+#!/usr/bin/env python3
+"""
+OpenClaw local runner agent (v1)
+- Runs allowlisted commands
+- Sends state packet to OpenAI Responses API
+- Receives unified diff patch
+- Validates (forbidden paths + allowlist)
+- Applies via git apply (dry-run first)
+- Re-runs verify and loops
+
+Design goals:
+- Deterministic execution, human oversight
+- Never touch canonical builder or canonical CSV
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import shlex
+import subprocess
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import List, Tuple, Optional
+
+# error_summary helpers
+def _tail_lines(text: str, max_lines: int = 60, max_chars: int = 12000) -> str:
+    if not text:
+        return ""
+    lines = text.splitlines()
+    tail = "\n".join(lines[-max_lines:])
+    if len(tail) > max_chars:
+        tail = tail[-max_chars:]
+    return tail
+
+
+def _extract_traceback_tail(text: str, max_lines: int = 60, max_chars: int = 12000) -> Optional[str]:
+    marker = "Traceback (most recent call last):"
+    if not text:
+        return None
+    idx = text.rfind(marker)
+    if idx == -1:
+        return None
+    tb = text[idx:]
+    tb_tail = _tail_lines(tb, max_lines=max_lines, max_chars=max_chars)
+    return tb_tail or None
+
+
+def extract_error_summary(results: List[CmdResult]) -> Optional[dict]:
+    for r in results:
+        if r.returncode != 0:
+            preferred = r.stderr or r.stdout or ""
+            tail = _tail_lines(preferred, max_lines=60, max_chars=12000)
+            tb_tail = _extract_traceback_tail(preferred, max_lines=60, max_chars=12000)
+            return {
+                "failing_cmd": r.cmd,
+                "returncode": r.returncode,
+                "tail": tail,
+                "traceback_tail": tb_tail,
+            }
+    return None
+
+
+
+def classify_error(error_summary: Optional[dict]) -> Optional[str]:
+    if not error_summary:
+        return None
+
+    tail = (error_summary.get("tail") or "") + "\n" + (error_summary.get("traceback_tail") or "")
+    tail_lower = tail.lower()
+
+    if "syntaxerror" in tail_lower:
+        return "syntax_error"
+    if "patch failed" in tail_lower or "corrupt patch" in tail_lower:
+        return "patch_conflict"
+    if "command not allowlisted" in tail_lower:
+        return "allowlist_violation"
+    if "forbidden" in tail_lower:
+        return "guardrail_violation"
+    if "traceback (most recent call last)" in tail_lower:
+        return "runtime_traceback"
+    if error_summary.get("returncode", 0) != 0:
+        return "verification_failure"
+
+    return "unknown"
+
+from openai import OpenAI  # openai-python (Responses API)
+
+WS = Path.home() / ".openclaw" / "workspace"
+UPGRADER = WS / "scripts" / "upgrade_next_steps_from_bodies_v4_1.py"
+VERIFY_SH = WS / "scripts" / "verify_v4_1.sh"
+RUN_LOG_JSONL = WS / "tools" / "oc_loop_runs.jsonl"
+
+# Hard guardrails
+FORBIDDEN_PATH_PATTERNS = [
+    r"^WORK_ITEMS_REGISTER\.canonical\.v4\.csv$",
+    r"^scripts/build_work_items_canonical.*\.py$",
+]
+# Allow patching only these (expand later if you want)
+ALLOW_PATCH_PREFIXES = [
+    "tools/oc_loop.py",
+    "scripts/upgrade_next_steps_from_bodies_v4_1.py",
+    "scripts/verify_v4_1.sh",
+    "scripts/run_v4_1_full.sh",
+]
+
+# Allowlisted commands (exact prefixes)
+ALLOW_CMD_PREFIXES = [
+    "python3 -m py_compile scripts/upgrade_next_steps_from_bodies_v4_1.py",
+    "python3 scripts/upgrade_next_steps_from_bodies_v4_1.py",
+    "bash scripts/verify_v4_1.sh",
+    "git status",
+    "git show --stat HEAD",
+    "sed -n ",
+    "grep -nE ",
+]
+
+
+@dataclass
+class CmdResult:
+    cmd: str
+    returncode: int
+    stdout: str
+    stderr: str
+
+
+def run_cmd(cmd: str, cwd: Path) -> CmdResult:
+    # Guardrail: allowlist
+    if not any(cmd.startswith(p) for p in ALLOW_CMD_PREFIXES):
+        raise RuntimeError(f"Command not allowlisted: {cmd}")
+
+    p = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    return CmdResult(cmd=cmd, returncode=p.returncode, stdout=p.stdout, stderr=p.stderr)
+
+
+def read_snippet(path: Path, start: int, end: int) -> str:
+    # 1-indexed inclusive line range
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    start_i = max(1, start)
+    end_i = min(len(lines), end)
+    out = []
+    for i in range(start_i, end_i + 1):
+        out.append(f"{i:04d}: {lines[i-1]}")
+    return "\n".join(out)
+
+
+def detect_forbidden_in_patch(patch_text: str) -> List[str]:
+    touched = parse_touched_files_from_unified_diff(patch_text)
+    violations = []
+    for f in touched:
+        for pat in FORBIDDEN_PATH_PATTERNS:
+            if re.match(pat, f):
+                violations.append(f"Forbidden file touched: {f}")
+    return violations
+
+
+def parse_touched_files_from_unified_diff(patch_text: str) -> List[str]:
+    # Parses "+++ b/<path>" lines
+    files = []
+    for line in patch_text.splitlines():
+        if line.startswith("+++ b/"):
+            files.append(line[len("+++ b/"):].strip())
+    # de-dupe keep order
+    seen = set()
+    out = []
+    for f in files:
+        if f not in seen:
+            seen.add(f)
+            out.append(f)
+    return out
+
+
+def enforce_patch_allowlist(patch_text: str) -> List[str]:
+    touched = parse_touched_files_from_unified_diff(patch_text)
+    violations = []
+    for f in touched:
+        if not any(f == p for p in ALLOW_PATCH_PREFIXES):
+            violations.append(f"Patch touches non-allowlisted path: {f}")
+    return violations
+
+
+def git_apply_patch(patch_text: str, cwd: Path, dry_run: bool) -> CmdResult:
+    # Use git apply via stdin
+    cmd = "git apply --check -" if dry_run else "git apply -"
+    p = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        shell=True,
+        input=patch_text,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    return CmdResult(cmd=cmd, returncode=p.returncode, stdout=p.stdout, stderr=p.stderr)
+
+
+def extract_unified_diff(model_text: str) -> Optional[str]:
+    """
+    Expect the model to return a unified diff in a fenced block:
+    ```diff
+    ...
+    ```
+    """
+    m = re.search(r"```diff\s+(.*?)```", model_text, flags=re.DOTALL)
+    if not m:
+        return None
+    return m.group(1).strip() + "\n"
+
+def save_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8", errors="replace")
+
+
+
+def append_jsonl(path: Path, obj: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+
+def print_with_line_numbers(text: str, max_lines: int = 160) -> None:
+    lines = text.splitlines()
+    for i, line in enumerate(lines[:max_lines], start=1):
+        print(f"{i:04d}: {line}")
+    if len(lines) > max_lines:
+        print(f"... ({len(lines) - max_lines} more lines)")
+
+
+def build_state_packet(results: List[CmdResult], snippets: List[Tuple[str, str]]) -> dict:
+    return {
+        "workspace": str(WS),
+        "branch": get_git_branch(),
+        "cmd_results": [
+            {
+                "cmd": r.cmd,
+                "returncode": r.returncode,
+                "stdout": r.stdout[-8000:],  # cap
+                "stderr": r.stderr[-8000:],
+            }
+            for r in results
+        ],
+        "snippets": [{"name": name, "text": text[-12000:]} for name, text in snippets],
+        "guardrails": {
+            "forbidden": FORBIDDEN_PATH_PATTERNS,
+            "allow_patch_paths": ALLOW_PATCH_PREFIXES,
+            "allow_cmd_prefixes": ALLOW_CMD_PREFIXES,
+        },
+        "error_summary": extract_error_summary(results),
+        "failure_type": classify_error(extract_error_summary(results)),
+    }
+
+
+def get_git_branch() -> str:
+    try:
+        p = subprocess.run(
+            "git rev-parse --abbrev-ref HEAD",
+            cwd=str(WS),
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        if p.returncode == 0:
+            return p.stdout.strip()
+    except Exception:
+        pass
+    return "unknown"
+
+
+# Adaptive retry strategies based on classified failure
+RETRY_STRATEGY_MAP = {
+    "syntax_error": "Focus ONLY on fixing Python syntax. Do not refactor.",
+    "patch_conflict": "Patch conflict detected. Request fresh snippet before modifying.",
+    "allowlist_violation": "Adjust command to comply strictly with allowlist.",
+    "guardrail_violation": "Do NOT attempt modification. Escalate to NEED_USER.",
+    "runtime_traceback": "Analyze traceback_tail only. Minimal fix at failing line.",
+    "verification_failure": "Verification failed. Apply smallest possible corrective diff.",
+    "unknown": "Apply minimal deterministic fix.",
+}
+
+def call_openai(state: dict, goal: str) -> str:
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    if not client.api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set")
+
+    system = (
+        "You are an elite code assistant for the OpenClaw workspace. "
+        "You MUST obey guardrails: never touch canonical builder or canonical CSV. "
+        "Return ONLY a unified diff in ```diff``` fences if changes are needed. "
+        "If a human decision is required, output 'NEED_USER: <question>' and no diff."
+        "Prefer append-only changes at end-of-file. Do not modify existing code unless the exact original lines are present in provided snippets."
+    )
+
+    failure_type = state.get("failure_type")
+    if failure_type:
+        strategy = RETRY_STRATEGY_MAP.get(failure_type)
+        if strategy:
+            system = f"Detected failure_type: {failure_type}. {strategy} " + system
+
+    user = {
+        "goal": goal,
+        "state": state,
+        "instructions": [
+            "Minimal diff only.",
+            "If you modify Python, it must still pass: python3 -m py_compile scripts/upgrade_next_steps_from_bodies_v4_1.py",
+            "After changes, verify must pass: bash scripts/verify_v4_1.sh",
+            "Prefer adding --limit support and making verify explicit about 104 when relevant.",
+        ],
+    }
+
+    resp = client.responses.create(
+        model="gpt-5.2",
+        input=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": json.dumps(user, indent=2)},
+        ],
+    )
+    # openai-python exposes aggregated text at output_text
+    return getattr(resp, "output_text", "") or ""
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--goal", required=True, help="What we are trying to accomplish.")
+    ap.add_argument("--max-iterations", type=int, default=5)
+    ap.add_argument("--apply", action="store_true", help="Auto-apply valid patches.")
+    args = ap.parse_args()
+
+    os.chdir(str(WS))
+
+    for i in range(1, args.max_iterations + 1):
+        results: List[CmdResult] = []
+        snippets: List[Tuple[str, str]] = []
+
+        # Baseline run (deterministic)
+        results.append(run_cmd("python3 -m py_compile scripts/upgrade_next_steps_from_bodies_v4_1.py", WS))
+        results.append(run_cmd("bash scripts/verify_v4_1.sh", WS))
+        results.append(run_cmd("git status", WS))
+
+        # Lightweight discovery snippets (avoid email bodies)
+        snippets.append(("verify_v4_1.sh (head)", read_snippet(VERIFY_SH, 1, 80)))
+        snippets.append(("upgrader (head)", read_snippet(UPGRADER, 1, 220)))
+        snippets.append(("upgrader (mid)", read_snippet(UPGRADER, 220, 520)))
+
+        # tail helps append-only patches without guessing
+        snippets.append(("oc_loop (full)", read_snippet(Path(__file__), 1, 99999)))
+
+        state = build_state_packet(results, snippets)
+        append_jsonl(RUN_LOG_JSONL, {"iteration": i, "phase": "pre_model", "state": state})
+
+        model_text = call_openai(state, args.goal).strip()
+        append_jsonl(RUN_LOG_JSONL, {"iteration": i, "phase": "model_output", "text": model_text})
+
+        # Always save the raw model response for debugging
+        save_text(WS / "tools" / "_oc_last_model_output.txt", model_text + "\n")
+
+        # Human-decision gate
+        if model_text.startswith("NEED_USER:"):
+            print(model_text)
+            return 2
+
+        patch = extract_unified_diff(model_text)
+        if not patch:
+            print("No diff returned. Model output:")
+            print(model_text)
+            return 3
+        # Reject malformed diffs early
+        if "diff --git " not in patch:
+            print("Model returned a diff block without 'diff --git' headers. Rejecting.")
+            print("Saved full model output to tools/_oc_last_model_output.txt")
+            print("Extracted patch (line-numbered):")
+            print_with_line_numbers(patch, max_lines=120)
+            save_text(WS / "tools" / "_oc_last.patch", patch)
+            return 9
+
+
+        # Guardrails: forbid + allowlist
+        forbid = detect_forbidden_in_patch(patch)
+        allowv = enforce_patch_allowlist(patch)
+        if forbid or allowv:
+            print("Patch rejected by guardrails:")
+            for v in forbid + allowv:
+                print(" -", v)
+            return 4
+
+        chk = git_apply_patch(patch, WS, dry_run=True)
+        if chk.returncode != 0:
+           print("Patch failed git apply --check:")
+           print(chk.stderr or chk.stdout)
+           save_text(WS / "tools" / "_oc_last.patch", patch)
+           print("Saved patch to tools/_oc_last.patch")
+           print("Patch (line-numbered):")
+           print_with_line_numbers(patch, max_lines=160)
+           print("Saved full model output to tools/_oc_last_model_output.txt")
+           return 5
+
+        print(f"Iteration {i}: patch is valid (dry-run ok).")
+
+        if not args.apply:
+            print("Diff (not applied). Re-run with --apply to apply automatically.")
+            print("```diff")
+            print(patch.rstrip())
+            print("```")
+            return 0
+
+        # Apply
+        app = git_apply_patch(patch, WS, dry_run=False)
+        if app.returncode != 0:
+            print("Patch failed to apply:")
+            print(app.stderr or app.stdout)
+            return 6
+
+        # Re-verify after apply
+        results2 = [
+            run_cmd("python3 -m py_compile scripts/upgrade_next_steps_from_bodies_v4_1.py", WS),
+            run_cmd("bash scripts/verify_v4_1.sh", WS),
+            run_cmd("git status", WS),
+        ]
+        if any(r.returncode != 0 for r in results2[:2]):
+            print("Post-apply verify failed; continuing loop for next attempt.")
+            for r in results2:
+                print("\n$ " + r.cmd)
+                print(r.stdout)
+                print(r.stderr, file=sys.stderr)
+            continue
+
+        # If clean and verify ok, we’re done
+        if "nothing to commit, working tree clean" in results2[-1].stdout:
+            print("✅ Verify passed and working tree clean. Done.")
+            return 0
+
+        # Otherwise loop again (maybe additional improvements)
+        print("✅ Verify passed; continuing loop for next improvement...")
+
+    print("Reached max iterations without finishing.")
+    return 8
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
