@@ -130,16 +130,17 @@ def summarize_work_items(csv_path: Path) -> dict:
                 "waiting_on_you_owner_counts": {},
             },
 
-        "build_focus_summary": {
-            "summary": "Top current pressure is in permits/inspections and engineering, with vendor-sourcing also contributing meaningful blocker load.",
-            "build_related_waiting_on_you_count": len(build_waiting_rows),
-            "oldest_build_related_waiting_on_you_first_5": build_waiting_rows_by_oldest[:5],
-            "highest_priority_build_related_first_5": build_waiting_rows_by_priority[:5],
-            "build_related_category_counts": dict(build_waiting_category_counter),
-            "build_related_owner_counts": dict(build_waiting_owner_counter),
-            "do_these_first": build_waiting_rows_by_priority[:5],
-        },
-    }
+            "build_focus_summary": {
+                "summary": "No work items register found.",
+                "build_related_waiting_on_you_count": 0,
+                "oldest_build_related_waiting_on_you_first_5": [],
+                "highest_priority_build_related_first_5": [],
+                "build_related_category_counts": {},
+                "build_related_owner_counts": {},
+                "do_these_first": [],
+            },
+        }
+
     with csv_path.open("r", encoding="utf-8", errors="replace", newline="") as f:
         reader = csv.DictReader(f)
         rows = list(reader)
