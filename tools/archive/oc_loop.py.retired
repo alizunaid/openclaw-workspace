@@ -288,10 +288,7 @@ RETRY_STRATEGY_MAP = {
 }
 
 def call_openai(state: dict, goal: str) -> str:
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-    if not client.api_key:
-        raise RuntimeError("OPENAI_API_KEY is not set")
-
+    client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
     system = (
         "You are an elite code assistant for the OpenClaw workspace. "
         "You MUST obey guardrails: never touch canonical builder or canonical CSV. "
@@ -299,13 +296,11 @@ def call_openai(state: dict, goal: str) -> str:
         "If a human decision is required, output 'NEED_USER: <question>' and no diff."
         "Prefer append-only changes at end-of-file. Do not modify existing code unless the exact original lines are present in provided snippets."
     )
-
     failure_type = state.get("failure_type")
     if failure_type:
         strategy = RETRY_STRATEGY_MAP.get(failure_type)
         if strategy:
             system = f"Detected failure_type: {failure_type}. {strategy} " + system
-
     user = {
         "goal": goal,
         "state": state,
@@ -316,18 +311,17 @@ def call_openai(state: dict, goal: str) -> str:
             "Prefer adding --limit support and making verify explicit about 104 when relevant.",
         ],
     }
-
-    resp = client.responses.create(
-        model="gpt-5.2",
-        input=[
+    resp = client.chat.completions.create(
+        model="llama3.1",
+        messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": json.dumps(user, indent=2)},
         ],
     )
-    # openai-python exposes aggregated text at output_text
-    return getattr(resp, "output_text", "") or ""
+    return resp.choices[0].message.content or ""
 
 
+api_key=os.environ.get
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--goal", required=True, help="What we are trying to accomplish.")

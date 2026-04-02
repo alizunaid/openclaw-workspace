@@ -19,8 +19,8 @@ from datetime import datetime, UTC
 from pathlib import Path
 
 
-OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
-MODEL = "gpt-4o-mini"
+OPENAI_API_URL = "http://localhost:11434/v1/chat/completions"
+MODEL = "llama3.1"
 MAX_TOKENS = 512
 
 SYSTEM_PROMPT = """\
