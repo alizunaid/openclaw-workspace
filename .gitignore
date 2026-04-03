@@ -21,3 +21,4 @@ tools/_oc_last_model_output.txt
 # Generated task outputs
 logs/*.json
 logs/task_registry_run.log
+tools/generated/*.py
