@@ -20,7 +20,7 @@ from pathlib import Path
 
 
 OPENAI_API_URL = "http://localhost:11434/v1/chat/completions"
-MODEL = "llama3.1"
+MODEL = "qwen2.5-coder:32b"
 MAX_TOKENS = 512
 
 SYSTEM_PROMPT = """\

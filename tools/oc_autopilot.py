@@ -62,6 +62,7 @@ DEFAULT_SYSTEM_RULES = [
     "Do not suggest changes to immutable files.",
     "Prefer minimal deterministic logic only. No LLM extraction.",
     "Return ONLY valid JSON for the edit plan.",
+    "To create a new file, use op='create' with a 'content' field and any path under the workspace.",
 ]
 
 # ---------- Retry strategies (from error classification) ----------
@@ -84,7 +85,7 @@ class EditOp:
     replace: Optional[str] = None
     append: Optional[str] = None
     count: Optional[int] = None
-
+    content: Optional[str] = None
 
 @dataclass
 class CmdResult:
@@ -246,7 +247,7 @@ def validate_edit_op(root: Path, op: EditOp, allowed_edit_paths: set) -> str:
         raise RuntimeError(f"Refusing to modify artifact-like path: {rel}")
     if not is_allowed_edit_path(rel, allowed_edit_paths):
         raise RuntimeError(f"Refusing to modify non-allowlisted path: {rel}")
-    if op.op not in {"replace", "append"}:
+    if op.op not in {"replace", "append", "create"}:
         raise RuntimeError(f"Unknown op '{op.op}' for {rel}")
     if op.op == "replace" and (op.find is None or op.replace is None):
         raise RuntimeError(f"replace op missing find/replace for {rel}")
@@ -270,6 +271,11 @@ def apply_edit_ops(root: Path, ops: List[EditOp], allowed_edit_paths: set) -> Li
                 )
             write_text(p, new)
             notes.append(f"{rel}: replaced {n} occurrence(s)")
+        elif op.op == "create":
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(op.content or "", encoding="utf-8")
+            notes.append(f"{rel}: created ({len(op.content or '')} chars)")
+            continue
         elif op.op == "append":
             new = before + ("" if before.endswith("\n") or before == "" else "\n") + (op.append or "")
             if not new.endswith("\n"):
@@ -368,7 +374,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--goal", required=True, help="What you want the autopilot to accomplish.")
     ap.add_argument("--verify", required=True, help="Shell command to run verification (must exit 0 on success).")
-    ap.add_argument("--model", default="llama3.1", help="Model name.")
+    ap.add_argument("--model", default="qwen2.5-coder:32b", help="Model name.")
     ap.add_argument("--max-iterations", type=int, default=8)
     ap.add_argument("--strict-worktree", action="store_true", help="Refuse to run if worktree is dirty.")
     ap.add_argument("--context", nargs="*", default=[

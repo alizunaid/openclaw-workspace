@@ -30,7 +30,7 @@ from pathlib import Path
 
 
 OPENAI_API_URL = "http://localhost:11434/v1/chat/completions"
-MODEL = "llama3.1"
+MODEL = "qwen2.5-coder:32b"
 MAX_TOKENS = 4096
 MAX_ITERATIONS = 6
 
@@ -90,7 +90,7 @@ def call_llm(messages: list[dict]) -> str:
     )
 
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(req, timeout=300) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             return (data.get("choices") or [{}])[0].get("message", {}).get("content", "").strip()
     except urllib.error.HTTPError as e:
@@ -121,7 +121,7 @@ def run_script(script_path: Path, workspace: Path) -> tuple[int, str, str]:
         cwd=str(workspace),
         capture_output=True,
         text=True,
-        timeout=60,
+        timeout=300,
     )
     return result.returncode, result.stdout.strip(), result.stderr.strip()
 
@@ -148,7 +148,7 @@ def get_script_name(goal: str) -> str:
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=300) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             slug = (data.get("choices") or [{}])[0].get("message", {}).get("content", "generated_script").strip()
             slug = slug.replace(".py", "").strip()
@@ -282,6 +282,11 @@ def improve_mode(file_path: Path, workspace: Path) -> int:
     return autonomous_loop(goal=goal, workspace=workspace, existing_file=file_path, allow_overwrite=True)
 
 
+def get_cache_path(goal: str, workspace: Path) -> Path:
+    import hashlib
+    h = hashlib.md5(goal.encode()).hexdigest()
+    return workspace / "tools" / "generated" / "cache" / f"{h}.py"
+
 def main() -> int:
     workspace = Path(__file__).resolve().parents[1]
 
@@ -298,13 +303,35 @@ def main() -> int:
         parser.print_help()
         return 1
 
-    return autonomous_loop(
+    # Auto-decompose long goals
+    if len(args.goal.split()) > 50:
+        print("Goal is complex — decomposing into subtasks...")
+        import subprocess as sp
+        result = sp.run(["python3", "tools/oc_decompose.py", "--goal", args.goal],
+                        capture_output=True, text=True)
+        subtasks = [line.split(". ", 1)[1] for line in result.stdout.strip().splitlines() if ". " in line]
+        for i, task in enumerate(subtasks, 1):
+            print(f"\n--- Subtask {i}/{len(subtasks)}: {task} ---")
+            sp.run(["python3", "tools/oc_autonomous.py", "--goal", task])
+        return 0
+
+    cache_path = get_cache_path(args.goal, workspace)
+    if cache_path.exists():
+        print("Cache hit! Running cached script...")
+        import subprocess
+        r = subprocess.run(["python3", str(cache_path)])
+        return r.returncode
+    result = autonomous_loop(
         goal=args.goal,
         workspace=workspace,
         existing_file=Path(args.file) if args.file else None,
         allow_overwrite=args.allow_overwrite,
     )
-
+    if result == 0:
+        import shutil
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(workspace / "tools" / "generated" / "generated_script.py", cache_path)
+    return result
 
 if __name__ == "__main__":
     raise SystemExit(main())
