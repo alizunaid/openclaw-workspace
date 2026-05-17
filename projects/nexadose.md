@@ -37,7 +37,12 @@ PERMITS_INSPECTIONS, ENGINEERING, FINANCE, VENDORS_EQUIPMENT, LEGAL, CLEANROOM_U
 ### WORK_ITEMS_REGISTER.upgraded.v4_1.csv
 Columns: work_item_id, status_current, next_step_current, status_urgent, next_step_urgent, last_activity_date, email_count, owners_seen, categories_seen, representative_subject, canonical_key, next_step_original, next_step_extracted, next_step_confidence, strong_entity, request_email_id, next_step_source, next_step_upgrade_status, next_step_upgrade_timestamp
 
-Status values in status_current: WAITING_ON_YOU, OPEN, WAITING
+Status values in status_current:
+- WAITING_ON_YOU — needs my action/decision
+- REVIEW — invoice, PI, or quote awaiting pay/approve decision
+- OPEN — active item, not yet routed
+- WAITING — sent, waiting on vendor/external reply
+- BLOCKED — cannot progress until something else resolves
 Category values in categories_seen (semicolon-separated when multiple): PERMITS_INSPECTIONS, ENGINEERING, FINANCE, VENDORS_EQUIPMENT, LEGAL, CLEANROOM_USP, UNCLASSIFIED
 
 ## File paths
