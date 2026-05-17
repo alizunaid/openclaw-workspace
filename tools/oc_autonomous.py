@@ -28,6 +28,9 @@ import urllib.error
 from datetime import datetime, UTC
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from oc_project import resolve_slug, load_project
+
 
 OPENAI_API_URL = "http://localhost:11434/v1/chat/completions"
 MODEL = "qwen2.5-coder:32b"
@@ -39,20 +42,22 @@ IMMUTABLE_PATHS = {
     "WORK_ITEMS_REGISTER.upgraded.v4_1.csv",
 }
 
-SYSTEM_PROMPT = """\
+SYSTEM_PROMPT_TEMPLATE = """\
 You are an autonomous Python engineer inside the OpenClaw workspace.
-OpenClaw is a deterministic automation machine for managing a pharmacy build project
-at 1360 S Main St, Mansfield TX.
+OpenClaw is a deterministic automation machine.
+The current project is "{project_name}": {short_description}
+
+PROJECT CONTEXT (from projects/{project_slug}.md):
+{project_context}
 
 Workspace layout:
   tools/analysis/     - analysis scripts
-  tools/pharmacy/     - pharmacy domain scripts
   tools/generated/    - YOUR scripts go here
   logs/               - all JSON output goes here
   tasks/task_registry.yaml - task registry
 
 Rules:
-  - Never modify WORK_ITEMS_REGISTER.canonical.v4.csv or WORK_ITEMS_REGISTER.upgraded.v4_1.csv
+  - Do not modify any file marked canonical or listed under "Key files" in the project context above.
   - All scripts must write JSON output to logs/<script_name>.json
   - Use only Python stdlib — no third-party packages
   - End every script with: if __name__ == "__main__": raise SystemExit(main())
@@ -65,6 +70,8 @@ When writing a new script:
 When fixing a failing script:
   Return ONLY the complete corrected Python file. No explanation.
 """
+
+SYSTEM_PROMPT = ""  # assembled at main() startup from SYSTEM_PROMPT_TEMPLATE
 
 
 def call_llm(messages: list[dict]) -> str:
@@ -288,6 +295,7 @@ def get_cache_path(goal: str, workspace: Path) -> Path:
     return workspace / "tools" / "generated" / "cache" / f"{h}.py"
 
 def main() -> int:
+    global SYSTEM_PROMPT
     workspace = Path(__file__).resolve().parents[1]
 
     parser = argparse.ArgumentParser(description="OpenClaw Autonomous Agent")
@@ -295,7 +303,19 @@ def main() -> int:
     parser.add_argument("--file", help="Existing script to modify toward the goal")
     parser.add_argument("--improve", help="Script to auto-review and fix")
     parser.add_argument("--allow-overwrite", action="store_true")
+    parser.add_argument("--project", default=None,
+                        help="Project slug (default: env OPENCLAW_PROJECT, then 'nexadose')")
     args = parser.parse_args()
+
+    project_info = load_project(resolve_slug(args.project))
+    SYSTEM_PROMPT = SYSTEM_PROMPT_TEMPLATE.format(
+        project_name=project_info["project_name"],
+        short_description=project_info["short_description"],
+        project_slug=project_info["project_slug"],
+        project_context=project_info["raw_context"],
+    )
+    print(f"[autonomous] Project: {project_info['project_name']} ({project_info['project_slug']})",
+          flush=True)
 
     if args.improve:
         return improve_mode(Path(args.improve), workspace)

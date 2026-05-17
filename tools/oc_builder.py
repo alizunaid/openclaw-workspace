@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-import sys, subprocess, re, json
+import sys, subprocess, re, json, argparse
 from pathlib import Path
 from openai import OpenAI
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from oc_project import resolve_slug, load_project
 
 print("[builder] script loaded", flush=True)
 
 WORKSPACE = Path("/root/.openclaw/workspace")
 WORKSPACE_RESOLVED = WORKSPACE.resolve()
-PROJECTS_DIR = WORKSPACE / "projects"
 GENERATED_DIR = WORKSPACE / "tools" / "generated"
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -22,10 +24,6 @@ HEAD_LINES = 30
 TAIL_LINES = 30
 MAX_CANDIDATES = 80
 MAX_SAMPLE_BYTES = 12000
-
-def load_context(project_name):
-    ctx_file = PROJECTS_DIR / f"{project_name}.md"
-    return ctx_file.read_text() if ctx_file.exists() else ""
 
 def clean_code(raw):
     return re.sub(r"^```python\n?|^```\n?|```$", "", raw, flags=re.MULTILINE).strip()
@@ -140,12 +138,14 @@ def run_code(path):
     r = subprocess.run(["python3", str(path)], capture_output=True, text=True, timeout=120)
     return r.returncode, r.stdout, r.stderr
 
-def build(task, project="nexadose"):
+def build(task, project=None):
+    info = load_project(resolve_slug(project))
+    print(f"[builder] Project: {info['project_name']} ({info['project_slug']})", flush=True)
     print(f"[builder] build() called with task: {task}", flush=True)
-    context = load_context(project)
+    context = info["raw_context"]
     inspections = gather_inspections(task, context)
     system_parts = [
-        "You are a Python code generator for the Nexadose project.",
+        f"You are a Python code generator for the {info['project_name']} project.",
         "",
         "PROJECT CONTEXT:",
         context,
@@ -191,7 +191,8 @@ def build(task, project="nexadose"):
 print(f"[builder] __name__ = {__name__}", flush=True)
 if __name__ == "__main__":
     print(f"[builder] argv = {sys.argv}", flush=True)
-    if len(sys.argv) < 2:
-        print("Usage: oc_builder.py 'task'")
-        sys.exit(1)
-    build(" ".join(sys.argv[1:]))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--project", default=None, help="Project slug (default: env OPENCLAW_PROJECT, then 'nexadose')")
+    parser.add_argument("task", nargs="+", help="Task description")
+    args = parser.parse_args()
+    build(" ".join(args.task), project=args.project)
