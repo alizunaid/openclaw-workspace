@@ -33,9 +33,6 @@ from typing import Dict, List, Optional, Tuple
 # ---------- Guardrails ----------
 IMMUTABLE_PATHS = {
     "WORK_ITEMS_REGISTER.canonical.v4.csv",
-    "scripts/build_work_items_canonical.py",
-    "scripts/build_work_items_canonical_v2.py",
-    "scripts/build_work_items_canonical_v3.py",
     "scripts/build_work_items_canonical_v4.py",
 }
 
