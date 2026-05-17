@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 from datetime import datetime
 
-IN_CSV = Path.home() / ".openclaw/workspace/WORK_ITEMS_REGISTER.canonical.v2.csv"
+IN_CSV = Path.home() / ".openclaw/workspace/WORK_ITEMS_REGISTER.upgraded.v4_1.csv"
 OUT_MD = Path.home() / ".openclaw/workspace/TODAY_TOP10.md"
 
 def parse_iso(dt: str):
@@ -24,7 +24,7 @@ def main():
     rank = {"WAITING_ON_YOU": 5, "REVIEW": 4, "OPEN": 3, "WAITING": 2, "BLOCKED": 1}
     def sort_key(r):
         dt = parse_iso(r.get("last_activity_date",""))
-        return (-rank.get(r.get("status_rollup",""), 0), -(dt.timestamp() if dt else 0), -int(r.get("email_count","0") or 0))
+        return (-rank.get(r.get("status_current",""), 0), -(dt.timestamp() if dt else 0), -int(r.get("email_count","0") or 0))
 
     rows.sort(key=sort_key)
 
@@ -38,12 +38,12 @@ def main():
     lines.append("")
     for i, r in enumerate(top, 1):
         lines.append(f"### {i}) {r.get('representative_subject','').strip()}")
-        lines.append(f"- **Status:** {r.get('status_rollup','')}")
+        lines.append(f"- **Status:** {r.get('status_current','')}")
         lines.append(f"- **Last activity:** {r.get('last_activity_date','')}")
         lines.append(f"- **Emails in thread:** {r.get('email_count','')}")
         lines.append(f"- **Owners seen:** {r.get('owners_seen','')}")
         lines.append(f"- **Categories:** {r.get('categories_seen','')}")
-        lines.append(f"- **Next step:** {r.get('next_step_rollup','')}")
+        lines.append(f"- **Next step:** {r.get('next_step_current','')}")
         lines.append(f"- **Work Item ID:** `{r.get('work_item_id','')}`")
         lines.append("")
 
