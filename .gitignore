@@ -22,3 +22,4 @@ tools/_oc_last_model_output.txt
 logs/*.json
 logs/task_registry_run.log
 tools/generated/*.py
+tools/generated/run_*/
