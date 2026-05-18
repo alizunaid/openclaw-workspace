@@ -534,13 +534,49 @@ def short_summary(task, max_len=60):
 
 
 def git_commit_and_push(run_dir, task):
-    rel = run_dir.relative_to(WORKSPACE).as_posix()
+    """Commit + push only when something non-ignored actually changed.
+
+    Run artifacts live under tools/generated/run_*/ which is gitignored, so
+    ordinary runs have nothing to commit. We never --force past the ignore;
+    git add -A respects it. The audit trail is logs/oc_build_<ts>.json.
+    """
     msg = f"ocb multifile: {short_summary(task)}"
     try:
-        subprocess.run(
-            ["git", "-C", str(WORKSPACE), "add", "--force", rel],
+        status = subprocess.run(
+            ["git", "-C", str(WORKSPACE), "status", "--porcelain"],
             check=True, capture_output=True, text=True,
         )
+    except subprocess.CalledProcessError as e:
+        return {
+            "status": "failed",
+            "message": msg,
+            "stderr": (e.stderr or "")[-2000:],
+            "stdout": (e.stdout or "")[-2000:],
+        }
+
+    if not status.stdout.strip():
+        return {
+            "status": "skipped",
+            "reason": "no changes to commit",
+            "run_dir": str(run_dir),
+        }
+
+    try:
+        subprocess.run(
+            ["git", "-C", str(WORKSPACE), "add", "-A"],
+            check=True, capture_output=True, text=True,
+        )
+        # Re-check: gitignore might have hidden everything we just tried to add.
+        staged = subprocess.run(
+            ["git", "-C", str(WORKSPACE), "diff", "--cached", "--name-only"],
+            check=True, capture_output=True, text=True,
+        )
+        if not staged.stdout.strip():
+            return {
+                "status": "skipped",
+                "reason": "no trackable changes (all paths ignored)",
+                "run_dir": str(run_dir),
+            }
         subprocess.run(
             ["git", "-C", str(WORKSPACE), "commit", "-m", msg],
             check=True, capture_output=True, text=True,
@@ -789,17 +825,22 @@ def build(task, project=None):
     print("[builder] === PHASE 4: COMMIT ===", flush=True)
     commit_info = git_commit_and_push(run_dir, task)
     state["phases"]["commit"] = commit_info
-    if commit_info["status"] != "ok":
+    if commit_info["status"] == "failed":
         dump_state(state, log_path)
         print(f"[builder] FAILED: git commit/push failed: {commit_info.get('stderr', '')}", flush=True)
         sys.exit(1)
+    if commit_info["status"] == "skipped":
+        print(f"[builder] Commit skipped: {commit_info.get('reason', '')}", flush=True)
 
     state["finished_at"] = datetime.now().isoformat()
     state["elapsed_seconds"] = round(time.time() - start, 2)
     dump_state(state, log_path)
+    if commit_info["status"] == "ok":
+        tail = f"Commit: {commit_info.get('hash', '?')[:12]}"
+    else:
+        tail = f"Commit: skipped ({commit_info.get('reason', '')})"
     print(
-        f"[builder] DONE. {len(topo_order)} file(s) generated. "
-        f"Commit: {commit_info.get('hash', '?')[:12]}",
+        f"[builder] DONE. {len(topo_order)} file(s) generated. {tail}",
         flush=True,
     )
     return run_dir, 0
