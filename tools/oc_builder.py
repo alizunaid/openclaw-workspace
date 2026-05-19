@@ -322,8 +322,23 @@ def validate_manifest(manifest):
 
 
 def _is_test_entry(entry):
+    """Detect test/smoke modules by filename OR purpose.
+
+    The LLM is unreliable about including the words "test" or "smoke" in the
+    purpose string. The determinism sweep produced a case (Task 5 run c) where
+    a file named ``smoke_test.py`` had purpose "runs the main script with the
+    real CSV and confirms it produces output without raising an exception" —
+    no literal "test"/"smoke" — and was therefore picked as the entry-point.
+    Filename is the more reliable signal. Keep the purpose check as a belt +
+    suspenders for tests whose filename doesn't match convention.
+    """
     purpose = (entry.get("purpose") or "").lower()
-    return "test" in purpose or "smoke" in purpose
+    name = (entry.get("path") or "").lower()
+    if "test" in name or "smoke" in name:
+        return True
+    if "test" in purpose or "smoke" in purpose:
+        return True
+    return False
 
 
 def find_entry_point(topo_order):
