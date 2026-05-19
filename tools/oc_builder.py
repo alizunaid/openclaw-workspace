@@ -202,18 +202,22 @@ def get_manifest(task, context, inspections):
         "Given a user task, project context, and inspected workspace samples, "
         "return a JSON array describing every file to create.\n"
         "Each entry MUST be an object with EXACTLY these keys:\n"
-        '  {"path": "<filename.py>", "purpose": "<short purpose>", "depends_on": ["<other_filename.py>", ...]}\n'
+        '  {"path": "<filename.py>", "purpose": "<short purpose>", "depends_on": ["<other_filename.py>", ...], "exports": ["<symbol>", ...]}\n'
         "Rules:\n"
         f"- Maximum {MAX_MANIFEST_FILES} files.\n"
         "- `path` must be a plain Python filename (e.g. main.py). No slashes, no subdirs, must end .py.\n"
         "- `depends_on` lists OTHER files in THIS manifest that the file imports. Use the exact filename, not a module path.\n"
         "- Dependencies must form a DAG (no cycles, no self-dependency).\n"
+        "- `exports` lists the function names, class names, and module-level constants this file MUST define at top level. "
+        "This is a CONTRACT: downstream modules may import only the names listed here, and the file generator will be "
+        "required to define exactly these names. Use the empty list `[]` for files that are run as scripts and define "
+        "nothing for other files to import.\n"
         "- One file is fine if the task is simple — return a 1-entry array.\n"
         "- If you include a smoke test, put the word \"test\" or \"smoke\" in its purpose.\n"
         "- Return ONLY the JSON array. No markdown fences. No commentary.\n"
         'Example for a tiny multi-file task:\n'
-        '[{"path":"utils.py","purpose":"helper module: add(a,b)","depends_on":[]},'
-        '{"path":"main.py","purpose":"entry point — imports utils and prints add(2,3)","depends_on":["utils.py"]}]'
+        '[{"path":"utils.py","purpose":"helper module: add(a,b)","depends_on":[],"exports":["add"]},'
+        '{"path":"main.py","purpose":"entry point — imports utils and prints add(2,3)","depends_on":["utils.py"],"exports":[]}]'
     )
     user_parts = [f"Task:\n{task}", "", f"Project context:\n{context}"]
     if inspections:
@@ -266,6 +270,9 @@ def validate_manifest(manifest):
         path = entry.get("path")
         purpose = entry.get("purpose", "")
         deps = entry.get("depends_on", [])
+        # `exports` is the symbol contract. Missing field = backward-compat: store
+        # None to signal "no contract declared" so downstream gates can soft-skip.
+        exports_raw = entry.get("exports", None)
         if not isinstance(path, str) or not FILENAME_RE.match(path):
             errors.append(f"entry[{i}]: invalid path {path!r} (must be bare filename ending .py)")
             continue
@@ -282,7 +289,19 @@ def validate_manifest(manifest):
         for d in deps:
             if isinstance(d, str) and d.strip():
                 clean_deps.append(d.strip())
-        normalized.append({"path": path, "purpose": purpose, "depends_on": clean_deps})
+        if exports_raw is None:
+            clean_exports = None
+        elif isinstance(exports_raw, list):
+            clean_exports = [s.strip() for s in exports_raw if isinstance(s, str) and s.strip()]
+        else:
+            errors.append(f"entry[{i}] ({path}): exports is not a list")
+            continue
+        normalized.append({
+            "path": path,
+            "purpose": purpose,
+            "depends_on": clean_deps,
+            "exports": clean_exports,
+        })
 
     if errors:
         return errors, None
@@ -478,16 +497,52 @@ def generate_one_file(entry, manifest, generated_sources, task, info, inspection
 
     Returns (code:str, attempts:int, err:str). code is None on failure.
     """
+    manifest_by_path = {e["path"]: e for e in manifest}
+
     deps_blocks = []
     for d_path in entry["depends_on"]:
         d_code = generated_sources.get(d_path, "")
-        deps_blocks.append(f"=== {d_path} (already generated, DO NOT re-define these symbols) ===\n{d_code}")
+        d_exports = manifest_by_path.get(d_path, {}).get("exports")
+        if d_exports is not None:
+            exports_line = (
+                f"DECLARED EXPORTS for {d_path} — you may import ONLY these names from {d_path}: "
+                f"{d_exports}\n"
+            )
+        else:
+            exports_line = ""
+        deps_blocks.append(
+            f"=== {d_path} (already generated, DO NOT re-define these symbols) ===\n"
+            f"{exports_line}{d_code}"
+        )
     deps_context = "\n\n".join(deps_blocks) if deps_blocks else "(no dependencies)"
 
     manifest_summary = json.dumps(
-        [{"path": e["path"], "purpose": e["purpose"], "depends_on": e["depends_on"]} for e in manifest],
+        [
+            {
+                "path": e["path"],
+                "purpose": e["purpose"],
+                "depends_on": e["depends_on"],
+                "exports": e.get("exports"),
+            }
+            for e in manifest
+        ],
         indent=2,
     )
+
+    own_exports = entry.get("exports")
+    if own_exports is not None and own_exports:
+        contract_line = (
+            f"REQUIRED EXPORTS for {entry['path']}: this file MUST define EVERY name in "
+            f"{own_exports} at top level (as `def`, `class`, or module-level assignment). "
+            f"Other names may exist as helpers; these are the contract."
+        )
+    elif own_exports is not None:
+        contract_line = (
+            f"REQUIRED EXPORTS for {entry['path']}: this file declares no public exports. "
+            f"It is run as a script — nothing outside this file should import from it."
+        )
+    else:
+        contract_line = ""
 
     system_parts = [
         f"You are a Python code generator for the {info['project_name']} project.",
@@ -515,6 +570,10 @@ def generate_one_file(entry, manifest, generated_sources, task, info, inspection
         "",
         f"FILE YOU ARE GENERATING NOW: {entry['path']}",
         f"PURPOSE: {entry['purpose']}",
+    ])
+    if contract_line:
+        system_parts.extend(["", contract_line])
+    system_parts.extend([
         "",
         "CRITICAL OUTPUT FORMAT:",
         f"- Your ENTIRE response IS the raw source code of {entry['path']}. Nothing else.",
@@ -608,21 +667,74 @@ def _collect_top_level_names(tree):
     return names
 
 
-def static_cross_module_lint(run_dir, manifest_paths):
+def verify_export_contracts(run_dir, manifest_entries):
+    """Confirm each manifest entry's declared `exports` are actually defined.
+
+    Returns (ok, results) where results is a list of dicts, one per file. Each
+    has keys: path, status ("ok" | "missing" | "no_contract" | "parse_error"),
+    declared (the list of exports), defined (top-level names found in file),
+    missing (list of declared names not defined).
+
+    Entries with `exports=None` (older manifest format) are treated as
+    "no_contract" — soft-skip, log a warning, no hard fail. This is the
+    backward-compat path requested for graceful handling of model regressions.
+    """
+    results = []
+    all_ok = True
+    for entry in manifest_entries:
+        path = entry["path"]
+        declared = entry.get("exports")
+        p = run_dir / path
+        if not p.exists():
+            results.append({"path": path, "status": "file_missing", "declared": declared,
+                            "defined": [], "missing": []})
+            all_ok = False
+            continue
+        try:
+            tree = ast.parse(p.read_text())
+        except SyntaxError as e:
+            results.append({
+                "path": path, "status": "parse_error",
+                "error": f"SyntaxError: {e.msg} at line {e.lineno}",
+                "declared": declared, "defined": [], "missing": [],
+            })
+            all_ok = False
+            continue
+        defined = sorted(_collect_top_level_names(tree))
+        if declared is None:
+            results.append({"path": path, "status": "no_contract",
+                            "declared": None, "defined": defined, "missing": []})
+            continue
+        missing = [name for name in declared if name not in defined]
+        if missing:
+            all_ok = False
+            results.append({"path": path, "status": "missing", "declared": declared,
+                            "defined": defined, "missing": missing})
+        else:
+            results.append({"path": path, "status": "ok", "declared": declared,
+                            "defined": defined, "missing": []})
+    return all_ok, results
+
+
+def static_cross_module_lint(run_dir, manifest_entries):
     """Catch undefined-symbol imports across generated modules before dry-import.
 
-    For every generated module, AST-collect the names it defines at top level.
-    Then for every cross-module reference (``from X import Y`` and ``X.Y``
-    after ``import X``, where X is another manifest module), verify that Y
-    is in X's top-level names.
+    Source of truth for "what may be imported from module X":
 
-    Scope is deliberately tight: stdlib and third-party imports are ignored,
-    no signature/type checking, no pyflakes-style analysis. Star imports are
-    flagged because they defeat static verification.
+      1. If X declared an `exports` list (Fix A contracts), only those names
+         may be imported. Importing a file-internal helper that wasn't exported
+         is a contract violation and is flagged.
+      2. If X has `exports=None` (older manifest, missing field), fall back to
+         the historical behavior: any top-level name in X is importable.
+
+    Scope is otherwise unchanged from the original lint: stdlib and third-party
+    imports are ignored, no signature/type checking, star imports are flagged.
 
     Returns (ok: bool, errors: list[dict]).
     """
+    manifest_paths = [e["path"] for e in manifest_entries]
     manifest_stems = {Path(p).stem: p for p in manifest_paths}
+    declared_exports = {Path(e["path"]).stem: e.get("exports") for e in manifest_entries}
     module_names = {}
     parse_errors = []
     trees = {}
@@ -643,9 +755,19 @@ def static_cross_module_lint(run_dir, manifest_paths):
     if parse_errors:
         return False, parse_errors
 
+    def importable_from(stem):
+        declared = declared_exports.get(stem)
+        if declared is None:
+            return module_names[stem]
+        return set(declared)
+
+    def reason_prefix(stem):
+        declared = declared_exports.get(stem)
+        return "declared exports" if declared is not None else "top-level names"
+
     errors = []
     for fname, tree in trees.items():
-        local_alias = {}  # local name -> manifest stem
+        local_alias = {}
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
@@ -658,6 +780,7 @@ def static_cross_module_lint(run_dir, manifest_paths):
                 source = node.module.split(".")[0]
                 if source not in manifest_stems:
                     continue
+                allowed = importable_from(source)
                 for alias in node.names:
                     if alias.name == "*":
                         errors.append({
@@ -667,12 +790,15 @@ def static_cross_module_lint(run_dir, manifest_paths):
                             "reason": f"star import from {source} defeats static checking",
                         })
                         continue
-                    if alias.name not in module_names[source]:
+                    if alias.name not in allowed:
                         errors.append({
                             "module": fname,
                             "missing": alias.name,
                             "from": manifest_stems[source],
-                            "reason": f"{manifest_stems[source]} does not define {alias.name!r}",
+                            "reason": (
+                                f"{manifest_stems[source]} {reason_prefix(source)} "
+                                f"do not include {alias.name!r}"
+                            ),
                         })
 
         if not local_alias:
@@ -682,12 +808,16 @@ def static_cross_module_lint(run_dir, manifest_paths):
                 if node.value.id not in local_alias:
                     continue
                 source = local_alias[node.value.id]
-                if node.attr not in module_names[source]:
+                allowed = importable_from(source)
+                if node.attr not in allowed:
                     errors.append({
                         "module": fname,
                         "missing": node.attr,
                         "from": manifest_stems[source],
-                        "reason": f"{manifest_stems[source]} does not define {node.attr!r} (accessed as {node.value.id}.{node.attr})",
+                        "reason": (
+                            f"{manifest_stems[source]} {reason_prefix(source)} "
+                            f"do not include {node.attr!r} (accessed as {node.value.id}.{node.attr})"
+                        ),
                     })
 
     return len(errors) == 0, errors
@@ -1000,14 +1130,38 @@ def build(task, project=None):
     print(f"[builder] Entry point: {entry_point['path']}", flush=True)
 
     manifest_paths = [e["path"] for e in topo_order]
-    lint_ok, lint_errors = static_cross_module_lint(run_dir, manifest_paths)
+    contract_ok, contract_results = verify_export_contracts(run_dir, topo_order)
     cross = {
         "entry_point": entry_point["path"],
-        "static_lint": {"ok": lint_ok, "errors": lint_errors},
+        "contracts": {"ok": contract_ok, "results": contract_results},
+        "static_lint": None,
         "dry_import": None,
         "entry_execution": None,
         "smoke_tests": [],
     }
+    if not contract_ok:
+        state["phases"]["cross_file"] = {"status": "failed", **cross}
+        dump_state(state, log_path)
+        print("[builder] FAILED: contract verification:", flush=True)
+        for r in contract_results:
+            if r["status"] == "missing":
+                print(f"  - {r['path']}: declared exports not defined: {r['missing']}", flush=True)
+            elif r["status"] == "file_missing":
+                print(f"  - {r['path']}: file missing", flush=True)
+            elif r["status"] == "parse_error":
+                print(f"  - {r['path']}: {r['error']}", flush=True)
+        sys.exit(1)
+    no_contract_files = [r["path"] for r in contract_results if r["status"] == "no_contract"]
+    if no_contract_files:
+        print(
+            f"[builder] WARNING: contracts missing for {no_contract_files} — "
+            f"falling back to top-level-names lint for these files.",
+            flush=True,
+        )
+    print(f"[builder] Contract verification OK ({len(manifest_paths)} module(s))", flush=True)
+
+    lint_ok, lint_errors = static_cross_module_lint(run_dir, topo_order)
+    cross["static_lint"] = {"ok": lint_ok, "errors": lint_errors}
     if not lint_ok:
         state["phases"]["cross_file"] = {"status": "failed", **cross}
         dump_state(state, log_path)
