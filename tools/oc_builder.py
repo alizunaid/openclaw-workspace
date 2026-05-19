@@ -574,6 +574,125 @@ def generate_one_file(entry, manifest, generated_sources, task, info, inspection
 # Cross-file validation (PHASE 3)
 # ---------------------------------------------------------------------------
 
+def _collect_top_level_names(tree):
+    """Return the set of names a module makes available at its top level.
+
+    Counted: function/class defs, top-level assignments (including unpacking
+    and annotated assigns), and names introduced by ``import`` or
+    ``from … import`` (so that downstream callers see those re-exports).
+    Anything inside if/try/with/loops/functions is intentionally ignored —
+    we only model what a static reader can see without executing the module.
+    """
+    names = set()
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            names.add(node.name)
+        elif isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name):
+                    names.add(t.id)
+                elif isinstance(t, (ast.Tuple, ast.List)):
+                    for elt in t.elts:
+                        if isinstance(elt, ast.Name):
+                            names.add(elt.id)
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            names.add(node.target.id)
+        elif isinstance(node, ast.Import):
+            for alias in node.names:
+                names.add(alias.asname or alias.name.split(".")[0])
+        elif isinstance(node, ast.ImportFrom):
+            for alias in node.names:
+                if alias.name == "*":
+                    continue
+                names.add(alias.asname or alias.name)
+    return names
+
+
+def static_cross_module_lint(run_dir, manifest_paths):
+    """Catch undefined-symbol imports across generated modules before dry-import.
+
+    For every generated module, AST-collect the names it defines at top level.
+    Then for every cross-module reference (``from X import Y`` and ``X.Y``
+    after ``import X``, where X is another manifest module), verify that Y
+    is in X's top-level names.
+
+    Scope is deliberately tight: stdlib and third-party imports are ignored,
+    no signature/type checking, no pyflakes-style analysis. Star imports are
+    flagged because they defeat static verification.
+
+    Returns (ok: bool, errors: list[dict]).
+    """
+    manifest_stems = {Path(p).stem: p for p in manifest_paths}
+    module_names = {}
+    parse_errors = []
+    trees = {}
+
+    for fname in manifest_paths:
+        p = run_dir / fname
+        if not p.exists():
+            parse_errors.append({"module": fname, "error": "file missing"})
+            continue
+        try:
+            tree = ast.parse(p.read_text())
+        except SyntaxError as e:
+            parse_errors.append({"module": fname, "error": f"SyntaxError: {e.msg} at line {e.lineno}"})
+            continue
+        trees[fname] = tree
+        module_names[Path(fname).stem] = _collect_top_level_names(tree)
+
+    if parse_errors:
+        return False, parse_errors
+
+    errors = []
+    for fname, tree in trees.items():
+        local_alias = {}  # local name -> manifest stem
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    top = alias.name.split(".")[0]
+                    if top in manifest_stems:
+                        local_alias[alias.asname or top] = top
+            elif isinstance(node, ast.ImportFrom):
+                if node.module is None or node.level > 0:
+                    continue
+                source = node.module.split(".")[0]
+                if source not in manifest_stems:
+                    continue
+                for alias in node.names:
+                    if alias.name == "*":
+                        errors.append({
+                            "module": fname,
+                            "missing": "*",
+                            "from": manifest_stems[source],
+                            "reason": f"star import from {source} defeats static checking",
+                        })
+                        continue
+                    if alias.name not in module_names[source]:
+                        errors.append({
+                            "module": fname,
+                            "missing": alias.name,
+                            "from": manifest_stems[source],
+                            "reason": f"{manifest_stems[source]} does not define {alias.name!r}",
+                        })
+
+        if not local_alias:
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
+                if node.value.id not in local_alias:
+                    continue
+                source = local_alias[node.value.id]
+                if node.attr not in module_names[source]:
+                    errors.append({
+                        "module": fname,
+                        "missing": node.attr,
+                        "from": manifest_stems[source],
+                        "reason": f"{manifest_stems[source]} does not define {node.attr!r} (accessed as {node.value.id}.{node.attr})",
+                    })
+
+    return len(errors) == 0, errors
+
+
 def dry_import(filename, run_dir):
     modname = Path(filename).stem
     try:
@@ -879,13 +998,27 @@ def build(task, project=None):
     check_cap("pre-cross-file")
     entry_point = find_entry_point(topo_order)
     print(f"[builder] Entry point: {entry_point['path']}", flush=True)
-    ok, di_stdout, di_stderr = dry_import(entry_point["path"], run_dir)
+
+    manifest_paths = [e["path"] for e in topo_order]
+    lint_ok, lint_errors = static_cross_module_lint(run_dir, manifest_paths)
     cross = {
         "entry_point": entry_point["path"],
-        "dry_import": {"ok": ok, "stdout": di_stdout[-2000:], "stderr": di_stderr[-2000:]},
+        "static_lint": {"ok": lint_ok, "errors": lint_errors},
+        "dry_import": None,
         "entry_execution": None,
         "smoke_tests": [],
     }
+    if not lint_ok:
+        state["phases"]["cross_file"] = {"status": "failed", **cross}
+        dump_state(state, log_path)
+        print("[builder] FAILED: static cross-module lint:", flush=True)
+        for e in lint_errors:
+            print(f"  - {e['module']}: {e['reason']}", flush=True)
+        sys.exit(1)
+    print(f"[builder] Static lint OK ({len(manifest_paths)} module(s))", flush=True)
+
+    ok, di_stdout, di_stderr = dry_import(entry_point["path"], run_dir)
+    cross["dry_import"] = {"ok": ok, "stdout": di_stdout[-2000:], "stderr": di_stderr[-2000:]}
     if not ok:
         state["phases"]["cross_file"] = {"status": "failed", **cross}
         dump_state(state, log_path)
