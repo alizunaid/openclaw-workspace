@@ -341,16 +341,45 @@ def _is_test_entry(entry):
     return False
 
 
+_ENTRY_POINT_PURPOSE_HINTS = ("entry point", "main script")
+
+
 def find_entry_point(topo_order):
     """Pick the entry-point as the real production file, never a test.
 
     Order of preference:
-      1. The last non-test file among DAG sinks (sinks = entries with no dependents).
-      2. If every sink is a test, the last non-test file anywhere in topo order —
-         tests typically depend on the real entry, so the deepest non-test is it.
-      3. If the entire manifest is tests, fall back to the original behavior
+      0. If a non-test module is named exactly main.py, pick it.
+      1. Else if a non-test module's purpose contains "entry point" or "main
+         script", pick the last such module in topo order.
+      2. Else the last non-test file among DAG sinks (sinks = entries with no
+         dependents).
+      3. If every sink is a test, the last non-test file anywhere in topo order
+         — tests typically depend on the real entry, so the deepest non-test is
+         it.
+      4. If the entire manifest is tests, fall back to the original behavior
          (last sink in topo order) and log a warning.
+
+    Preferences 0 and 1 were added after the determinism sweep produced cases
+    (Task 3 run b, Task 4 run a) where the LLM emitted helper modules with
+    deps=[] that nothing depended on — making them DAG sinks — and the heuristic
+    picked utils.py / formatter.py over the real main.
     """
+    # Preference 0: a non-test module literally named main.py.
+    for entry in topo_order:
+        if entry["path"].lower() == "main.py" and not _is_test_entry(entry):
+            return entry
+
+    # Preference 1: a non-test module whose purpose declares it the entry.
+    purpose_entry = None
+    for entry in topo_order:
+        if _is_test_entry(entry):
+            continue
+        purpose = (entry.get("purpose") or "").lower()
+        if any(h in purpose for h in _ENTRY_POINT_PURPOSE_HINTS):
+            purpose_entry = entry
+    if purpose_entry is not None:
+        return purpose_entry
+
     dependents = {e["path"]: 0 for e in topo_order}
     for e in topo_order:
         for d in e["depends_on"]:
