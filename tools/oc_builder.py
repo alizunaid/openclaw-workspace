@@ -320,14 +320,45 @@ def validate_manifest(manifest):
     return [], [path_to_entry[p] for p in order]
 
 
+def _is_test_entry(entry):
+    purpose = (entry.get("purpose") or "").lower()
+    return "test" in purpose or "smoke" in purpose
+
+
 def find_entry_point(topo_order):
-    """Pick the entry-point: the file with no dependents, taken last in topo order."""
+    """Pick the entry-point as the real production file, never a test.
+
+    Order of preference:
+      1. The last non-test file among DAG sinks (sinks = entries with no dependents).
+      2. If every sink is a test, the last non-test file anywhere in topo order —
+         tests typically depend on the real entry, so the deepest non-test is it.
+      3. If the entire manifest is tests, fall back to the original behavior
+         (last sink in topo order) and log a warning.
+    """
     dependents = {e["path"]: 0 for e in topo_order}
     for e in topo_order:
         for d in e["depends_on"]:
             if d in dependents:
                 dependents[d] += 1
     no_deps = [e for e in topo_order if dependents[e["path"]] == 0]
+    non_test_no_deps = [e for e in no_deps if not _is_test_entry(e)]
+
+    if non_test_no_deps:
+        candidates = {e["path"] for e in non_test_no_deps}
+        for entry in reversed(topo_order):
+            if entry["path"] in candidates:
+                return entry
+        return non_test_no_deps[-1]
+
+    non_test_anywhere = [e for e in topo_order if not _is_test_entry(e)]
+    if non_test_anywhere:
+        return non_test_anywhere[-1]
+
+    print(
+        "[builder] WARNING: manifest is entirely test/smoke files; "
+        "falling back to last sink as entry-point.",
+        flush=True,
+    )
     if not no_deps:
         return topo_order[-1]
     no_deps_paths = {e["path"] for e in no_deps}
@@ -509,7 +540,7 @@ def dry_import(filename, run_dir):
         return False, "", f"dry-import timed out after {DRY_IMPORT_TIMEOUT}s"
 
 
-def run_smoke(filename, run_dir):
+def _run_script(filename, run_dir, label):
     try:
         r = subprocess.run(
             [sys.executable, str(filename)],
@@ -519,7 +550,15 @@ def run_smoke(filename, run_dir):
         )
         return r.returncode, r.stdout, r.stderr
     except subprocess.TimeoutExpired:
-        return -1, "", f"smoke test timed out after {SMOKE_TEST_TIMEOUT}s"
+        return -1, "", f"{label} timed out after {SMOKE_TEST_TIMEOUT}s"
+
+
+def execute_entry(filename, run_dir):
+    return _run_script(filename, run_dir, "entry execution")
+
+
+def run_smoke(filename, run_dir):
+    return _run_script(filename, run_dir, "smoke test")
 
 
 # ---------------------------------------------------------------------------
@@ -793,6 +832,7 @@ def build(task, project=None):
     cross = {
         "entry_point": entry_point["path"],
         "dry_import": {"ok": ok, "stdout": di_stdout[-2000:], "stderr": di_stderr[-2000:]},
+        "entry_execution": None,
         "smoke_tests": [],
     }
     if not ok:
@@ -801,6 +841,23 @@ def build(task, project=None):
         print(f"[builder] FAILED: dry-import of {entry_point['path']} failed:\n{di_stderr}", flush=True)
         sys.exit(1)
     print(f"[builder] Dry-import OK", flush=True)
+
+    check_cap(f"execute[{entry_point['path']}]")
+    ex_rc, ex_stdout, ex_stderr = execute_entry(entry_point["path"], run_dir)
+    cross["entry_execution"] = {
+        "rc": ex_rc,
+        "stdout": ex_stdout[-2000:],
+        "stderr": ex_stderr[-2000:],
+    }
+    if ex_rc != 0:
+        state["phases"]["cross_file"] = {"status": "failed", **cross}
+        dump_state(state, log_path)
+        print(
+            f"[builder] FAILED: entry-point {entry_point['path']} exited {ex_rc}:\n{ex_stderr}",
+            flush=True,
+        )
+        sys.exit(1)
+    print(f"[builder] Entry execution OK", flush=True)
 
     smoke_files = [
         e for e in topo_order
