@@ -1,7 +1,7 @@
 # OpenClaw State
 
-Last updated: 2026-05-19T22:25:00Z
-Last session: ntfy push-notification wiring — created `tools/notify.sh`, added `ocnotify` alias, integrated into end-of-session ritual.
+Last updated: 2026-05-19T22:38:00Z
+Last session: Shipped Tier-1 fixes — symbol contracts (Fix A) and main-guard gate with retry (Fix B). Engine smoke test green; both new gates appear in pipeline output.
 
 ## Push notifications
 - Channel: ntfy.sh
@@ -11,27 +11,37 @@ Last session: ntfy push-notification wiring — created `tools/notify.sh`, added
 - Script fails silently — notification failure never breaks a workflow.
 
 ## Current HEAD
-bd500b9 — feat(oc_builder): add static cross-module symbol lint before dry-import
+19b6a7a — feat(oc_builder): require __main__ guards in non-entry modules with retry
 
 ## Last sweep result
-v4 determinism sweep (2026-05-19) — 5 tasks × 3 runs = 15 runs at HEAD bd500b9. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 3, 4, 5 PASS; Tasks 1, 2 FAIL). PARTIAL bucket eliminated vs v3. Report: `/tmp/determinism_v4.md`. Tier-1 forensics on the 5 FAIL runs: `/tmp/tier1_failure_analysis.md`.
+v4 determinism sweep (2026-05-19) — 5 tasks × 3 runs = 15 runs at HEAD `bd500b9`. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 3, 4, 5 PASS; Tasks 1, 2 FAIL). PARTIAL bucket eliminated vs v3. Report: `/tmp/determinism_v4.md`. Tier-1 forensics on the 5 FAIL runs: `/tmp/tier1_failure_analysis.md`. Tier-1 fixes A+B now shipped on top — v5 sweep is the next measurement.
+
+## Phase 3 pipeline (current)
+After Tier-1 ship, Phase 3 runs in this order:
+1. Entry-point selection (Fix 1 + Fix 2 from earlier session)
+2. Contract verification — declared exports must be defined (Fix A)
+3. Main-guard check — non-entry modules must guard top-level work; up to 2 LLM regenerations per offending file (Fix B)
+4. Static cross-module lint — `from X import Y` valid only if Y in X's declared exports (Fix A updates lint)
+5. Dry-import of entry point
+6. Entry execution
+7. Smoke tests (if any in manifest)
 
 ## Next planned step
-Implement Tier-1 ranked fix #1: cap manifest at 2 files unless the user prompt explicitly names ≥2 modules. Planner-side prompt edit + post-validation. Estimated impact: 4 of 5 v4 failures (all the Type-A symbol-drift cases on over-decomposed manifests). Small implementation effort.
+Run v5 determinism sweep (5 tasks × 3 runs = 15 runs) at HEAD `19b6a7a` with the same prompts and median-of-3 grading. Predicted v5 modal based on Tier-1 forensics: **4–5 PASS / 0 PARTIAL / 0–1 FAIL** if Fix A neutralises the dominant Type-A symbol drift on Tasks 1 and 2, and Fix B closes the unguarded-top-level-execution defects on Task 5a.
 
 ## Open questions / decisions pending
-- Whether to land Tier-1 fix #1 alone, or pair it with fix #6 (require `__name__ == "__main__"` guards in non-entry modules) for a combined v5 sweep.
-- Whether to bias toward planner-side prevention (#1) or generation-side correction (#2 symbol contract / #3 lint-driven retry). #1 is highest impact-per-effort but removes the surface where multi-file work happens. #2 and #3 keep that surface but enforce correctness.
-- Splitter blind spot found in t5a: when `date_utils.py` contained all three files concatenated with `# stale_detector.py` and `# smoke_test.py` headers, `split_manifest_sections` returned the input unchanged because no section had the target header. Behavior should be "return the no-header preamble as the target's content". Low priority — only affected 1/15 v4 runs and the underlying TZ bug would have fired anyway.
+- Does the LLM reliably emit the `exports` field on every manifest, or does it need prompt iteration? The smoke test showed it emitting the field correctly first try. The v5 sweep will produce 15 data points to confirm.
+- Should we still cap manifest size (Tier-1 rank #1 fix) on top of contracts, or do contracts alone neutralise over-decomposition's downside? Saving for post-v5 decision based on the failure-mode distribution there.
+- t5a's TZ-naive bug (Type C) is not addressed by either Fix A or Fix B. If it recurs in v5, prompt-side date-task guidance is the next move.
 
 ## Recent commits (last 5)
 ```
+19b6a7a feat(oc_builder): require __main__ guards in non-entry modules with retry
+00b6b59 feat(oc_builder): add symbol contracts to planner manifest and verify generated exports
+56c25d7 feat: ntfy push notifications for sweep/commit/session events
+85f6672 chore: add STATE.md for session continuity
 bd500b9 feat(oc_builder): add static cross-module symbol lint before dry-import
-3c0b49a fix(oc_builder): prefer main.py and explicit entry-point purpose strings
-7dfddd0 fix(oc_builder): exclude test modules by filename, not just purpose
-51161ac fix(oc_builder): expose absolute paths in inspection context
-9dff228 fix(oc_builder): exclude test files from entry-point and execute entry before smoke tests
 ```
 
 ## Workflow note
-At the end of any non-trivial task (engine fix, sweep, analysis), Claude Code updates BOTH this file and `/tmp/last_cc_output.md` as the final step before reporting. STATE.md is committed for continuity across sessions; `/tmp/last_cc_output.md` is ephemeral and gets pasted into Claude.ai for next-session planning.
+At the end of any non-trivial task (engine fix, sweep, analysis), Claude Code updates BOTH this file and `/tmp/last_cc_output.md`, commits/pushes STATE.md, and sends a session-end ntfy push, all as the final step before reporting. STATE.md is committed for continuity across sessions; `/tmp/last_cc_output.md` is ephemeral and gets pasted into Claude.ai for next-session planning.
