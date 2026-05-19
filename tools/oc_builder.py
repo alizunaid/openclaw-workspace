@@ -166,7 +166,8 @@ def gather_inspections(task, context):
             print(f"[builder] Skipping (outside workspace or missing): {rel}", flush=True)
             continue
         sample = sample_file(p)
-        samples.append(f"=== {rel} ===\n{sample}")
+        abs_path = str(p.resolve())
+        samples.append(f"=== {rel}  (absolute path: {abs_path}) ===\n{sample}")
     return "\n\n".join(samples)
 
 
@@ -454,7 +455,10 @@ def generate_one_file(entry, manifest, generated_sources, task, info, inspection
     if inspections:
         system_parts.extend([
             "",
-            "INSPECTED WORKSPACE FILES (head/tail samples — ground schemas and structure on these):",
+            "INSPECTED WORKSPACE FILES (head/tail samples — ground schemas and structure on these). "
+            "When opening any of these files in your code, use the ABSOLUTE PATH shown in the header, "
+            "not the bare filename. The generated script will be run from a temporary directory and "
+            "bare filenames will not resolve:",
             inspections,
         ])
     system_parts.extend([
@@ -671,7 +675,10 @@ def build_single_legacy(task, info, run_dir, inspections, state, log_path):
     if inspections:
         system_parts.extend([
             "",
-            "INSPECTED WORKSPACE FILES (head and tail samples — use these to ground schemas, columns, and structure; do not guess):",
+            "INSPECTED WORKSPACE FILES (head and tail samples — use these to ground schemas, columns, and structure; do not guess). "
+            "When opening any of these files in your code, use the ABSOLUTE PATH shown in the header, "
+            "not the bare filename. The generated script will be run from a temporary directory and "
+            "bare filenames will not resolve:",
             inspections,
         ])
     system_parts.extend([
