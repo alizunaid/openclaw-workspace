@@ -1,7 +1,14 @@
 # OpenClaw State
 
-Last updated: 2026-05-19T21:58:33Z
-Last session: Tier-1 failure forensics on v4 sweep — root-caused all 5 modal-FAIL runs, produced ranked engine-fix candidate list.
+Last updated: 2026-05-19T22:25:00Z
+Last session: ntfy push-notification wiring — created `tools/notify.sh`, added `ocnotify` alias, integrated into end-of-session ritual.
+
+## Push notifications
+- Channel: ntfy.sh
+- Topic: `openclaw-zunaid786786` (URL: https://ntfy.sh/openclaw-zunaid786786)
+- Helper: `ocnotify "title" "body" [priority]` (alias for `tools/notify.sh`; priority = `default` | `high` | `urgent`)
+- Triggers: CC session end, sweep completion (high priority), engine push to github-clean
+- Script fails silently — notification failure never breaks a workflow.
 
 ## Current HEAD
 bd500b9 — feat(oc_builder): add static cross-module symbol lint before dry-import
