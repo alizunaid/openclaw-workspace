@@ -492,10 +492,12 @@ def ast_check(code):
         return False, f"{type(e).__name__}: {e}"
 
 
-def generate_one_file(entry, manifest, generated_sources, task, info, inspections):
-    """Generate one file with up to MAX_RETRIES AST-validated attempts.
+def _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections):
+    """Construct the system prompt used to generate one file in a multi-file project.
 
-    Returns (code:str, attempts:int, err:str). code is None on failure.
+    Shared between the primary `generate_one_file` flow and the Fix-B retry path
+    (`regenerate_for_main_guards`) so both see exactly the same manifest +
+    contract + dep context.
     """
     manifest_by_path = {e["path"]: e for e in manifest}
 
@@ -589,7 +591,15 @@ def generate_one_file(entry, manifest, generated_sources, task, info, inspection
         "- Do NOT re-define functions/classes that exist in already-generated dependencies — import them by module name.",
         "- Output must parse as valid Python (no syntax errors) AND import without NameError/ModuleNotFoundError.",
     ])
-    system = "\n".join(system_parts)
+    return "\n".join(system_parts)
+
+
+def generate_one_file(entry, manifest, generated_sources, task, info, inspections):
+    """Generate one file with up to MAX_RETRIES AST-validated attempts.
+
+    Returns (code:str, attempts:int, err:str). code is None on failure.
+    """
+    system = _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections)
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": task},
@@ -665,6 +675,137 @@ def _collect_top_level_names(tree):
                     continue
                 names.add(alias.asname or alias.name)
     return names
+
+
+ALLOWED_TOP_LEVEL_CALLS = {
+    "logging.getLogger",
+    "Path",
+    "NewType",
+    "os.environ.get",
+}
+
+MAIN_GUARD_RETRY_BUDGET = 2
+
+
+def _call_qualified_name(func_node):
+    """Best-effort dotted name for a Call's `.func`. Returns None for chained
+    or otherwise non-trivial call expressions we don't want to whitelist."""
+    parts = []
+    cur = func_node
+    while isinstance(cur, ast.Attribute):
+        parts.append(cur.attr)
+        cur = cur.value
+    if isinstance(cur, ast.Name):
+        parts.append(cur.id)
+        return ".".join(reversed(parts))
+    return None
+
+
+def find_unguarded_top_level_calls(tree):
+    """Return list of dicts describing bare top-level Call expressions.
+
+    A "bare" call is one whose AST node is `ast.Expr` at module scope and whose
+    `.value` is `ast.Call`. Calls whose result is assigned (`x = foo()` /
+    annotated assigns) are NOT bare — those represent module-level
+    initialization rather than work execution. Calls inside if/for/while/try/
+    with/FunctionDef/ClassDef are also exempt because we only walk
+    `tree.body` (top level), never recurse.
+
+    Calls whose qualified name is in ALLOWED_TOP_LEVEL_CALLS are exempt.
+    """
+    violations = []
+    for node in tree.body:
+        if not isinstance(node, ast.Expr):
+            continue
+        if not isinstance(node.value, ast.Call):
+            continue
+        qname = _call_qualified_name(node.value.func)
+        if qname is not None and qname in ALLOWED_TOP_LEVEL_CALLS:
+            continue
+        descr = f"{qname}(...)" if qname else "<complex call>"
+        violations.append({"lineno": node.lineno, "call": descr})
+    return violations
+
+
+def verify_main_guards(run_dir, manifest_entries, entry_point_path):
+    """Confirm each non-entry module has no bare top-level Call expressions.
+
+    Entry point is exempt — its purpose is to be run as a script, so
+    top-level work is expected. All other modules are imported by the entry
+    (directly or transitively) and must keep import-time side effects out of
+    module scope so dry-import doesn't trigger application logic.
+
+    Returns (ok, results). Results is a list of per-file dicts with keys
+    `path`, `status` (one of "ok", "violations", "exempt_entry",
+    "file_missing", "parse_error"), and `violations` (the list from
+    `find_unguarded_top_level_calls`).
+    """
+    results = []
+    all_ok = True
+    for entry in manifest_entries:
+        path = entry["path"]
+        if path == entry_point_path:
+            results.append({"path": path, "status": "exempt_entry", "violations": []})
+            continue
+        p = run_dir / path
+        if not p.exists():
+            results.append({"path": path, "status": "file_missing", "violations": []})
+            all_ok = False
+            continue
+        try:
+            tree = ast.parse(p.read_text())
+        except SyntaxError as e:
+            results.append({
+                "path": path, "status": "parse_error", "violations": [],
+                "error": f"SyntaxError: {e.msg} at line {e.lineno}",
+            })
+            all_ok = False
+            continue
+        violations = find_unguarded_top_level_calls(tree)
+        if violations:
+            results.append({"path": path, "status": "violations", "violations": violations})
+            all_ok = False
+        else:
+            results.append({"path": path, "status": "ok", "violations": []})
+    return all_ok, results
+
+
+def regenerate_for_main_guards(entry, manifest, generated_sources, task, info, inspections, prior_code, violations):
+    """One LLM round-trip to fix unguarded top-level calls in a non-entry module.
+
+    Returns (code|None, err). The caller decides whether to retry or hard-fail.
+    """
+    system = _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections)
+    violation_lines = ", ".join(f"line {v['lineno']}: {v['call']}" for v in violations) or "(none captured)"
+    corrective = (
+        f"Your previous version of {entry['path']} had non-trivial function "
+        f"call(s) at module scope: {violation_lines}. "
+        "When this module is imported by another file, those calls execute "
+        "during import — that is a bug. Wrap any executable code in "
+        '`if __name__ == "__main__":` so that importing this module does not '
+        "execute it. Helper functions and class definitions are fine at module "
+        "scope; only the invocation of work needs to be guarded.\n\n"
+        "Return the complete corrected file for "
+        f"'{entry['path']}'. Valid Python, no markdown fences, no commentary."
+    )
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": task},
+        {"role": "assistant", "content": prior_code},
+        {"role": "user", "content": corrective},
+    ]
+    try:
+        resp = client.chat.completions.create(
+            model=MODEL, messages=messages, timeout=PER_LLM_TIMEOUT,
+        )
+    except Exception as e:
+        return None, f"LLM error: {e}"
+    code = clean_code(resp.choices[0].message.content or "")
+    code = split_manifest_sections(code, manifest, entry["path"])
+    ok, err = ast_check(code)
+    if not ok:
+        return None, err
+    return code, ""
 
 
 def verify_export_contracts(run_dir, manifest_entries):
@@ -1134,6 +1275,7 @@ def build(task, project=None):
     cross = {
         "entry_point": entry_point["path"],
         "contracts": {"ok": contract_ok, "results": contract_results},
+        "main_guards": None,
         "static_lint": None,
         "dry_import": None,
         "entry_execution": None,
@@ -1159,6 +1301,67 @@ def build(task, project=None):
             flush=True,
         )
     print(f"[builder] Contract verification OK ({len(manifest_paths)} module(s))", flush=True)
+
+    guard_attempts = {e["path"]: 0 for e in topo_order}
+    cross["main_guard_attempts"] = guard_attempts
+    while True:
+        check_cap("main-guard-gate")
+        guard_ok, guard_results = verify_main_guards(run_dir, topo_order, entry_point["path"])
+        if guard_ok:
+            break
+        violating = [r for r in guard_results if r["status"] == "violations"]
+        progressed = False
+        for r in violating:
+            path = r["path"]
+            if guard_attempts[path] >= MAIN_GUARD_RETRY_BUDGET:
+                cross["main_guards"] = {"ok": False, "results": guard_results}
+                state["phases"]["cross_file"] = {"status": "failed", **cross}
+                dump_state(state, log_path)
+                print(
+                    f"[builder] FAILED: {path} still has unguarded top-level calls "
+                    f"after {MAIN_GUARD_RETRY_BUDGET} retry attempt(s):",
+                    flush=True,
+                )
+                for v in r["violations"]:
+                    print(f"    line {v['lineno']}: {v['call']}", flush=True)
+                sys.exit(1)
+            guard_attempts[path] += 1
+            print(
+                f"[builder]   Main-guard violation in {path} (attempt {guard_attempts[path]}/"
+                f"{MAIN_GUARD_RETRY_BUDGET}): "
+                f"{', '.join(v['call'] for v in r['violations'])}",
+                flush=True,
+            )
+            entry_obj = next(e for e in topo_order if e["path"] == path)
+            new_code, err = regenerate_for_main_guards(
+                entry_obj, topo_order, generated_sources, task, info, inspections,
+                generated_sources[path], r["violations"],
+            )
+            if new_code is None:
+                print(f"[builder]     regeneration failed: {err}", flush=True)
+                continue
+            (run_dir / path).write_text(new_code)
+            generated_sources[path] = new_code
+            progressed = True
+        if not progressed:
+            cross["main_guards"] = {"ok": False, "results": guard_results}
+            state["phases"]["cross_file"] = {"status": "failed", **cross}
+            dump_state(state, log_path)
+            print("[builder] FAILED: main-guard retries did not produce any new code", flush=True)
+            sys.exit(1)
+        # re-verify contracts for any regenerated file before looping
+        contract_ok, contract_results = verify_export_contracts(run_dir, topo_order)
+        cross["contracts"] = {"ok": contract_ok, "results": contract_results}
+        if not contract_ok:
+            state["phases"]["cross_file"] = {"status": "failed", **cross}
+            dump_state(state, log_path)
+            print("[builder] FAILED: contract verification after main-guard retry:", flush=True)
+            for r in contract_results:
+                if r["status"] == "missing":
+                    print(f"  - {r['path']}: declared exports not defined: {r['missing']}", flush=True)
+            sys.exit(1)
+    cross["main_guards"] = {"ok": True, "results": guard_results}
+    print(f"[builder] Main-guard check OK ({len(topo_order)} module(s))", flush=True)
 
     lint_ok, lint_errors = static_cross_module_lint(run_dir, topo_order)
     cross["static_lint"] = {"ok": lint_ok, "errors": lint_errors}
