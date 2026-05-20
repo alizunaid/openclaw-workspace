@@ -10,6 +10,9 @@ Last session: v5 determinism sweep at HEAD `88ab252` (Fix A contracts + Fix B ma
 - Triggers: CC session end, sweep completion (high priority), engine push to github-clean
 - Script fails silently — notification failure never breaks a workflow.
 
+## Environment
+- pandas: installed system-wide as of 2026-05-20, version 3.0.3 (numpy 2.4.6 + python-dateutil 2.9.0 pulled as deps). Installed with `pip3 install --break-system-packages pandas` because the system Python is PEP-668 externally-managed and the engine runs system `python3` directly (no venv).
+
 ## Current HEAD
 88ab252 — chore: STATE.md post Tier-1 fixes A+B
 
