@@ -1,7 +1,7 @@
 # OpenClaw State
 
-Last updated: 2026-05-20T01:30:00Z
-Last session: Shipped 3 Tier-1 v5+ hardening commits (pandas install, dep-honesty gate, smoke-test subprocess prompts). Task-5 mini-validation: 3/3 follow new subprocess pattern; 0/3 PASS end-to-end (failures are orthogonal LLM defects, not the targeted symbol-drift family).
+Last updated: 2026-05-20T03:35:00Z
+Last session: v6 determinism sweep at HEAD `db71e3c` (post v5+ pandas/dep-honesty/smoke-subprocess + Item 1 TZ guidance + Item 2 archives). Modal: 3 PASS / 0 PARTIAL / 2 FAIL — flat headline vs v4/v5 but new dominant failure mode (multi-file concatenation splitter blind spot) is visible and actionable.
 
 ## Push notifications
 - Channel: ntfy.sh
@@ -13,49 +13,55 @@ Last session: Shipped 3 Tier-1 v5+ hardening commits (pandas install, dep-honest
 ## Environment
 - pandas: installed system-wide as of 2026-05-20, version 3.0.3 (numpy 2.4.6 + python-dateutil 2.9.0 pulled as deps). Installed with `pip3 install --break-system-packages pandas` because the system Python is PEP-668 externally-managed and the engine runs system `python3` directly (no venv).
 
+## Run archives
+- Path: `/root/.openclaw/workspace/logs/run_archive/run_<ts>/` (gitignored)
+- Cap: `RUN_ARCHIVE_MAX = 50` most-recent by mtime; auto-pruned on each run
+- Populated atexit, fail-tolerant — archive failure never breaks the run's exit semantics
+- Use for post-sweep forensics so the original `tools/generated/run_<ts>/` stays available too
+
 ## Current HEAD
-8a568d3 — feat(oc_builder): instruct smoke tests to subprocess the entry script, not import internals
+db71e3c — feat(oc_builder): archive generated run dirs to logs/run_archive for forensics
 
 ## Last sweep result
-v5 determinism sweep (2026-05-19/20) — 5 tasks × 3 runs = 15 runs at HEAD `88ab252`. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 2, 3, 4 PASS; Tasks 1, 5 FAIL). Report: `/tmp/determinism_v5.md`.
+v6 determinism sweep (2026-05-20) — 5 tasks × 3 runs at HEAD `db71e3c`. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 1, 2, 5 PASS modal; Tasks 3, 4 FAIL modal). Report: `/tmp/determinism_v6.md`. 15/15 sweep runs archived to `logs/run_archive/`.
 
-## Task-5 mini-validation (post v5+ commits)
-At HEAD `8a568d3`. 3 runs, same Task 5 prompt as v5 sweep.
+| | v1 | v2 | v3 | v4 | v5 | v6 |
+|---|---:|---:|---:|---:|---:|---:|
+| PASS    | 1 | 1 | 1 | 3 | 3 | 3 |
+| PARTIAL | 1 | 2 | 2 | 0 | 0 | 0 |
+| FAIL    | 3 | 2 | 2 | 2 | 2 | 2 |
 
-- **Smoke-test pattern shift confirmed:** 3/3 runs use `subprocess.run(["python3", "<entry>.py"], ...)` in the smoke file. 0/3 do `from <entry> import internal_func`. The prompt change in Commit 3 took effect on the first try.
-- **Verdicts:** 0 PASS / 1 PARTIAL / 2 FAIL. The remaining failures are LLM code-quality defects orthogonal to the smoke-test-internals problem the commits targeted:
-  - run a: `date_utils.py` line 1 was the bare identifier `d` (garbled LLM output). NameError at dry-import. Type F.
-  - run b: recurring TZ bug in `days_since` (v1/v4/v5 stdlib misuse). Type C.
-  - run c: entry executed and produced `/tmp/stale.md` correctly. Smoke test followed subprocess pattern but used `Path(...)` without `from pathlib import Path`. Type C (smoke-test missing import).
-- **None of the 3 runs hit the v5 failure shape** (smoke imports unexported internals). The static lint and contract gate stayed quiet throughout. Commit 3 has structurally closed that failure mode.
+**Headline pass count flat at 3 since v4.** Task identity rotates each sweep — Task 5 newly fixed (Item 1 TZ guidance worked, 0/3 naive `datetime.now()`), Task 3 newly broken (splitter blind spot exposed by Task 5 no longer masking it).
 
 ## Phase 3 pipeline (current)
 1. Entry-point selection
 2. Contract verification — declared exports must be defined (Fix A)
 3. Main-guard check — non-entry modules guard top-level work; up to 2 LLM regenerations (Fix B)
-4. Dep-honesty check — actual generated imports must form a DAG; self-imports and cycles hard-fail; undeclared manifest-internal imports log a warning (Tier-1 v5+ Commit 2)
-5. Static cross-module lint — `from X import Y` valid only if Y in X's declared exports (Fix A updates lint)
+4. Dep-honesty check — actual generated imports must form a DAG; self-imports and cycles hard-fail (Tier-1 v5+ Commit 2)
+5. Static cross-module lint — `from X import Y` valid only if Y in X's declared exports
 6. Dry-import of entry point
 7. Entry execution
 8. Smoke tests (if any in manifest)
 
 ## Next planned step
-Run full v6 determinism sweep (5 tasks × 3 runs) at HEAD `8a568d3`. The 3 v5+ commits address all three remaining v5 failure families (pandas, circular imports, smoke imports). Predicted v6 modal based on:
-- Task 1: v5 modal FAIL was 1× circular-import (now caught structurally + the lint message will at least be honest), 1× lint-strict on test_main.py (still LLM-side). Could go either way.
-- Task 2: v5 modal PASS already, pandas no longer fails.
-- Task 3: v5 modal PASS already, self-import will be caught more cleanly.
-- Task 4: v5 modal PASS already, no obvious regression.
-- Task 5: mini-validation shows 0/3 PASS at new HEAD; the smoke-test pattern is fixed but TZ bugs and garbled code recur. Likely modal FAIL still.
+**One more obvious engine fix: splitter blind spot.** `split_manifest_sections` returns the LLM input unchanged when the target file's section has no explicit `# <filename>` header. Change it to fall back to the first (header-less) section when:
+1. The LLM output contains header markers for some manifest files but not for the target, AND
+2. The first (header-less) section has substantive content.
 
-Realistic v6 prediction: **3–4 PASS / 0–1 PARTIAL / 1–2 FAIL.**
+This single change is predicted to address 4 of 8 v6 hard-fails (t3a/b/c, t5c — all multi-file-concatenation cases). After it ships, Tier-1 hardening is complete; remaining failures are LLM-quality issues (consumer-side contract violations + missing stdlib imports) that don't dissolve with more engine gates.
+
+Predicted post-splitter-fix v7 modal: **4 PASS / 0 PARTIAL / 1 FAIL.**
 
 ## Open questions / decisions pending
-- Task 5's TZ-naive `days_since` bug has now recurred in v1, v4, and the v5+ mini-validation. Worth a targeted prompt-side or AST-level fix? E.g., when the task prompt mentions "days" / "stale" / "older than N", inject explicit tz-aware datetime guidance. Or AST-reject `datetime.now()` / `datetime.utcnow()` in non-test files.
-- The mini-validation run-a "garbled LLM output" (`date_utils.py` was literally the single character `d`) is a new defect family — single point so far, but worth watching in v6.
-- Should `verify_dep_honesty` upgrade the "undeclared dep" warning to a hard-fail in a future version, or is the warning + lint downstream sufficient?
+- Phase 4 auto-commit shouldn't pick up dirty files outside `tools/generated/run_<ts>/`. During this session it grabbed Item-2 in-progress changes with a wrong commit message; recovered via `git commit --amend` + force-push, but a scoping guard would prevent recurrence. Out of scope for v6 but worth a quick follow-up.
+- v6 stability worsened vs v5 (3 tasks now at 1/3 instead of 0). New gates surface more issues that were previously silent; LLM bug distribution spreading. Median-of-3 grading stays mandatory.
+- v6's lint catches now include production-code consumer-side violations (t1c main.py, t4b prioritizer.py + main.py). Tier-2 territory — would need a retry-with-error-feedback loop similar to main-guard retry.
 
-## Recent commits (last 5)
+## Recent commits (last 8)
 ```
+db71e3c feat(oc_builder): archive generated run dirs to logs/run_archive for forensics
+0f6146b feat(oc_builder): add TZ-aware datetime guidance to planner and generator prompts
+ecb8737 chore: STATE.md post v5+ hardening + Task-5 mini-validation
 8a568d3 feat(oc_builder): instruct smoke tests to subprocess the entry script, not import internals
 cc019c9 feat(oc_builder): verify actual imports form a DAG (catch circular imports the manifest didn't declare)
 0da151f chore: install pandas + record in STATE.md environment section
