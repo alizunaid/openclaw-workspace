@@ -228,6 +228,13 @@ def get_manifest(task, context, inspections):
         "- If a smoke test legitimately needs to test internal functions, those functions must be in a "
         "separate non-entry module with declared exports — not in the entry script itself.\n"
         "\n"
+        "DATETIME RULES (when the task mentions dates, ages, \"days ago\", \"stale\", \"older than N days\", or timestamps):\n"
+        "- Use `datetime.now(timezone.utc)` — NOT `datetime.now()` and NOT `datetime.utcnow()`.\n"
+        "- When parsing ISO timestamps, the result of `datetime.fromisoformat(...)` may be tz-aware. To subtract "
+        "from \"now\" safely, both sides must be tz-aware. Use `datetime.now(timezone.utc)` for \"now\".\n"
+        "- Import: `from datetime import datetime, timezone`.\n"
+        "- Never mix tz-naive and tz-aware datetimes in arithmetic — Python raises TypeError.\n"
+        "\n"
         "- Return ONLY the JSON array. No markdown fences. No commentary.\n"
         'Example for a tiny multi-file task:\n'
         '[{"path":"utils.py","purpose":"helper module: add(a,b)","depends_on":[],"exports":["add"]},'
@@ -506,7 +513,17 @@ def ast_check(code):
         return False, f"{type(e).__name__}: {e}"
 
 
-def _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections):
+_DATETIME_TASK_KEYWORDS = ("stale", "days", "older than", "ago", "timestamp")
+
+
+def _task_mentions_dates(task):
+    if not task:
+        return False
+    t = task.lower()
+    return any(kw in t for kw in _DATETIME_TASK_KEYWORDS)
+
+
+def _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections, task=""):
     """Construct the system prompt used to generate one file in a multi-file project.
 
     Shared between the primary `generate_one_file` flow and the Fix-B retry path
@@ -602,6 +619,14 @@ def _build_per_file_system_prompt(entry, manifest, generated_sources, info, insp
             "module with declared exports. Import from THAT module, not from the entry script.",
             "- See the planner system prompt for the canonical subprocess pattern.",
         ])
+    if _task_mentions_dates(task):
+        system_parts.extend([
+            "",
+            "DATETIME RULES (the task involves dates/ages/timestamps):",
+            "- Use `datetime.now(timezone.utc)` for \"now\". Never `datetime.now()` (tz-naive) or `datetime.utcnow()` (deprecated, tz-naive).",
+            "- `datetime.fromisoformat(...)` may return a tz-aware datetime. Both sides of any subtraction must be tz-aware, or Python raises TypeError.",
+            "- Import: `from datetime import datetime, timezone`.",
+        ])
     system_parts.extend([
         "",
         "CRITICAL OUTPUT FORMAT:",
@@ -626,7 +651,7 @@ def generate_one_file(entry, manifest, generated_sources, task, info, inspection
 
     Returns (code:str, attempts:int, err:str). code is None on failure.
     """
-    system = _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections)
+    system = _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections, task=task)
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": task},
@@ -802,7 +827,7 @@ def regenerate_for_main_guards(entry, manifest, generated_sources, task, info, i
 
     Returns (code|None, err). The caller decides whether to retry or hard-fail.
     """
-    system = _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections)
+    system = _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections, task=task)
     violation_lines = ", ".join(f"line {v['lineno']}: {v['call']}" for v in violations) or "(none captured)"
     corrective = (
         f"Your previous version of {entry['path']} had non-trivial function "
