@@ -1236,14 +1236,48 @@ def short_summary(task, max_len=60):
     return cleaned[: max_len - 1].rstrip() + "…"
 
 
-def git_commit_and_push(run_dir, task):
-    """Commit + push only when something non-ignored actually changed.
+def _parse_porcelain_paths(status_stdout):
+    """Parse `git status --porcelain` output into a list of path strings.
 
-    Run artifacts live under tools/generated/run_*/ which is gitignored, so
-    ordinary runs have nothing to commit. We never --force past the ignore;
-    git add -A respects it. The audit trail is logs/oc_build_<ts>.json.
+    Each non-empty line has the form `XY <path>` (with `XY` two status
+    characters and a space). Rename lines use ` -> ` separating old and new;
+    we collect both. Empty input returns [].
+    """
+    paths = []
+    for line in status_stdout.splitlines():
+        if not line.strip():
+            continue
+        rest = line[3:]  # drop the XY prefix and the space
+        if " -> " in rest:
+            old, new = rest.split(" -> ", 1)
+            paths.extend([old.strip(), new.strip()])
+        else:
+            paths.append(rest.strip())
+    return paths
+
+
+def git_commit_and_push(run_dir, task):
+    """Commit + push only when changes are scoped to this run's output dir.
+
+    Phase 4 used to `git add -A`, which picked up *any* dirty file in the
+    workspace tree — including in-progress engine edits the user hadn't
+    finished. That happened during v6's Item-2 smoke run: the engine
+    committed uncommitted `tools/oc_builder.py` edits with a misleading
+    `ocb multifile:` message.
+
+    New semantics: Phase 4 only commits paths under
+    `tools/generated/<run_id>/`. If any dirty path lies outside that scope,
+    the commit is SKIPPED entirely (run still completes successfully); a
+    warning names the out-of-scope files so the user can see what was
+    deferred. "All in scope or skip" — no partial commits.
+
+    Run artifacts under `tools/generated/run_*/` are gitignored, so the
+    typical case has nothing dirty and Phase 4 reports `skipped: no changes`.
     """
     msg = f"ocb multifile: {short_summary(task)}"
+    rel_scope = run_dir.relative_to(WORKSPACE).as_posix()
+    scope_prefix = rel_scope.rstrip("/") + "/"
+
     try:
         status = subprocess.run(
             ["git", "-C", str(WORKSPACE), "status", "--porcelain"],
@@ -1264,12 +1298,29 @@ def git_commit_and_push(run_dir, task):
             "run_dir": str(run_dir),
         }
 
+    dirty_paths = _parse_porcelain_paths(status.stdout)
+    out_of_scope = [p for p in dirty_paths if not p.startswith(scope_prefix)]
+    if out_of_scope:
+        print(
+            f"[builder] WARNING: Phase 4 skipping commit — {len(out_of_scope)} "
+            f"dirty path(s) outside {scope_prefix}:",
+            flush=True,
+        )
+        for p in out_of_scope[:20]:
+            print(f"    - {p}", flush=True)
+        return {
+            "status": "skipped",
+            "reason": "out-of-scope changes present; refusing to auto-commit",
+            "run_dir": str(run_dir),
+            "out_of_scope": out_of_scope,
+        }
+
     try:
         subprocess.run(
-            ["git", "-C", str(WORKSPACE), "add", "-A"],
+            ["git", "-C", str(WORKSPACE), "add", scope_prefix],
             check=True, capture_output=True, text=True,
         )
-        # Re-check: gitignore might have hidden everything we just tried to add.
+        # Re-check: gitignore typically hides the run dir, leaving nothing staged.
         staged = subprocess.run(
             ["git", "-C", str(WORKSPACE), "diff", "--cached", "--name-only"],
             check=True, capture_output=True, text=True,
@@ -1277,7 +1328,7 @@ def git_commit_and_push(run_dir, task):
         if not staged.stdout.strip():
             return {
                 "status": "skipped",
-                "reason": "no trackable changes (all paths ignored)",
+                "reason": "no trackable changes (run dir is gitignored)",
                 "run_dir": str(run_dir),
             }
         subprocess.run(
