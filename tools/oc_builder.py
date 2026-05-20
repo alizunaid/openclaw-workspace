@@ -214,6 +214,20 @@ def get_manifest(task, context, inspections):
         "nothing for other files to import.\n"
         "- One file is fine if the task is simple — return a 1-entry array.\n"
         "- If you include a smoke test, put the word \"test\" or \"smoke\" in its purpose.\n"
+        "\n"
+        "SMOKE TEST RULES:\n"
+        "- A smoke test file (any file with \"test\" or \"smoke\" in its purpose) MUST NOT import internal "
+        "functions from the entry script. The entry script's declared exports are empty (it is run, "
+        "not imported), so any `from entry_script import internal_func` will be rejected by the contract lint.\n"
+        "- Instead, run the entry script as a subprocess and assert on its stdout, exit code, or output files.\n"
+        "- Example pattern for a smoke test file:\n"
+        "    import subprocess\n"
+        "    result = subprocess.run([\"python3\", \"main.py\"], capture_output=True, text=True)\n"
+        "    assert result.returncode == 0\n"
+        "    assert \"expected substring\" in result.stdout\n"
+        "- If a smoke test legitimately needs to test internal functions, those functions must be in a "
+        "separate non-entry module with declared exports — not in the entry script itself.\n"
+        "\n"
         "- Return ONLY the JSON array. No markdown fences. No commentary.\n"
         'Example for a tiny multi-file task:\n'
         '[{"path":"utils.py","purpose":"helper module: add(a,b)","depends_on":[],"exports":["add"]},'
@@ -575,6 +589,19 @@ def _build_per_file_system_prompt(entry, manifest, generated_sources, info, insp
     ])
     if contract_line:
         system_parts.extend(["", contract_line])
+    if _is_test_entry(entry):
+        system_parts.extend([
+            "",
+            "SMOKE TEST INSTRUCTIONS (this file is a smoke/test file):",
+            "- Do NOT import internal functions from the entry script. The entry script's declared "
+            "exports are empty; the cross-module lint will reject any `from <entry> import <name>`.",
+            "- Use `subprocess.run([\"python3\", \"<entry>.py\"], capture_output=True, text=True)` to "
+            "invoke the entry script, then assert on `result.returncode`, `result.stdout`, or any "
+            "output files the entry produced.",
+            "- If you genuinely need to unit-test helper functions, those live in a non-entry helper "
+            "module with declared exports. Import from THAT module, not from the entry script.",
+            "- See the planner system prompt for the canonical subprocess pattern.",
+        ])
     system_parts.extend([
         "",
         "CRITICAL OUTPUT FORMAT:",
