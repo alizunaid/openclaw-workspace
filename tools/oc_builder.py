@@ -857,6 +857,138 @@ def verify_export_contracts(run_dir, manifest_entries):
     return all_ok, results
 
 
+def _actual_manifest_imports(tree, manifest_stems):
+    """For a parsed module, return the set of manifest stems it actually imports
+    via `import X` or `from X import ...`. Stdlib and third-party imports are
+    not in `manifest_stems` so they are ignored.
+    """
+    imports = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                top = alias.name.split(".")[0]
+                if top in manifest_stems:
+                    imports.add(top)
+        elif isinstance(node, ast.ImportFrom):
+            if node.module is None or node.level > 0:
+                continue
+            source = node.module.split(".")[0]
+            if source in manifest_stems:
+                imports.add(source)
+    return imports
+
+
+def verify_dep_honesty(run_dir, manifest_entries):
+    """Catch import-graph defects the manifest's declared depends_on DAG missed.
+
+    The manifest validator already enforces that `depends_on` forms a DAG.
+    But the LLM can emit *generated source* with imports that contradict the
+    declared DAG — most commonly cycles between siblings or self-imports.
+    Those slip past the manifest validator and crash dry-import with a
+    partially-initialized-module error.
+
+    This gate AST-walks every generated file, collects the set of
+    manifest-internal modules it actually imports, then:
+
+      * Hard-fails if any file imports itself.
+      * Hard-fails if the actual import graph contains a cycle, listing the
+        cycle path in the error message.
+      * Logs a warning (but does not fail) when a file's actual imports
+        include manifest modules not in its declared `depends_on`. The DAG
+        may simply be under-declared, which is sloppy but not broken.
+
+    Returns (ok, info) where `info` is a dict with keys:
+      - results: list of per-file dicts (path, declared_deps, actual_imports,
+                 self_import, undeclared)
+      - cycle: list[str] | None  (the cycle path if one was detected)
+    """
+    manifest_paths = [e["path"] for e in manifest_entries]
+    manifest_stems = {Path(p).stem: p for p in manifest_paths}
+    results = []
+    graph = {}  # stem -> set of stems it imports
+    self_imports = []
+    parse_errors = []
+
+    for entry in manifest_entries:
+        path = entry["path"]
+        stem = Path(path).stem
+        declared = set(Path(d).stem for d in entry.get("depends_on", []))
+        p = run_dir / path
+        if not p.exists():
+            parse_errors.append({"module": path, "error": "file missing"})
+            continue
+        try:
+            tree = ast.parse(p.read_text())
+        except SyntaxError as e:
+            parse_errors.append({"module": path, "error": f"SyntaxError: {e.msg} at line {e.lineno}"})
+            continue
+        actual = _actual_manifest_imports(tree, manifest_stems)
+        if stem in actual:
+            self_imports.append(path)
+        graph[stem] = actual - {stem}  # cycle-detect excludes self-edge
+        undeclared = sorted(actual - declared - {stem})
+        results.append({
+            "path": path,
+            "declared_deps": sorted(declared),
+            "actual_imports": sorted(actual),
+            "self_import": stem in actual,
+            "undeclared": undeclared,
+        })
+
+    info = {"results": results, "cycle": None, "self_imports": self_imports,
+            "parse_errors": parse_errors}
+
+    if parse_errors:
+        return False, info
+    if self_imports:
+        return False, info
+
+    # Cycle detection via DFS — find any back-edge, return the cycle path.
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = {n: WHITE for n in graph}
+    parent = {}
+    cycle = None
+
+    def dfs(start):
+        nonlocal cycle
+        stack = [(start, iter(sorted(graph.get(start, ()))))]
+        color[start] = GRAY
+        while stack:
+            node, it = stack[-1]
+            advanced = False
+            for nxt in it:
+                if nxt not in color:
+                    continue
+                if color[nxt] == WHITE:
+                    parent[nxt] = node
+                    color[nxt] = GRAY
+                    stack.append((nxt, iter(sorted(graph.get(nxt, ())))))
+                    advanced = True
+                    break
+                elif color[nxt] == GRAY:
+                    # back-edge → cycle node..nxt..node
+                    path = [nxt, node]
+                    cur = node
+                    while cur in parent and parent[cur] != nxt:
+                        cur = parent[cur]
+                        path.append(cur)
+                    path.append(nxt)
+                    cycle = list(reversed(path))
+                    return True
+            if not advanced:
+                color[node] = BLACK
+                stack.pop()
+        return False
+
+    for n in sorted(graph):
+        if color[n] == WHITE:
+            if dfs(n):
+                info["cycle"] = cycle
+                return False, info
+
+    return True, info
+
+
 def static_cross_module_lint(run_dir, manifest_entries):
     """Catch undefined-symbol imports across generated modules before dry-import.
 
@@ -1276,6 +1408,7 @@ def build(task, project=None):
         "entry_point": entry_point["path"],
         "contracts": {"ok": contract_ok, "results": contract_results},
         "main_guards": None,
+        "dep_honesty": None,
         "static_lint": None,
         "dry_import": None,
         "entry_execution": None,
@@ -1362,6 +1495,38 @@ def build(task, project=None):
             sys.exit(1)
     cross["main_guards"] = {"ok": True, "results": guard_results}
     print(f"[builder] Main-guard check OK ({len(topo_order)} module(s))", flush=True)
+
+    check_cap("dep-honesty-gate")
+    dep_ok, dep_info = verify_dep_honesty(run_dir, topo_order)
+    cross["dep_honesty"] = {
+        "ok": dep_ok,
+        "cycle": dep_info.get("cycle"),
+        "self_imports": dep_info.get("self_imports", []),
+        "results": dep_info.get("results", []),
+    }
+    if not dep_ok:
+        state["phases"]["cross_file"] = {"status": "failed", **cross}
+        dump_state(state, log_path)
+        if dep_info.get("self_imports"):
+            print("[builder] FAILED: dep-honesty — self-import in:", flush=True)
+            for s in dep_info["self_imports"]:
+                print(f"    - {s}", flush=True)
+        if dep_info.get("cycle"):
+            print(f"[builder] FAILED: dep-honesty — import cycle: {' -> '.join(dep_info['cycle'])}", flush=True)
+        if dep_info.get("parse_errors"):
+            for pe in dep_info["parse_errors"]:
+                print(f"[builder] FAILED: dep-honesty parse error: {pe['module']}: {pe['error']}", flush=True)
+        sys.exit(1)
+    # warn (not fail) on undeclared manifest-internal imports
+    for r in dep_info.get("results", []):
+        if r["undeclared"]:
+            print(
+                f"[builder] WARNING: {r['path']} imports {r['undeclared']} but did not declare them "
+                f"in depends_on (declared={r['declared_deps']}). DAG accepted, but the manifest is "
+                "under-declared.",
+                flush=True,
+            )
+    print(f"[builder] Dep-honesty check OK ({len(topo_order)} module(s))", flush=True)
 
     lint_ok, lint_errors = static_cross_module_lint(run_dir, topo_order)
     cross["static_lint"] = {"ok": lint_ok, "errors": lint_errors}

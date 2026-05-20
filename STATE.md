@@ -23,14 +23,15 @@ Key Fix A signal: the model emitted the `exports` field on 14/15 runs (the 15th 
 
 Key Fix B signal: 3/15 runs needed main-guard regeneration (sort_data.py, test_main.py, utils.py, smoke_test_stale_detector.py). All fixed on first retry within budget. Zero hard-fails from budget exhaustion.
 
-## Phase 3 pipeline (current, unchanged since 88ab252)
+## Phase 3 pipeline (current)
 1. Entry-point selection
 2. Contract verification — declared exports must be defined (Fix A)
 3. Main-guard check — non-entry modules guard top-level work; up to 2 LLM regenerations (Fix B)
-4. Static cross-module lint — `from X import Y` valid only if Y in X's declared exports (Fix A updates lint)
-5. Dry-import of entry point
-6. Entry execution
-7. Smoke tests (if any in manifest)
+4. Dep-honesty check — actual generated imports must form a DAG; self-imports and cycles hard-fail; undeclared manifest-internal imports log a warning (Tier-1 v5+ Commit 2)
+5. Static cross-module lint — `from X import Y` valid only if Y in X's declared exports (Fix A updates lint)
+6. Dry-import of entry point
+7. Entry execution
+8. Smoke tests (if any in manifest)
 
 ## Next planned step
 **Diagnose two distinct new failure shapes the v5 sweep revealed.** Tier-1-style forensic before any new engine work:
