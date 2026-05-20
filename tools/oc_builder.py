@@ -459,12 +459,34 @@ def find_entry_point(topo_order):
 # Per-file generation with AST self-heal (PHASE 2)
 # ---------------------------------------------------------------------------
 
+def _is_substantive_python(text):
+    """Best-effort: does `text` parse as Python and contain at least one statement?
+
+    Used by the splitter to decide whether a header-less preamble looks like
+    legitimate file content vs. a few blank lines or a stray comment.
+    """
+    if not text or not text.strip():
+        return False
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return False
+    return bool(tree.body)
+
+
 def split_manifest_sections(code, manifest, target_path):
     """Defense against LLM emitting multiple files concatenated with filename headers.
 
     If the response contains lines matching '<filename>' / '# <filename>' / '## <filename>'
     for filenames in the manifest, split by those headers and return only the section
-    whose header matches target_path. Returns code unchanged if no headers found.
+    whose header matches target_path.
+
+    Preamble fallback (v6+): when the LLM emits header markers for SOME manifest
+    files but NOT the target — e.g. register_io.py's content lives before any
+    header, then `# main.py` appears with main.py's content underneath — the
+    target's actual content is almost always the header-less preamble. If that
+    preamble is substantive Python (parses + has ≥1 top-level statement),
+    return it as the target's content. Otherwise return code unchanged.
     """
     if not manifest or not code:
         return code
@@ -498,10 +520,28 @@ def split_manifest_sections(code, manifest, target_path):
         sections.append((current_header, "".join(current_body)))
 
     if not any(h is not None for h, _ in sections):
-        return code
+        return code  # no headers at all — legacy passthrough
     for h, body in sections:
         if h == target_path:
             return body.strip() + "\n"
+
+    # Headers were found, but none for the target. Try the header-less preamble.
+    if sections and sections[0][0] is None:
+        preamble = sections[0][1]
+        if _is_substantive_python(preamble):
+            print(
+                f"[builder] Splitter recovered {target_path} from header-less "
+                "preamble (other manifest files appeared with headers).",
+                flush=True,
+            )
+            return preamble.strip() + "\n"
+
+    print(
+        f"[builder] WARNING: splitter could not isolate {target_path} — "
+        f"target has no header and preamble is not substantive Python. "
+        "Returning input unchanged.",
+        flush=True,
+    )
     return code
 
 
