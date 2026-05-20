@@ -15,7 +15,7 @@ Pipeline (multi-file mode):
 If the manifest planner fails or returns garbage, fall back to legacy single-file
 mode (runtime self-heal, no auto-commit).
 """
-import sys, subprocess, re, json, argparse, ast, time
+import sys, subprocess, re, json, argparse, ast, time, atexit, shutil
 from pathlib import Path
 from datetime import datetime
 from openai import OpenAI
@@ -29,6 +29,8 @@ WORKSPACE = Path("/root/.openclaw/workspace")
 WORKSPACE_RESOLVED = WORKSPACE.resolve()
 GENERATED_DIR = WORKSPACE / "tools" / "generated"
 LOGS_DIR = WORKSPACE / "logs"
+RUN_ARCHIVE_DIR = LOGS_DIR / "run_archive"
+RUN_ARCHIVE_MAX = 50  # keep the N most-recent run_<ts>/ snapshots
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -1276,6 +1278,33 @@ def dump_state(state, log_path):
     print(f"[builder] State dumped to {log_path}", flush=True)
 
 
+def archive_run_dir(run_dir):
+    """Copy run_dir to logs/run_archive/<name>/ for forensic preservation.
+
+    Intended for `atexit` so it runs on every termination path — PASS,
+    PARTIAL, FAIL, hard sys.exit, even uncaught exceptions. The original
+    run_dir is left in place. After copying, prune to the RUN_ARCHIVE_MAX
+    most-recent snapshots by mtime so the archive doesn't grow unbounded.
+
+    Failure-tolerant: any exception here is swallowed with a warning. An
+    archive failure must never break a real run's exit semantics.
+    """
+    try:
+        if not run_dir.exists():
+            return
+        RUN_ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+        dst = RUN_ARCHIVE_DIR / run_dir.name
+        if dst.exists():
+            shutil.rmtree(dst, ignore_errors=True)
+        shutil.copytree(run_dir, dst)
+        snapshots = [p for p in RUN_ARCHIVE_DIR.iterdir() if p.is_dir()]
+        snapshots.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+        for stale in snapshots[RUN_ARCHIVE_MAX:]:
+            shutil.rmtree(stale, ignore_errors=True)
+    except Exception as e:
+        print(f"[builder] WARNING: archive_run_dir failed (non-fatal): {e}", flush=True)
+
+
 # ---------------------------------------------------------------------------
 # Legacy single-file fallback (preserves pre-multifile behavior)
 # ---------------------------------------------------------------------------
@@ -1368,6 +1397,10 @@ def build(task, project=None):
     run_dir = GENERATED_DIR / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     log_path = LOGS_DIR / f"oc_build_{ts}.json"
+    # Archive the run dir on any termination path (PASS / PARTIAL / FAIL /
+    # sys.exit / uncaught exception). The atexit handler is failure-tolerant
+    # — see archive_run_dir docstring.
+    atexit.register(archive_run_dir, run_dir)
     start = time.time()
 
     state = {
