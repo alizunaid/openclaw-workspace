@@ -1,7 +1,7 @@
 # OpenClaw State
 
-Last updated: 2026-05-19T22:38:00Z
-Last session: Shipped Tier-1 fixes — symbol contracts (Fix A) and main-guard gate with retry (Fix B). Engine smoke test green; both new gates appear in pipeline output.
+Last updated: 2026-05-20T00:25:00Z
+Last session: v5 determinism sweep at HEAD `88ab252` (Fix A contracts + Fix B main-guards). Modal: 3 PASS / 0 PARTIAL / 2 FAIL — same headline as v4 but with new failure-mode shape (test files importing internals, circular imports).
 
 ## Push notifications
 - Channel: ntfy.sh
@@ -11,36 +11,41 @@ Last session: Shipped Tier-1 fixes — symbol contracts (Fix A) and main-guard g
 - Script fails silently — notification failure never breaks a workflow.
 
 ## Current HEAD
-19b6a7a — feat(oc_builder): require __main__ guards in non-entry modules with retry
+88ab252 — chore: STATE.md post Tier-1 fixes A+B
 
 ## Last sweep result
-v4 determinism sweep (2026-05-19) — 5 tasks × 3 runs = 15 runs at HEAD `bd500b9`. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 3, 4, 5 PASS; Tasks 1, 2 FAIL). PARTIAL bucket eliminated vs v3. Report: `/tmp/determinism_v4.md`. Tier-1 forensics on the 5 FAIL runs: `/tmp/tier1_failure_analysis.md`. Tier-1 fixes A+B now shipped on top — v5 sweep is the next measurement.
+v5 determinism sweep (2026-05-19/20) — 5 tasks × 3 runs = 15 runs at HEAD `88ab252`. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 2, 3, 4 PASS; Tasks 1, 5 FAIL). PARTIAL bucket still empty. Report: `/tmp/determinism_v5.md`.
 
-## Phase 3 pipeline (current)
-After Tier-1 ship, Phase 3 runs in this order:
-1. Entry-point selection (Fix 1 + Fix 2 from earlier session)
+Key Fix A signal: the model emitted the `exports` field on 14/15 runs (the 15th degraded to legacy single-file mode for unrelated reasons). Contract verification never fired — every file with a declared contract defined exactly those names. **The Fix-A discipline is being followed by the model with no iteration needed.**
+
+Key Fix B signal: 3/15 runs needed main-guard regeneration (sort_data.py, test_main.py, utils.py, smoke_test_stale_detector.py). All fixed on first retry within budget. Zero hard-fails from budget exhaustion.
+
+## Phase 3 pipeline (current, unchanged since 88ab252)
+1. Entry-point selection
 2. Contract verification — declared exports must be defined (Fix A)
-3. Main-guard check — non-entry modules must guard top-level work; up to 2 LLM regenerations per offending file (Fix B)
+3. Main-guard check — non-entry modules guard top-level work; up to 2 LLM regenerations (Fix B)
 4. Static cross-module lint — `from X import Y` valid only if Y in X's declared exports (Fix A updates lint)
 5. Dry-import of entry point
 6. Entry execution
 7. Smoke tests (if any in manifest)
 
 ## Next planned step
-Run v5 determinism sweep (5 tasks × 3 runs = 15 runs) at HEAD `19b6a7a` with the same prompts and median-of-3 grading. Predicted v5 modal based on Tier-1 forensics: **4–5 PASS / 0 PARTIAL / 0–1 FAIL** if Fix A neutralises the dominant Type-A symbol drift on Tasks 1 and 2, and Fix B closes the unguarded-top-level-execution defects on Task 5a.
+**Diagnose two distinct new failure shapes the v5 sweep revealed.** Tier-1-style forensic before any new engine work:
+1. **Smoke-test-imports-internals (5 of 7 v5 FAILs).** LLM consistently writes smoke tests that `from entry_script import internal_func` rather than subprocess-invoking the script. Entry's declared exports = `[]` (correctly), lint blocks. Need a planning-side fix: either (a) declare the entry's callable as an export when a smoke test is going to use it, or (b) instruct smoke tests to subprocess the script.
+2. **Circular imports (2 of 7 v5 FAILs).** LLM-generated source introduces import cycles between sibling modules that the `depends_on` DAG didn't declare. t1a: category_filter ↔ output_formatter. t3c: utils.py imports from itself. Need a cross-check between actual imports and declared `depends_on`.
 
 ## Open questions / decisions pending
-- Does the LLM reliably emit the `exports` field on every manifest, or does it need prompt iteration? The smoke test showed it emitting the field correctly first try. The v5 sweep will produce 15 data points to confirm.
-- Should we still cap manifest size (Tier-1 rank #1 fix) on top of contracts, or do contracts alone neutralise over-decomposition's downside? Saving for post-v5 decision based on the failure-mode distribution there.
-- t5a's TZ-naive bug (Type C) is not addressed by either Fix A or Fix B. If it recurs in v5, prompt-side date-task guidance is the next move.
+- Are these two new shapes worth distinct fixes, or does one prompt-side intervention (smoke-test discipline + dep-honesty in manifest) cover both?
+- t2c still hits `ModuleNotFoundError: pandas` despite "stdlib only" instruction. Stand-alone fix (install pandas, AST-reject non-stdlib imports, or stronger prompt) — independent of the two new shapes.
+- The contract narrowing exposed that the LLM declares `exports=[]` on entry scripts (correct) AND writes test files that import their internals (incorrect under the new contract). The cleanest fix is planning-side, not engine-side, and worth a targeted prompt experiment.
 
 ## Recent commits (last 5)
 ```
+88ab252 chore: STATE.md post Tier-1 fixes A+B
 19b6a7a feat(oc_builder): require __main__ guards in non-entry modules with retry
 00b6b59 feat(oc_builder): add symbol contracts to planner manifest and verify generated exports
 56c25d7 feat: ntfy push notifications for sweep/commit/session events
 85f6672 chore: add STATE.md for session continuity
-bd500b9 feat(oc_builder): add static cross-module symbol lint before dry-import
 ```
 
 ## Workflow note
