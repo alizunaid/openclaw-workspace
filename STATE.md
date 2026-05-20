@@ -1,7 +1,7 @@
 # OpenClaw State
 
-Last updated: 2026-05-20T00:25:00Z
-Last session: v5 determinism sweep at HEAD `88ab252` (Fix A contracts + Fix B main-guards). Modal: 3 PASS / 0 PARTIAL / 2 FAIL — same headline as v4 but with new failure-mode shape (test files importing internals, circular imports).
+Last updated: 2026-05-20T01:30:00Z
+Last session: Shipped 3 Tier-1 v5+ hardening commits (pandas install, dep-honesty gate, smoke-test subprocess prompts). Task-5 mini-validation: 3/3 follow new subprocess pattern; 0/3 PASS end-to-end (failures are orthogonal LLM defects, not the targeted symbol-drift family).
 
 ## Push notifications
 - Channel: ntfy.sh
@@ -14,14 +14,20 @@ Last session: v5 determinism sweep at HEAD `88ab252` (Fix A contracts + Fix B ma
 - pandas: installed system-wide as of 2026-05-20, version 3.0.3 (numpy 2.4.6 + python-dateutil 2.9.0 pulled as deps). Installed with `pip3 install --break-system-packages pandas` because the system Python is PEP-668 externally-managed and the engine runs system `python3` directly (no venv).
 
 ## Current HEAD
-88ab252 — chore: STATE.md post Tier-1 fixes A+B
+8a568d3 — feat(oc_builder): instruct smoke tests to subprocess the entry script, not import internals
 
 ## Last sweep result
-v5 determinism sweep (2026-05-19/20) — 5 tasks × 3 runs = 15 runs at HEAD `88ab252`. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 2, 3, 4 PASS; Tasks 1, 5 FAIL). PARTIAL bucket still empty. Report: `/tmp/determinism_v5.md`.
+v5 determinism sweep (2026-05-19/20) — 5 tasks × 3 runs = 15 runs at HEAD `88ab252`. Modal totals: **3 PASS / 0 PARTIAL / 2 FAIL** (Tasks 2, 3, 4 PASS; Tasks 1, 5 FAIL). Report: `/tmp/determinism_v5.md`.
 
-Key Fix A signal: the model emitted the `exports` field on 14/15 runs (the 15th degraded to legacy single-file mode for unrelated reasons). Contract verification never fired — every file with a declared contract defined exactly those names. **The Fix-A discipline is being followed by the model with no iteration needed.**
+## Task-5 mini-validation (post v5+ commits)
+At HEAD `8a568d3`. 3 runs, same Task 5 prompt as v5 sweep.
 
-Key Fix B signal: 3/15 runs needed main-guard regeneration (sort_data.py, test_main.py, utils.py, smoke_test_stale_detector.py). All fixed on first retry within budget. Zero hard-fails from budget exhaustion.
+- **Smoke-test pattern shift confirmed:** 3/3 runs use `subprocess.run(["python3", "<entry>.py"], ...)` in the smoke file. 0/3 do `from <entry> import internal_func`. The prompt change in Commit 3 took effect on the first try.
+- **Verdicts:** 0 PASS / 1 PARTIAL / 2 FAIL. The remaining failures are LLM code-quality defects orthogonal to the smoke-test-internals problem the commits targeted:
+  - run a: `date_utils.py` line 1 was the bare identifier `d` (garbled LLM output). NameError at dry-import. Type F.
+  - run b: recurring TZ bug in `days_since` (v1/v4/v5 stdlib misuse). Type C.
+  - run c: entry executed and produced `/tmp/stale.md` correctly. Smoke test followed subprocess pattern but used `Path(...)` without `from pathlib import Path`. Type C (smoke-test missing import).
+- **None of the 3 runs hit the v5 failure shape** (smoke imports unexported internals). The static lint and contract gate stayed quiet throughout. Commit 3 has structurally closed that failure mode.
 
 ## Phase 3 pipeline (current)
 1. Entry-point selection
@@ -34,22 +40,27 @@ Key Fix B signal: 3/15 runs needed main-guard regeneration (sort_data.py, test_m
 8. Smoke tests (if any in manifest)
 
 ## Next planned step
-**Diagnose two distinct new failure shapes the v5 sweep revealed.** Tier-1-style forensic before any new engine work:
-1. **Smoke-test-imports-internals (5 of 7 v5 FAILs).** LLM consistently writes smoke tests that `from entry_script import internal_func` rather than subprocess-invoking the script. Entry's declared exports = `[]` (correctly), lint blocks. Need a planning-side fix: either (a) declare the entry's callable as an export when a smoke test is going to use it, or (b) instruct smoke tests to subprocess the script.
-2. **Circular imports (2 of 7 v5 FAILs).** LLM-generated source introduces import cycles between sibling modules that the `depends_on` DAG didn't declare. t1a: category_filter ↔ output_formatter. t3c: utils.py imports from itself. Need a cross-check between actual imports and declared `depends_on`.
+Run full v6 determinism sweep (5 tasks × 3 runs) at HEAD `8a568d3`. The 3 v5+ commits address all three remaining v5 failure families (pandas, circular imports, smoke imports). Predicted v6 modal based on:
+- Task 1: v5 modal FAIL was 1× circular-import (now caught structurally + the lint message will at least be honest), 1× lint-strict on test_main.py (still LLM-side). Could go either way.
+- Task 2: v5 modal PASS already, pandas no longer fails.
+- Task 3: v5 modal PASS already, self-import will be caught more cleanly.
+- Task 4: v5 modal PASS already, no obvious regression.
+- Task 5: mini-validation shows 0/3 PASS at new HEAD; the smoke-test pattern is fixed but TZ bugs and garbled code recur. Likely modal FAIL still.
+
+Realistic v6 prediction: **3–4 PASS / 0–1 PARTIAL / 1–2 FAIL.**
 
 ## Open questions / decisions pending
-- Are these two new shapes worth distinct fixes, or does one prompt-side intervention (smoke-test discipline + dep-honesty in manifest) cover both?
-- t2c still hits `ModuleNotFoundError: pandas` despite "stdlib only" instruction. Stand-alone fix (install pandas, AST-reject non-stdlib imports, or stronger prompt) — independent of the two new shapes.
-- The contract narrowing exposed that the LLM declares `exports=[]` on entry scripts (correct) AND writes test files that import their internals (incorrect under the new contract). The cleanest fix is planning-side, not engine-side, and worth a targeted prompt experiment.
+- Task 5's TZ-naive `days_since` bug has now recurred in v1, v4, and the v5+ mini-validation. Worth a targeted prompt-side or AST-level fix? E.g., when the task prompt mentions "days" / "stale" / "older than N", inject explicit tz-aware datetime guidance. Or AST-reject `datetime.now()` / `datetime.utcnow()` in non-test files.
+- The mini-validation run-a "garbled LLM output" (`date_utils.py` was literally the single character `d`) is a new defect family — single point so far, but worth watching in v6.
+- Should `verify_dep_honesty` upgrade the "undeclared dep" warning to a hard-fail in a future version, or is the warning + lint downstream sufficient?
 
 ## Recent commits (last 5)
 ```
+8a568d3 feat(oc_builder): instruct smoke tests to subprocess the entry script, not import internals
+cc019c9 feat(oc_builder): verify actual imports form a DAG (catch circular imports the manifest didn't declare)
+0da151f chore: install pandas + record in STATE.md environment section
+93c67f1 chore: STATE.md post v5 determinism sweep
 88ab252 chore: STATE.md post Tier-1 fixes A+B
-19b6a7a feat(oc_builder): require __main__ guards in non-entry modules with retry
-00b6b59 feat(oc_builder): add symbol contracts to planner manifest and verify generated exports
-56c25d7 feat: ntfy push notifications for sweep/commit/session events
-85f6672 chore: add STATE.md for session continuity
 ```
 
 ## Workflow note
