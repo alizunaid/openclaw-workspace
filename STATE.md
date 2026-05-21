@@ -1,7 +1,9 @@
 # OpenClaw State
 
-Last updated: 2026-05-20T05:50:00Z
-Last session: Final Tier-1 hardening — splitter preamble fallback (Item 1) + Phase 4 scoping (Item 2) + v7 determinism sweep. Tier-1 declared structurally complete.
+Last updated: 2026-05-21T15:50:00Z
+Last session: Step 1 first-real-work attempt — TODAY top-10 generator via `ocb`. **Validation failed**: engine exceeded 1200s cap (1241s), planner over-decomposed to 6 files, main.py has tuple-vs-dict signature drift between sibling modules. No commits made; user decision pending on four paths documented in `/tmp/step1_validation.md`. Working artifact exists at `tools/generated/run_1779377170/reporter.py` (one of 4 standalone implementations the planner produced) but was not the planner's chosen entry.
+
+Prior session: Final Tier-1 hardening — splitter preamble fallback (Item 1) + Phase 4 scoping (Item 2) + v7 determinism sweep. Tier-1 declared structurally complete.
 
 ## Push notifications
 - Channel: ntfy.sh
@@ -61,15 +63,23 @@ The v7 modal regression is largely **tie-break noise** on 1/3-stability tasks (3
 
 Plus preceding: planner manifest with symbol contracts, per-file AST self-heal (3 retries) + splitter (header detection + preamble fallback). Plus succeeding: Phase 4 scoped commit (refuses out-of-scope changes) + atexit run-dir archive.
 
+## Step 1 status
+First real-work attempt — TODAY top-10 generator — failed validation. Engine timed out at 1241s (1200s cap), planner over-decomposed into 6 files with broken cross-file glue. No commits made. Full validation report at `/tmp/step1_validation.md` with four decision-point options:
+- A. Manual rescue — copy working `reporter.py` from the run dir to `tools/daily/today_top10.py`, ship today's value (RECOMMENDED).
+- B. Re-prompt with tighter scoping (one or two files, no test file).
+- C. Tier-2 regenerate-with-error-feedback loop first.
+- D. Bump RUN_CAP_SECONDS to 1800.
+
+User decision pending. Run dir preserved at `tools/generated/run_1779377170/` and archived at `logs/run_archive/run_1779377170/`.
+
 ## Next planned step
-**Stop Tier-1 hardening.** Three options for next session, in order of recommendation:
-1. **Ship the engine for real Nexadose work.** Pick a real backlog task; run it through `ocb`. The engine reliably surfaces real bugs with clean diagnostics. Get user value from what's built.
-2. **Tier-2 regenerate-with-error-feedback loop.** When the lint or contracts gate fails, instead of hard-failing, regenerate the offending file with the error fed back into the prompt. Mirrors the main-guard retry pattern. Likely recovers 4 of 6 hard-fails in v7. Medium engineering effort.
-3. **Model upgrade.** qwen2.5-coder:32b is bottlenecking — Type A drift and Type C missing imports are LLM-quality issues. A stronger code model could shift the floor. Independent of further engine work.
+Awaiting user direction on Step 1 (A/B/C/D above). Default after sufficient time: A — ship the working reporter.py as the daily driver, pin Tier-2 + over-decomposition as the next engine targets.
 
 ## Open questions / decisions pending
 - The 1/3-stability tasks (3, 4, 5) make single-run grading nearly random. Future engine work needs ≥5-run grading to be statistically meaningful. Or accept that 5-task sweeps will continue to land headline modals in a 0-4 PASS range.
 - One v7 contracts firing (t1b, producer-side declared-vs-defined mismatch) — Fix A's first save in 7 sweeps. Worth watching whether this becomes a pattern with larger manifests.
+- **Step-1 surfaced Type-B value-shape drift.** Sibling module signatures don't match across files the planner glued together. Lint can't catch this. Either a Tier-2 regen-with-feedback (catches at dry-import) or a static typecheck (heavier).
+- **Engine cap is at the edge for 6-file manifests.** 1241s for Step 1. Larger or more complex manifests will increasingly hit it during generation, not just validation.
 
 ## Recent commits (last 8)
 ```
