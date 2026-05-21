@@ -1,9 +1,9 @@
 # OpenClaw State
 
-Last updated: 2026-05-21T16:08:00Z
-Last session: Step 1 v2 — tighter ocb re-prompt + rescue fallback. **Path B (rescue) shipped.** `tools/daily/today_top10.py` (commit `ede47cb`) is the first real-work daily-driver. Alias `today10` works from a fresh shell. Phase A re-prompt was 250s and 1-file manifest (engine working as intended after Tier-1) but entry execution hit `ValueError: I/O operation on closed file` — exactly the failure mode a Tier-2 regen-with-error-feedback loop would catch.
+Last updated: 2026-05-21T17:30:00Z
+Last session: **Tier 2 v1 design scoping.** No code written. Produced `design/tier2_v1.md` (commit `5450140`) — 550-line scoping document covering CLI interface, architecture phase, build phase, state/persistence, failure modes, non-goals, validation plan, and implementation scoping. Ends with 9 explicit open questions for human review. Next step: human reads the doc; if the design holds, implementation brief follows in a subsequent session.
 
-Prior session: Step 1 first-real-work attempt — validation failed (engine cap exceeded 1200s, planner over-decomposed to 6 files, main.py tuple-vs-dict drift). Working `reporter.py` from that run was the basis for the v2 rescue path.
+Prior session: Step 1 v2 — tighter ocb re-prompt + rescue fallback. Path B (rescue) shipped. `tools/daily/today_top10.py` is the first real-work daily-driver. Alias `today10` works.
 
 Prior session: Final Tier-1 hardening — splitter preamble fallback (Item 1) + Phase 4 scoping (Item 2) + v7 determinism sweep. Tier-1 declared structurally complete.
 
@@ -79,17 +79,27 @@ Phase A — the tighter ocb re-prompt — got SO close: 250s elapsed, exactly 1 
 |------|--------------|--------------|-------|
 | `tools/daily/today_top10.py` | Reads `WORK_ITEMS_REGISTER.upgraded.v4_1.csv`, filters `status_current == 'WAITING_ON_YOU'`, ranks by composite priority (PERMITS_INSPECTIONS, ENGINEERING/CLEANROOM, stuck>7d, VENDORS/FINANCE/LEGAL), writes `/tmp/today_top10.md`. | ocb-assisted, manually rescued from a failed engine run (3 minimal edits to make agnostic) | `today10` |
 
-## Next planned step
-**Tier-2 engine session: regenerate-with-error-feedback loop.** When entry-execution or dry-import fails, instead of hard-failing, regenerate the offending file with the error fed back into the prompt — mirroring the main-guard retry pattern. Step 1 v2's Phase A failure is the archetypal test case (a one-line bug at the end of a structurally correct 80-line file).
+## Tier 2 (architecture-first planner — design phase)
+A new layer above Tier 1. Tier 1 (`ocb`) generates one cohesive script per invocation. Tier 2 (`oc2`, proposed) orchestrates multiple Tier 1 invocations into systems-of-systems — driving use case is the NexaDose audit/reconciliation engine (8-12 subsystems, designed together, built incrementally).
 
-After Tier-2 lands: re-run Phase A on this same prompt; expected outcome is a clean PASS that ships as `tools/daily/today_top10.py` (replacing the manually-rescued version) at commit-time. The current rescue version stays in git history as a usable artifact regardless.
+- **Design doc:** `design/tier2_v1.md` (commit `5450140`, 550 lines).
+- **Status:** SCOPING — design doc written, awaiting human review.
+- **Lifecycle:** `oc2 design "<task>"` → human reviews + edits architecture.md → `oc2 approve` → `oc2 build` (topological subsystem-by-subsystem ocb invocation) → `oc2 status` (per-subsystem state).
+- **Storage:** `tier2_projects/<name>/` — `architecture.md` (human-editable design), `state.json` (build state), `subsystems/<name>/` (generated code per subsystem), all git-tracked.
+- **9 open questions in the doc** need human judgment before implementation: command name (`oc2` vs `ocplan`), test project choice (3 candidates ranked), architecture markdown verbosity, integration-test scope, model choice for the design phase, state-schema versioning, cascading-rebuild semantics, project-name conflict policy, ntfy hooks.
+- **Next:** human reads design doc, we resolve open questions together, THEN implementation brief.
+
+## Next planned step
+**Human review of `design/tier2_v1.md`.** After we resolve the 9 open questions, the next implementation session writes the brief that becomes Tier 2 v1 Session 1 (CLI scaffolding + architecture schema + LLM prompt). Estimated 3-5 sessions to ready-for-test-project state.
+
+Independent of Tier 2: a Tier-1 v2 enhancement is still on the queue — **regen-with-error-feedback loop in `oc_builder.py`'s Phase 3** (NOT the same as Tier 2 the architecture layer; this is a refinement to the builder engine itself). When entry-execution or dry-import fails, feed the traceback back to the LLM for a corrective regeneration. Step 1 v2's Phase A failure is the archetypal test case (a one-line bug — `ValueError: I/O operation on closed file` — in an otherwise-correct 81-line single-file script). This Tier-1 enhancement could come before or after Tier 2 v1 implementation depending on priority; design doc doesn't depend on it.
 
 ## Open questions / decisions pending
 - The 1/3-stability tasks (3, 4, 5) make single-run grading nearly random. Future engine work needs ≥5-run grading to be statistically meaningful. Or accept that 5-task sweeps will continue to land headline modals in a 0-4 PASS range.
 - One v7 contracts firing (t1b, producer-side declared-vs-defined mismatch) — Fix A's first save in 7 sweeps. Worth watching whether this becomes a pattern with larger manifests.
-- **Step-1 surfaced Type-B value-shape drift.** Sibling module signatures don't match across files the planner glued together. Lint can't catch this. Either a Tier-2 regen-with-feedback (catches at dry-import) or a static typecheck (heavier).
-- **Engine cap is at the edge for 6-file manifests.** 1241s for Step 1 v1. Larger or more complex manifests will increasingly hit it during generation, not just validation. Mitigated in Step 1 v2 by explicit "single file" prompt constraint (250s for 1-file manifest).
-- **Tier-2 regen-with-feedback is now the confirmed next engine target.** Step 1 v2 Phase A's one-line `ValueError: I/O operation on closed file` is the archetypal test case — dry-import passes, entry-execution catches, fix is a one-line edit the model should be able to produce when shown the traceback.
+- **Step-1 surfaced Type-B value-shape drift.** Sibling module signatures don't match across files the planner glued together. Lint can't catch this. Either a Tier-1 regen-with-feedback (catches at dry-import) or a static typecheck (heavier).
+- **Engine cap is at the edge for 6-file manifests.** 1241s for Step 1 v1. Mitigated in Step 1 v2 by explicit "single file" prompt constraint (250s for 1-file manifest). Tier 2 builds many 1-3-file subsystems sequentially rather than one big multi-file manifest, which sidesteps this cap entirely.
+- **The 9 Tier 2 design questions in `design/tier2_v1.md`.** These need user judgment, not Claude judgment. Awaiting review.
 
 ## Recent commits (last 8)
 ```
