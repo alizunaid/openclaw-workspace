@@ -1,7 +1,9 @@
 # OpenClaw State
 
-Last updated: 2026-05-21T17:30:00Z
-Last session: **Tier 2 v1 design scoping.** No code written. Produced `design/tier2_v1.md` (commit `5450140`) — 550-line scoping document covering CLI interface, architecture phase, build phase, state/persistence, failure modes, non-goals, validation plan, and implementation scoping. Ends with 9 explicit open questions for human review. Next step: human reads the doc; if the design holds, implementation brief follows in a subsequent session.
+Last updated: 2026-05-21T18:00:00Z
+Last session: **Built `review_bundle/` for human review of the agnostic Tier 1 system.** 26 files, 324KB. 12 numbered directories at `/root/.openclaw/workspace/review_bundle/` covering engine source, extracted prompts (5 verbatim from `oc_builder.py`), extracted validation gates (5 with source), retry/repair loops (3 with source), CLI entry points, sample state logs (PASS + FAIL real runs), sample run output trees, project-context example, and current docs. Two narrative READMEs (`00_README.md` reading order + `12_README_engine_overview.md` end-to-end engine walkthrough). Gitignored — local review only, not for tracking. Only commit was the .gitignore line itself.
+
+Prior session: Tier 2 v1 design scoping. No code written. Produced `design/tier2_v1.md` (commit `5450140`) — 550-line scoping document. Ends with 9 explicit open questions awaiting user review.
 
 Prior session: Step 1 v2 — tighter ocb re-prompt + rescue fallback. Path B (rescue) shipped. `tools/daily/today_top10.py` is the first real-work daily-driver. Alias `today10` works.
 
