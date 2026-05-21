@@ -24,3 +24,4 @@ logs/task_registry_run.log
 tools/generated/*.py
 tools/generated/run_*/
 logs/run_archive/
+review_bundle/
