@@ -26,7 +26,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_design.add_argument("task", help="natural-language description of what to build")
     p_design.add_argument("--name", help="project name (default: kebab-cased first 4 words of task)")
     p_design.add_argument("--from", dest="from_path",
-                          help="existing architecture.md to iterate from (not wired in Session 1)")
+                          help="existing architecture.md to iterate from (not wired yet)")
+    p_design.add_argument("--mock", action="store_true",
+                          help="use the canned MOCK_ARCHITECTURE instead of calling ollama "
+                               "(for fast offline testing of the rest of the pipeline)")
     p_design.set_defaults(func=cmd_design)
 
     p_list = sub.add_parser("list", help="list all tier-2 projects and their state")
