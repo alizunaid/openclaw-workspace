@@ -65,10 +65,20 @@ LIST_FIELDS = ("inputs", "outputs", "failure_modes")
 _FIELD_RE = re.compile(
     r"^\s*\*\*\s*(?P<label>[A-Za-z][A-Za-z ]*?)\s*:?\s*\*\*\s*:?\s*(?P<rest>.*)$"
 )
-# A markdown bullet line.
-_BULLET_RE = re.compile(r"^\s*[-*]\s+(?P<item>.+?)\s*$")
+# A markdown bullet line: `- `, `* `, or numbered `1.` / `1)` style. Real models
+# drift between styles within the same document — accept all three.
+_BULLET_RE = re.compile(r"^\s*(?:[-*]|\d+[.)])\s+(?P<item>.+?)\s*$")
+# Subsystem heading: doc says `### name`, but real model output sometimes uses
+# `#### name` when nested under `## Subsystems`. Accept either depth.
+_SUBSYSTEM_HEADING_RE = r"(?m)^#{3,4}\s+(?P<name>.+?)\s*$"
 # The H1 title: `# Architecture: <name>`.
 _TITLE_RE = re.compile(r"^#\s+Architecture:\s*(?P<name>.+?)\s*$", re.MULTILINE)
+# Outer markdown code fence wrapping the WHOLE document. Matches the opening
+# ``` (with optional language tag) on its own line and a trailing ``` line.
+_OUTER_FENCE_RE = re.compile(
+    r"\A\s*```[A-Za-z0-9_+-]*\s*\n(?P<body>.*?)\n```\s*\Z",
+    re.DOTALL,
+)
 
 
 @dataclass
@@ -118,6 +128,23 @@ class ParseError(ValueError):
 
 
 # --- parsing ----------------------------------------------------------------
+
+def preclean(md: str) -> str:
+    """Conservative pre-clean for real model output.
+
+    Only NORMALIZES what's there — never injects content. Preamble before the
+    `# Architecture:` title is already tolerated by the title regex (which uses
+    .search), so we don't touch it here. We strip an outer code fence if the
+    model wrapped the whole doc, and that's it. Heading-level drift and bullet
+    drift are handled by the widened regexes elsewhere in this module rather
+    than by rewriting the source.
+    """
+    text = md.replace("\r\n", "\n").replace("\r", "\n")
+    fence = _OUTER_FENCE_RE.match(text)
+    if fence:
+        text = fence.group("body")
+    return text
+
 
 def _split_sections(body: str) -> dict[str, str]:
     """Split a markdown body by `## ` level-2 headers into {lower_heading: text}.
@@ -222,7 +249,12 @@ def parse(md: str) -> Architecture:
     Lenient on content (missing fields/sections become empty — the validator
     reports those). Raises ParseError only when there is no parseable title,
     which means the input is not an architecture document at all.
+
+    A conservative `preclean()` pass strips an outer code-fence wrapper before
+    parsing; heading-level and bullet-style drift are absorbed by the regex
+    grammar rather than by source rewriting.
     """
+    md = preclean(md)
     title_m = _TITLE_RE.search(md)
     if not title_m:
         raise ParseError("missing `# Architecture: <name>` title")
@@ -243,8 +275,8 @@ def parse(md: str) -> Architecture:
 
     subs_text = sections.get("subsystems", "")
     if subs_text:
-        # Split into `### <name>` blocks.
-        parts = re.split(r"(?m)^###\s+(?P<name>.+?)\s*$", subs_text)
+        # Split into `### <name>` blocks (also accepts `#### <name>`).
+        parts = re.split(_SUBSYSTEM_HEADING_RE, subs_text)
         # re.split with one group yields: [pre, name1, block1, name2, block2, ...]
         it = iter(parts[1:])
         for name in it:

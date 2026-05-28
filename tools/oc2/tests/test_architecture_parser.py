@@ -6,7 +6,7 @@ import unittest
 # Make `tools/` importable so `import oc2.*` works under any test runner.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-from oc2.architecture import ParseError, parse  # noqa: E402
+from oc2.architecture import ParseError, parse, preclean, validate  # noqa: E402
 
 # A full, valid 4-subsystem architecture exercising the whole schema.
 VALID_MD = """# Architecture: Daily Snapshot Reporter
@@ -193,6 +193,118 @@ class TestParseEdgeCases(unittest.TestCase):
         b1 = parse(VALID_MD).by_name()["top10-runner"]
         b3 = parse(edited).by_name()["top10-runner"]
         self.assertEqual(b1.spec_sha256(), b3.spec_sha256())
+
+
+class TestPrecleanAndHardening(unittest.TestCase):
+    """Tolerance for real LLM output: outer fences, heading drift, bullet drift.
+    The validator is NOT loosened — these tests only confirm the pre-clean +
+    widened regexes coerce well-shaped-but-dirty input back into the schema."""
+
+    def test_strips_outer_fence_with_language_tag(self):
+        wrapped = "```markdown\n" + VALID_MD + "```\n"
+        arch = parse(wrapped)
+        self.assertEqual(len(arch.subsystems), 4)
+        self.assertTrue(validate(arch).ok)
+
+    def test_strips_outer_fence_without_language_tag(self):
+        wrapped = "```\n" + VALID_MD + "```"
+        arch = parse(wrapped)
+        self.assertEqual(arch.project_name, "Daily Snapshot Reporter")
+        self.assertTrue(validate(arch).ok)
+
+    def test_drops_preamble_prose_before_title(self):
+        with_preamble = (
+            "Here is the architecture you requested.\n\n"
+            "Hope this helps!\n\n"
+            + VALID_MD
+        )
+        arch = parse(with_preamble)
+        self.assertEqual(arch.project_name, "Daily Snapshot Reporter")
+        self.assertTrue(validate(arch).ok)
+
+    def test_four_hash_subsystem_headings_parse(self):
+        md = VALID_MD.replace("### register-reader", "#### register-reader")
+        md = md.replace("### top10-runner", "#### top10-runner")
+        md = md.replace("### breakdown-generator", "#### breakdown-generator")
+        md = md.replace("### output-formatter", "#### output-formatter")
+        arch = parse(md)
+        self.assertEqual(len(arch.subsystems), 4)
+        self.assertTrue(validate(arch).ok)
+
+    def test_numbered_bullets_parse(self):
+        md = """# Architecture: T
+
+## Subsystems
+
+### alpha
+**Purpose:** p
+**Inputs:**
+1. first input
+2. second input
+**Outputs:**
+1) first output
+**Depends on:** none
+**Owns state:** stateless
+**Failure modes:**
+1. it breaks
+2. it breaks more
+"""
+        alpha = parse(md).by_name()["alpha"]
+        self.assertEqual(alpha.inputs, ["first input", "second input"])
+        self.assertEqual(alpha.outputs, ["first output"])
+        self.assertEqual(alpha.failure_modes, ["it breaks", "it breaks more"])
+
+    def test_mixed_bullet_styles_in_one_section(self):
+        md = """# Architecture: T
+
+## Subsystems
+
+### alpha
+**Purpose:** p
+**Inputs:**
+- dash item
+* asterisk item
+1. numbered item
+**Outputs:**
+- only output
+**Depends on:** none
+**Owns state:** stateless
+**Failure modes:**
+- failure
+"""
+        alpha = parse(md).by_name()["alpha"]
+        self.assertEqual(alpha.inputs, ["dash item", "asterisk item", "numbered item"])
+
+    def test_dirty_but_coercible_doc_validates_clean(self):
+        """End-to-end: fence + preamble + #### + numbered bullets → still valid."""
+        body = VALID_MD.replace("### register-reader", "#### register-reader")
+        body = body.replace(
+            "- WORK_ITEMS_REGISTER csv path\n- optional column overrides",
+            "1. WORK_ITEMS_REGISTER csv path\n2. optional column overrides",
+        )
+        dirty = (
+            "Sure! Here's the architecture you asked for:\n\n"
+            "```markdown\n" + body + "```\n"
+        )
+        arch = parse(dirty)
+        res = validate(arch)
+        self.assertTrue(res.ok, msg=res.errors)
+        self.assertEqual(len(arch.subsystems), 4)
+        reader = arch.by_name()["register-reader"]
+        self.assertEqual(
+            reader.inputs, ["WORK_ITEMS_REGISTER csv path", "optional column overrides"]
+        )
+
+    def test_garbage_without_title_still_raises(self):
+        """Validator-not-loosened guard: no `# Architecture:` -> ParseError."""
+        with self.assertRaises(ParseError):
+            parse("Here is some text but no architecture title anywhere.")
+        with self.assertRaises(ParseError):
+            parse("```markdown\n## Overview\nno title here\n```")
+
+    def test_preclean_idempotent_on_clean_input(self):
+        """preclean must not modify clean input — guards against accidental rewrites."""
+        self.assertEqual(preclean(VALID_MD), VALID_MD)
 
 
 if __name__ == "__main__":
