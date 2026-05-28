@@ -25,3 +25,9 @@ tools/generated/*.py
 tools/generated/run_*/
 logs/run_archive/
 review_bundle/
+
+# Tier 2 (oc2) projects: design + generated code are git-tracked for version
+# history; orchestration logs are ephemeral. state.json must be re-included
+# because the global `*.json` rule above would otherwise hide it (doc Section 4).
+tier2_projects/**/runs/
+!tier2_projects/**/state.json
