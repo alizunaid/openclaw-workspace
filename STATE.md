@@ -1,7 +1,9 @@
 # OpenClaw State
 
-Last updated: 2026-05-21T18:00:00Z
-Last session: **Built `review_bundle/` for human review of the agnostic Tier 1 system.** 26 files, 324KB. 12 numbered directories at `/root/.openclaw/workspace/review_bundle/` covering engine source, extracted prompts (5 verbatim from `oc_builder.py`), extracted validation gates (5 with source), retry/repair loops (3 with source), CLI entry points, sample state logs (PASS + FAIL real runs), sample run output trees, project-context example, and current docs. Two narrative READMEs (`00_README.md` reading order + `12_README_engine_overview.md` end-to-end engine walkthrough). Gitignored — local review only, not for tracking. Only commit was the .gitignore line itself.
+Last updated: 2026-05-28T01:00:00Z
+Last session: **Tier 2 v1 — Session 1: `oc2` CLI scaffolding + architecture schema/validator (LLM mocked).** Built the `tools/oc2/` package per `design/tier2_v1.md` Section 8: `architecture.py` (markdown parser + structural validator — required fields, kebab names, reserved `main`, count bounds [2,10], DAG closure + Kahn topo sort with alphabetical tiebreak, soft warnings), `state.py` (atomic state.json via temp+fsync+os.replace, `state_schema_version: 1` from day one per Q6), `cli.py` argparse dispatcher, real `design`/`approve`/`list`/`status`, and `build`/`archive`/`prompt`/`smoke` stubs. LLM is MOCKED (`mock_llm_design` returns a fixed valid 4-subsystem daily-snapshot architecture, diamond DAG). End-to-end mock loop verified: `oc2 design "<task>" --name test` → valid `architecture.md` → `oc2 approve test` passes validation → `state.json` written. Q8 name-conflict refusal + explicit-`--name` regeneration/rotation (`architecture.v<N>.md`) both work. 31 unit tests green (parser + validator: positive case + every failure mode + soft warnings). `oc2` alias added to `~/.bashrc`. Commits: `d13a5bd` (parser+validator), `5306bc5` (state), `dab0301` (CLI+commands), `d786fe4` (gitignore). **Deferred:** Session 2 = real single-call LLM design against `qwen2.5-coder:32b` (Q5) + parsing real LLM markdown + `oc_project` context loading (no Tier 1 imports this session); Session 3 = spec-diff cascading rebuild; Sessions 4/5 = build phase + subsystem→ocb prompt translator + integration smoke. `tier2_projects/test/` is an untracked Session-1 verification artifact (safe to delete). Started from HEAD `6e40f21`, a clean descendant of design-time `15aa453` (intervening commits were chore/design only — no engine code).
+
+Prior session: Built `review_bundle/` for human review of the agnostic Tier 1 system. 26 files, 324KB. 12 numbered directories at `/root/.openclaw/workspace/review_bundle/` covering engine source, extracted prompts (5 verbatim from `oc_builder.py`), extracted validation gates (5 with source), retry/repair loops (3 with source), CLI entry points, sample state logs (PASS + FAIL real runs), sample run output trees, project-context example, and current docs. Two narrative READMEs (`00_README.md` reading order + `12_README_engine_overview.md` end-to-end engine walkthrough). Gitignored — local review only, not for tracking. Only commit was the .gitignore line itself.
 
 Prior session: Tier 2 v1 design scoping. No code written. Produced `design/tier2_v1.md` (commit `5450140`) — 550-line scoping document. Ends with 9 explicit open questions awaiting user review.
 
@@ -26,8 +28,9 @@ Prior session: Final Tier-1 hardening — splitter preamble fallback (Item 1) + 
 - Currently 31 archives (15 v6 + 1 misc + 15 v7)
 
 ## Current HEAD
-05891c0 — fix(oc_builder): scope Phase 4 auto-commit to tools/generated/run_<id>/ only, skip if out-of-scope changes exist
+d786fe4 — chore: gitignore tier2_projects (Tier 2 v1 Session 1 code HEAD)
 (plus follow-up STATE.md commit at session end)
+Tier 1 engine HEAD remains 05891c0 (fix(oc_builder): scope Phase 4 auto-commit); untouched this session.
 
 ## Tier-1 verdict: STRUCTURALLY COMPLETE
 - Every observed failure mode is either caught by an engine gate with a precise diagnostic, OR is LLM-quality (Type A consumer/producer drift, Type C missing imports, smoke-test correctness) and not amenable to additional structural engine gates.
