@@ -192,7 +192,11 @@ def approve_project(project_dir: Path, name: str) -> int:
         print("No spec changes since last approval.")
     else:
         print("Diff:")
-        _print_list("Unchanged:", diff.surviving_unchanged)
+        # `Unchanged` lists only the subsystems whose status will be preserved
+        # verbatim. A spec-unchanged subsystem that gets pulled into the cascade
+        # is NOT preserved (it goes pending), so it appears under Cascade only.
+        truly_preserved = [n for n in diff.surviving_unchanged if n not in closure]
+        _print_list("Unchanged:", truly_preserved)
         _print_list("Modified:", diff.surviving_changed,
                     suffix="   (spec_sha256 changed; rebuild required)")
         _print_list("Added:", diff.added)
