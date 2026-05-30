@@ -90,6 +90,15 @@ class TestBuildTaskPrompt(unittest.TestCase):
         out = build_task_prompt(s, {}, "ip", "subsystems/csv-parser/")
         self.assertIn("Output to subsystems/csv-parser/", out)
 
+    def test_no_arg_entry_self_check_instruction_present(self):
+        """Bridge for ocb's entry_execution gate: the no-args path must be a
+        no-op self-check that exits 0, not a usage error. See S5-prep finding."""
+        s = mk_sub()
+        out = build_task_prompt(s, {}, "ip", "subsystems/x/")
+        self.assertIn("must exit 0 when invoked with no arguments", out)
+        self.assertIn("no-op self-check", out)
+        self.assertIn("NOT a usage error", out)
+
     def test_deterministic_across_calls(self):
         s = mk_sub()
         a = build_task_prompt(s, {"file-reader": "subsystems/file-reader/"},

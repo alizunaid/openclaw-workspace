@@ -102,6 +102,12 @@ def build_task_prompt(
         "Failure modes this subsystem must handle gracefully:\n"
         f"{_bullets(subsystem.failure_modes)}\n"
         "\n"
+        "The entry point must exit 0 when invoked with no arguments — Tier 1's\n"
+        "validation runs `python3 <entry>.py` with no args and fails the build\n"
+        "on any non-zero exit. Keep real CLI argument handling when given args,\n"
+        "but the no-args path must be a no-op self-check: print a one-line\n"
+        "confirmation and exit 0, NOT a usage error.\n"
+        "\n"
         "Build as a single coherent script or as a small set of files. Do not\n"
         f"split unless the work is genuinely multi-file. Output to {sub_dir_str}/.\n"
     )
