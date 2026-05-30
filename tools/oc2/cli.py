@@ -43,11 +43,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_approve.add_argument("project", nargs="?", help="project name (optional if only one exists)")
     p_approve.set_defaults(func=cmd_approve)
 
-    p_build = sub.add_parser("build", help="execute an approved architecture (stub in Session 1)")
+    p_build = sub.add_parser("build", help="execute an approved architecture (one ocb subprocess per pending subsystem, halt on failure)")
     p_build.add_argument("project", nargs="?", help="project name (optional if only one exists)")
     p_build.add_argument("--resume", action="store_true",
-                         help="resume from the first non-done subsystem (default behavior)")
-    p_build.add_argument("--only", help="rebuild a single subsystem (escape hatch)")
+                         help="resume from the first non-done subsystem (this is the default; the flag exists to surface resumability)")
+    p_build.add_argument("--only", help="rebuild a single subsystem (escape hatch for stochastic ocb failures; doc §3)")
     p_build.set_defaults(func=cmd_build)
 
     p_archive = sub.add_parser("archive", help="archive a project (stub in Session 1)")
