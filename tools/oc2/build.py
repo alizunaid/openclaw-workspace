@@ -34,6 +34,7 @@ from oc2.approve import resolve_project
 from oc2.architecture import ParseError, parse, validate
 from oc2.diff import propagate_pending
 from oc2.prompt import build_task_prompt
+from oc2.smoke import run_smoke
 from oc2.state import append_history, now_iso, read_state, write_state
 
 # Paths the real ocb_runner needs to discover its outputs.
@@ -234,6 +235,94 @@ def _recover_in_progress(state: dict) -> list[str]:
     return recovered
 
 
+def build_report_markdown(state: dict, topo_order: list[str], project_name: str,
+                          smoke_summary: str, smoke_ok: bool,
+                          smoke_entries: dict | None = None,
+                          smoke_findings: list | None = None,
+                          elapsed_seconds: float | None = None) -> str:
+    """Assemble BUILD_REPORT.md (doc §3:301) — the per-subsystem final state +
+    the integration smoke verdict. Pure: takes the already-computed smoke
+    result, returns markdown. Kept testable so the report layout is asserted
+    against a built project without re-running ocb."""
+    subs = state.get("subsystems", {})
+    lines = [f"# Build report: {project_name}", ""]
+    if elapsed_seconds is not None:
+        lines.append(f"Last build run wall-clock: {elapsed_seconds:.1f}s")
+        lines.append("")
+
+    lines.append("## Subsystems")
+    lines.append("")
+    lines.append("| # | subsystem | status | ocb run_id | built_at | files |")
+    lines.append("|---|-----------|--------|------------|----------|-------|")
+    for i, n in enumerate(topo_order, 1):
+        e = subs.get(n, {})
+        files = ", ".join(e.get("generated_files", []) or []) or "—"
+        lines.append(
+            f"| {i} | `{n}` | {e.get('status', '?')} | "
+            f"{e.get('ocb_run_id') or '—'} | {e.get('built_at') or '—'} | {files} |"
+        )
+    lines.append("")
+
+    verdict = "PASS" if smoke_ok else "FAIL"
+    lines.append("## Integration smoke")
+    lines.append("")
+    lines.append(f"**Verdict: {verdict}** — {smoke_summary}")
+    lines.append("")
+    if smoke_entries:
+        lines.append("Resolved entry points (topological order):")
+        lines.append("")
+        for n in topo_order:
+            if n in smoke_entries:
+                lines.append(f"- `{n}` -> `{smoke_entries[n]}`")
+        lines.append("")
+    if smoke_findings:
+        lines.append("Findings:")
+        lines.append("")
+        for f in smoke_findings:
+            lines.append(f"- {f}")
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _all_done(state: dict, topo_order: list[str]) -> bool:
+    subs = state.get("subsystems", {})
+    return all(subs.get(n, {}).get("status") == "done" for n in topo_order)
+
+
+def _finalize_full_build(project_dir: Path, state: dict, arch, topo_order: list[str],
+                         project_name: str, total_elapsed: float) -> bool:
+    """Called when the whole project just reached all-done. Runs the integration
+    smoke and writes BUILD_REPORT.md with the verdict. Returns the smoke ok
+    flag. Never raises — a smoke crash is itself a finding written to the
+    report (we must not let it mask a successful build's other state)."""
+    try:
+        result = run_smoke(project_dir, topo_order)
+        smoke_ok, summary = result.ok, result.summary
+        entries, findings = result.entries, result.findings
+    except Exception as e:  # noqa: BLE001 — defensive; run_smoke shouldn't raise
+        smoke_ok, summary = False, f"smoke runner crashed: {type(e).__name__}: {e}"
+        entries, findings = {}, [summary]
+
+    report = build_report_markdown(
+        state, topo_order, project_name, summary, smoke_ok,
+        smoke_entries=entries, smoke_findings=findings,
+        elapsed_seconds=total_elapsed,
+    )
+    (project_dir / "BUILD_REPORT.md").write_text(report, encoding="utf-8")
+
+    append_history(state, "smoke", ok=smoke_ok, summary=summary,
+                   entries=entries)
+    write_state(project_dir, state)
+
+    print(f"[oc2 build] integration smoke: "
+          f"{'PASS' if smoke_ok else 'FAIL'} — {summary}", flush=True)
+    if not smoke_ok:
+        for f in findings:
+            print(f"    - {f}")
+    print(f"[oc2 build] wrote {project_dir / 'BUILD_REPORT.md'}", flush=True)
+    return smoke_ok
+
+
 def build_project(project_dir: Path, name: str, only: str | None = None,
                   ocb_runner: OcbRunner | None = None) -> int:
     """Run the build phase for `name`. Returns 0 on success, 1 on failure.
@@ -429,10 +518,26 @@ def build_project(project_dir: Path, name: str, only: str | None = None,
     write_state(project_dir, state)
     print(f"[oc2 build] {project_name}: built {len(succeeded)} subsystem(s) "
           f"in {total_elapsed:.1f}s.", flush=True)
-    print("Integration smoke + BUILD_REPORT.md land in Session 5.")
-    _ntfy("oc2 build: complete",
-          f"{project_name}: {len(succeeded)} subsystem(s) built "
-          f"in {total_elapsed:.0f}s")
+
+    # If the whole project just reached all-done, run the integration smoke and
+    # write BUILD_REPORT.md (doc §3 / Q4). The build itself SUCCEEDED — a smoke
+    # failure is a finding recorded in the report + ntfy, not a build-failure
+    # exit (we must not retro-fail subsystems ocb gated green).
+    if _all_done(state, topo):
+        smoke_ok = _finalize_full_build(project_dir, state, arch, topo,
+                                        project_name, total_elapsed)
+        _ntfy("oc2 build: complete",
+              f"{project_name}: {len(succeeded)} built in {total_elapsed:.0f}s; "
+              f"smoke {'PASS' if smoke_ok else 'FAIL'}",
+              priority="default" if smoke_ok else "high")
+    else:
+        remaining = [n for n in topo
+                     if state["subsystems"].get(n, {}).get("status") != "done"]
+        print(f"[oc2 build] {len(remaining)} subsystem(s) still pending: "
+              f"{', '.join(remaining)} — smoke + BUILD_REPORT.md run on full completion.")
+        _ntfy("oc2 build: progress",
+              f"{project_name}: {len(succeeded)} built in {total_elapsed:.0f}s; "
+              f"{len(remaining)} still pending")
     return 0
 
 

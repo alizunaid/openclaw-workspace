@@ -12,6 +12,7 @@ import sys
 from oc2.approve import cmd_approve
 from oc2.build import cmd_build
 from oc2.design import cmd_design
+from oc2.smoke import cmd_smoke
 from oc2.status import cmd_archive, cmd_list, cmd_status
 
 
@@ -49,6 +50,10 @@ def build_parser() -> argparse.ArgumentParser:
                          help="resume from the first non-done subsystem (this is the default; the flag exists to surface resumability)")
     p_build.add_argument("--only", help="rebuild a single subsystem (escape hatch for stochastic ocb failures; doc §3)")
     p_build.set_defaults(func=cmd_build)
+
+    p_smoke = sub.add_parser("smoke", help="import all built subsystems in topo order and run the integration chain on a real CSV")
+    p_smoke.add_argument("project", nargs="?", help="project name (optional if only one exists)")
+    p_smoke.set_defaults(func=cmd_smoke)
 
     p_archive = sub.add_parser("archive", help="archive a project (stub in Session 1)")
     p_archive.add_argument("project", nargs="?", help="project name")
