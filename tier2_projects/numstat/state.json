@@ -1,0 +1,146 @@
+{
+  "state_schema_version": 1,
+  "project_name": "numstat",
+  "architecture": {
+    "current_path": "architecture.md",
+    "current_sha256": "0e22033167189adfb64534c697c640a447afbb98d25ef41f78039a83251e7b9a",
+    "version_count": 0,
+    "raw_path": null,
+    "valid": true
+  },
+  "approval": {
+    "approved": true,
+    "approved_at": "2026-05-31T22:38:59Z",
+    "approved_architecture_sha256": "0e22033167189adfb64534c697c640a447afbb98d25ef41f78039a83251e7b9a"
+  },
+  "subsystems": {
+    "file-reader": {
+      "status": "done",
+      "spec_sha256": "de37f9d1f70db1556c513127364affd508c28bd4b5560613880387c6ffbb1a2b",
+      "ocb_run_id": "run_1780267172",
+      "source_dir": "subsystems/file-reader/",
+      "built_at": "2026-05-31T22:42:35Z",
+      "error": null,
+      "generated_files": [
+        "file_reader.py",
+        "test_file_reader.py"
+      ]
+    },
+    "statistics-computer": {
+      "status": "done",
+      "spec_sha256": "267d6a2c8736a73f95d094a565a34c8c387b986a51b905190d6c2b0273610e28",
+      "ocb_run_id": "run_1780267823",
+      "source_dir": "subsystems/statistics-computer/",
+      "built_at": "2026-05-31T22:53:17Z",
+      "error": null,
+      "generated_files": [
+        "smoke_test_statistics_computer.py",
+        "statistics_computer.py"
+      ]
+    },
+    "histogram-builder": {
+      "status": "failed",
+      "spec_sha256": "35f3e27042d66bda2cec32cbd31e5a629796ce3db03d792f1762de3ef1e27e71",
+      "ocb_run_id": "run_1780267494",
+      "source_dir": "subsystems/histogram-builder/",
+      "built_at": null,
+      "error": "phase=`cross_file` status=failed \u2014 sub-gate `dep_honesty` failed"
+    },
+    "report-generator": {
+      "status": "pending",
+      "spec_sha256": "46c9a5bd301884ef25fd6c57f8b85ab94d7edb9f22035a1ee5cf4dc415017812",
+      "ocb_run_id": null,
+      "source_dir": "subsystems/report-generator/",
+      "built_at": null,
+      "error": null
+    },
+    "file-writer": {
+      "status": "pending",
+      "spec_sha256": "96e5d9490ad541e054a0dcc9314c178597a57a978931b62543c148c94a4b39e6",
+      "ocb_run_id": null,
+      "source_dir": "subsystems/file-writer/",
+      "built_at": null,
+      "error": null
+    }
+  },
+  "history": [
+    {
+      "event": "design",
+      "at": "2026-05-31T22:38:15Z",
+      "architecture_sha256": "0e22033167189adfb64534c697c640a447afbb98d25ef41f78039a83251e7b9a"
+    },
+    {
+      "event": "approve",
+      "at": "2026-05-31T22:38:59Z",
+      "architecture_sha256": "0e22033167189adfb64534c697c640a447afbb98d25ef41f78039a83251e7b9a",
+      "diff": {
+        "surviving_unchanged": 5,
+        "modified": 0,
+        "added": 0,
+        "removed": 0,
+        "cascade_size": 0
+      }
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-31T22:39:32Z",
+      "targets": [
+        "file-reader",
+        "histogram-builder",
+        "statistics-computer",
+        "report-generator",
+        "file-writer"
+      ],
+      "only": null
+    },
+    {
+      "event": "build_pause",
+      "at": "2026-05-31T22:43:47Z",
+      "failed": "histogram-builder",
+      "error": "phase=`cross_file` status=failed \u2014 sub-gate `dep_honesty` failed",
+      "blocked": [
+        "file-writer",
+        "report-generator"
+      ],
+      "succeeded": [
+        "file-reader"
+      ]
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-31T22:44:54Z",
+      "targets": [
+        "histogram-builder"
+      ],
+      "only": "histogram-builder"
+    },
+    {
+      "event": "build_pause",
+      "at": "2026-05-31T22:46:41Z",
+      "failed": "histogram-builder",
+      "error": "phase=`cross_file` status=failed \u2014 sub-gate `dep_honesty` failed",
+      "blocked": [
+        "file-writer",
+        "report-generator"
+      ],
+      "succeeded": []
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-31T22:50:22Z",
+      "targets": [
+        "statistics-computer"
+      ],
+      "only": "statistics-computer"
+    },
+    {
+      "event": "build_complete",
+      "at": "2026-05-31T22:53:17Z",
+      "built": [
+        "statistics-computer"
+      ],
+      "elapsed_seconds": 175.0
+    }
+  ],
+  "last_session_at": "2026-05-31T22:53:17Z"
+}
