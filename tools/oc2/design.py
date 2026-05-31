@@ -301,23 +301,40 @@ def real_llm_design(task: str, project_title: str, project_info: dict,
 
 # --- project context (oc_project is allowed this session) -------------------
 
-def _load_project_context() -> dict:
-    """Best-effort load of project context via Tier 1's oc_project module. Lazy
-    + defensive: if the import fails (e.g., tools/ not on sys.path in a tools
-    test harness), we return an empty context rather than crashing design."""
+def _load_project_context(slug: str) -> dict:
+    """Load project context for the design prompt, SCOPED to this Tier 2
+    project's OWN name (not the operator's default project).
+
+    Tier 2 intentionally receives NO operator-project context: the design LLM
+    should name and shape the architecture from the user's task + --name, not
+    inherit Nexadose. We resolve `slug` (the Tier 2 project name) explicitly, so
+    oc_project looks for projects/<slug>.md — which does not exist — and returns
+    an EMPTY context (project_name = the Tier 2 name, no raw_context). Without
+    passing `slug`, resolve_slug() would fall through to DEFAULT_PROJECT=
+    'nexadose' and the design prompt would inherit Nexadose context (the S9 leak:
+    numstat's architecture got titled `nexadose-rx`). See design/tier2_v1.md
+    ("Project context: suppress"). projects/<slug>.md is the synthesize seam —
+    if a future per-project context file is generated there, this same call
+    loads it with no code change.
+
+    Lazy + defensive: if oc_project can't be imported (e.g. tools/ not on
+    sys.path in a test harness), return empty context rather than crash design.
+    """
     try:
         from oc_project import load_project, resolve_slug
     except ImportError as e:
         print(f"[oc2 design] note: oc_project unavailable ({e}); "
               f"proceeding without project context.", flush=True)
-        return {"project_name": "", "short_description": "", "raw_context": ""}
+        return {"project_name": slug, "short_description": "", "raw_context": ""}
     try:
-        slug = resolve_slug()
-        return load_project(slug)
+        # Pass the Tier 2 name as the CLI value so resolve_slug uses it verbatim
+        # (CLI value > OPENCLAW_PROJECT env > DEFAULT). No projects/<slug>.md
+        # exists, so load_project yields an empty (Nexadose-free) context.
+        return load_project(resolve_slug(slug))
     except Exception as e:
         print(f"[oc2 design] note: project context load failed ({e}); "
               f"proceeding without it.", flush=True)
-        return {"project_name": "", "short_description": "", "raw_context": ""}
+        return {"project_name": slug, "short_description": "", "raw_context": ""}
 
 
 # --- helpers (carried from Session 1, unchanged) ----------------------------
@@ -384,7 +401,8 @@ def cmd_design(args) -> int:
     state = read_state(project_dir) or new_state(name)
     version_count = state["architecture"].get("version_count", 0)
 
-    project_info = _load_project_context() if not use_mock else {}
+    # Scope context to THIS project's name (suppress operator/nexadose context).
+    project_info = _load_project_context(name) if not use_mock else {}
 
     # First attempt + at most one retry with errors fed back (mirrors Tier 1
     # self-heal pattern; the brief locks the budget at 1).

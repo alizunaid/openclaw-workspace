@@ -91,12 +91,49 @@ Resume is the default behavior. `state.json` is the source of truth; every subsy
 ### What happens when `oc2 design "build me an audit engine"` runs?
 
 1. Resolve project name (auto from task or `--name`). Create `tier2_projects/<name>/` if absent.
-2. Load project context via `oc_project.py` (same module Tier 1 uses).
+2. Load project context via `oc_project.py` — but **scoped to this project's own name**, which suppresses operator-project context (see "Project context: suppress" below).
 3. Single LLM call: system prompt + user task → markdown architecture. (I'm proposing single-call for v1. Two-call — design then critique — is reasonable but doubles cost; defer to v2 unless v1 quality is bad.)
 4. Parse the returned markdown into a structured model.
 5. Run validation (schema + DAG + sanity bounds).
 6. If valid: write `architecture.md`. If a prior version exists, rotate it to `architecture.v<N>.md` first.
 7. Print: "Architecture written to `tier2_projects/<name>/architecture.md`. Read it, edit if needed, then `oc2 approve <name>`."
+
+### Project context: suppress (decided Session 10)
+
+**Decision: Tier 2 builds and designs receive NO operator-project context.** A
+Tier 2 subsystem builds from its ARCHITECTURE SPEC — purpose, I/O, integration
+points — which `build_task_prompt` already injects. Per-project information a
+subsystem needs belongs in `architecture.md` (the integration-points section),
+not in the operator's default project. **The architecture IS the per-project
+context, done right.** This is not a compromise versus synthesizing context —
+it is the correct boundary.
+
+*Why this was needed.* `oc_project.resolve_slug()` resolves CLI value > the
+`OPENCLAW_PROJECT` env var > `DEFAULT_PROJECT='nexadose'`. Because `oc2` shelled
+out to `ocb` (and `design` loaded context) without scoping a project, both fell
+through to `nexadose`, so every Tier 2 project inherited Nexadose context — the
+leak observed across csvmd (S6/S7: Nexadose columns in generated test data) and
+numstat (S9: build log `project: nexadose`, architecture titled `nexadose-rx`).
+
+*The lever (Tier-2-side only; Tier 1 untouched).* Both call sites scope the slug
+to the **Tier 2 project's own name**, so `oc_project` looks for
+`projects/<name>.md`, which does not exist, and returns an EMPTY context
+(`project_name` = the Tier 2 name, no `raw_context`). ocb renders that as a
+benign empty `PROJECT CONTEXT:` block — no guard or Tier-1 change needed.
+- **build:** `OPENCLAW_PROJECT=<name>` set in the ocb subprocess env
+  (`build._ocb_subprocess_env`; the subprocess env dict only, never the parent
+  process env).
+- **design:** `design._load_project_context(name)` passes the name as the
+  resolve_slug CLI value.
+
+*The synthesize seam (documented, not built).* If a future subsystem provably
+needs project-level context not expressible in the architecture, **synthesize a
+per-project `projects/<slug>.md`** from the architecture Overview + integration
+points; the SAME lever (`OPENCLAW_PROJECT=<name>` / `resolve_slug(name)`) then
+loads it automatically, no code change. Hook points: `build._ocb_subprocess_env`
+and `design._load_project_context`. Caveat: naming a Tier 2 project after an
+existing `projects/*.md` slug (e.g. `nexadose`) would re-load that context by
+design — that is the seam working, not a regression.
 
 ### Architecture markdown schema (the minimum content for v1)
 
@@ -350,7 +387,7 @@ Confirming the suggested non-goals and adding a few:
 |----------|-----------|-----------|
 | Auto-rearchitecting on build failures | Confirmed | Human decides. Auto-rearchitecting is a v2 problem (and a hard one). |
 | Subsystem-level live-reload or hot-swap | Confirmed | Architecture change → cascading rebuild from `state.json`. No incremental patching. |
-| Cross-project knowledge transfer | Confirmed | Each project is independent. Project context comes from `oc_project.py`, same as Tier 1. |
+| Cross-project knowledge transfer | Confirmed | Each project is independent. Project context is SUPPRESSED in Tier 2 (S10): a project builds from its own `architecture.md`, not the operator's default `oc_project.py` context. See "Project context: suppress". |
 | GUI | Confirmed | CLI only. Markdown for human review. |
 | Sophisticated integration testing | Mostly confirmed | v1 ships a minimal "import everything in topological order" smoke. Anything beyond that is the user's problem until v2. |
 | Multi-LLM orchestration or model selection per subsystem | Confirmed | One model. Same as Tier 1 (`qwen2.5-coder:32b`). Architecture phase MIGHT benefit from a reasoning model — see Open Questions. |

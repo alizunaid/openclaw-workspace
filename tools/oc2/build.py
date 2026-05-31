@@ -122,6 +122,34 @@ def _extract_failed_gate(log_path: Path | None) -> str:
     return f"ocb exited non-zero; no failed phase in log (see {log_path})"
 
 
+def _ocb_subprocess_env(project_dir: Path) -> dict:
+    """Build the env for the ocb subprocess, SCOPED to this Tier 2 project.
+
+    Tier 2 subsystems intentionally receive NO operator-project context. A
+    subsystem builds from its ARCHITECTURE SPEC (purpose, I/O, integration
+    points — already injected by build_task_prompt); per-project info a
+    subsystem needs belongs in architecture.md, not in the operator's default
+    project. So we set OPENCLAW_PROJECT to the Tier 2 project's OWN name: ocb's
+    resolve_slug() then looks for projects/<name>.md, which does not exist, so
+    load_project() returns an EMPTY context (project_name = the Tier 2 name, no
+    raw_context). Without this, resolve_slug() falls through to
+    DEFAULT_PROJECT='nexadose' and every Tier 2 build inherits Nexadose context
+    (the S6/S7/S9 leak). See design/tier2_v1.md ("Project context: suppress").
+
+    SYNTHESIZE SEAM: projects/<name>.md is also the exact hook for a future
+    synthesize upgrade — generate a per-project context file there (from the
+    architecture Overview + integration points) and this same lever loads it,
+    no code change. Caveat: naming a Tier 2 project after a real projects/*.md
+    slug (e.g. "nexadose") would re-load that context by design.
+
+    We copy os.environ and override the one key — we never mutate the parent
+    process env, and the override applies only to this subprocess.
+    """
+    env = dict(os.environ)
+    env["OPENCLAW_PROJECT"] = Path(project_dir).name
+    return env
+
+
 def _real_ocb_runner(prompt: str, project_dir: Path, subsystem_name: str) -> OcbResult:
     """Invoke `python3 -u tools/oc_builder.py "<prompt>"` as a subprocess and
     discover its outputs by snapshot-diff against `tools/generated/` and `logs/`.
@@ -129,6 +157,9 @@ def _real_ocb_runner(prompt: str, project_dir: Path, subsystem_name: str) -> Ocb
     The prompt is passed as a single positional argument; ocb's CLI joins
     `nargs="+"` with spaces internally (re-joining on whitespace is harmless
     since the prompt is already whitespace-formatted).
+
+    The subprocess env is scoped via `_ocb_subprocess_env` so ocb does NOT
+    inherit the operator's default (nexadose) project context.
     """
     before = _ocb_outputs_before()
     cmd = ["python3", "-u", str(_OCB_PATH), prompt]
@@ -136,6 +167,7 @@ def _real_ocb_runner(prompt: str, project_dir: Path, subsystem_name: str) -> Ocb
         proc = subprocess.run(
             cmd, cwd=str(WORKSPACE_ROOT),
             capture_output=True, text=True,
+            env=_ocb_subprocess_env(project_dir),
         )
     except Exception as e:
         return OcbResult(success=False, error=f"ocb subprocess failed to launch: {e}")
