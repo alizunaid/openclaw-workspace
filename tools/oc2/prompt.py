@@ -35,6 +35,38 @@ def _dep_paths_block(dep_source_paths: dict) -> str:
     return "\n".join(lines)
 
 
+def _dependency_section(dep_source_paths: dict) -> str:
+    """The upstream-dependency section.
+
+    When there ARE upstreams, list them for provenance AND explicitly forbid
+    importing / calling / re-implementing them: this subsystem's inputs arrive
+    as ordinary function arguments already in the upstream's output format, and
+    composition of subsystems is the integration layer's job, not this module's.
+
+    This is the S8 root-cause fix. Without it the model read 'depends on X' as
+    'import X and re-create its API' — building a phantom re-implementation of
+    the upstream (e.g. a second `csv_parser.py`) with a hallucinated function
+    name, which Tier 1's contracts gate failed (declared-but-not-defined). The
+    dep-source paths are decorative anyway (S6: ocb can't read them from its
+    cwd), so the model was inventing the upstream API rather than reading it."""
+    listing = _dep_paths_block(dep_source_paths)
+    if not dep_source_paths:
+        return "Upstream dependencies:\n" + listing
+    return (
+        "Upstream dependencies — these already-built subsystems PRODUCE this\n"
+        "subsystem's inputs; they are listed for provenance only:\n"
+        f"{listing}\n"
+        "\n"
+        "Do NOT import, call, or re-implement these upstream subsystems, and do\n"
+        "NOT add a file for any of them to your output. Your inputs arrive as\n"
+        "ordinary function arguments already in the format described under Inputs\n"
+        "and Integration points. Build ONLY this subsystem's own transform as a\n"
+        "self-contained module that operates on its arguments — composition of\n"
+        "subsystems happens at a separate integration layer, never inside this\n"
+        "module."
+    )
+
+
 def build_task_prompt(
     subsystem: Subsystem,
     dep_source_paths: dict[str, str | Path],
@@ -91,10 +123,7 @@ def build_task_prompt(
         "\n"
         f"State this subsystem owns: {owns_state}\n"
         "\n"
-        "It depends on these already-built subsystems whose source is at the\n"
-        "following paths (read them if you need to understand the contracts\n"
-        "they expose):\n"
-        f"{_dep_paths_block(deps_str)}\n"
+        f"{_dependency_section(deps_str)}\n"
         "\n"
         "Integration points (contracts between subsystems):\n"
         f"{integ}\n"

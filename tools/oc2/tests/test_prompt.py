@@ -70,6 +70,27 @@ class TestBuildTaskPrompt(unittest.TestCase):
         # And NO stray "source at" lines.
         self.assertNotIn("source at `", out)
 
+    def test_deps_forbid_import_and_reimplementation(self):
+        """S8 root-cause fix: a dependent subsystem must be told NOT to import or
+        re-implement its upstreams — inputs arrive as arguments. Without this the
+        model built a phantom csv_parser.py that failed the contracts gate."""
+        s = mk_sub(depends_on=("file-reader",))
+        out = build_task_prompt(s, {"file-reader": "subsystems/file-reader/"},
+                                "ip", "subsystems/csv-parser/")
+        self.assertIn("Do NOT import, call, or re-implement these upstream", out)
+        self.assertIn("do\nNOT add a file for any of them", out)
+        self.assertIn("ordinary function arguments", out)
+        # Still lists the dep for provenance.
+        self.assertIn("source at `subsystems/file-reader/`", out)
+
+    def test_no_import_warning_absent_when_no_deps(self):
+        """A root subsystem with no upstreams gets no import warning (it would be
+        noise) — just the explicit no-dependency line."""
+        s = mk_sub(depends_on=())
+        out = build_task_prompt(s, {}, "ip", "subsystems/x/")
+        self.assertNotIn("Do NOT import", out)
+        self.assertIn("no upstream dependencies", out)
+
     def test_integration_points_included_verbatim(self):
         marker = "Rows are list[list[str]]; markdown is one string."
         s = mk_sub()
