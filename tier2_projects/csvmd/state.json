@@ -1,0 +1,168 @@
+{
+  "state_schema_version": 1,
+  "project_name": "csvmd",
+  "architecture": {
+    "current_path": "architecture.md",
+    "current_sha256": "ef30a894d5a56559f0b9755adad2f121c353d13366131aeeb1a9013304ce3789",
+    "version_count": 0,
+    "raw_path": null,
+    "valid": true
+  },
+  "approval": {
+    "approved": true,
+    "approved_at": "2026-05-29T00:52:43Z",
+    "approved_architecture_sha256": "ef30a894d5a56559f0b9755adad2f121c353d13366131aeeb1a9013304ce3789"
+  },
+  "subsystems": {
+    "file-reader": {
+      "status": "done",
+      "spec_sha256": "7e02322724aab3757ba58b42d9da3fc1f004093eb47173cf6b720d34057475f0",
+      "ocb_run_id": "run_1780117492",
+      "source_dir": "subsystems/file-reader/",
+      "built_at": "2026-05-30T05:08:35Z",
+      "error": null,
+      "generated_files": [
+        "file_reader.py",
+        "main.py",
+        "smoke_test.py"
+      ]
+    },
+    "csv-parser": {
+      "status": "done",
+      "spec_sha256": "c97c79be009620ef3d6d983c6d6c97962d3d0e204f7592b11fdd7d0b0f5b3824",
+      "ocb_run_id": "run_1780184292",
+      "source_dir": "subsystems/csv-parser/",
+      "built_at": "2026-05-30T23:43:19Z",
+      "error": null,
+      "generated_files": [
+        "csv_parser.py",
+        "test_csv_parser.py",
+        "utils.py"
+      ]
+    },
+    "markdown-formatter": {
+      "status": "failed",
+      "spec_sha256": "2b176be4108bb28ed90417d98078e1e42bd27b75d0c6315cb016b0532ea4b563",
+      "ocb_run_id": "run_1780256029",
+      "source_dir": "subsystems/markdown-formatter/",
+      "built_at": null,
+      "error": "phase=`cross_file` status=failed \u2014 sub-gate `contracts` failed"
+    },
+    "file-writer": {
+      "status": "pending",
+      "spec_sha256": "39ba0779716ab94cd0f8d8c826cd56ca14004aef2ba719fcc3f895eaa6946d9f",
+      "ocb_run_id": null,
+      "source_dir": "subsystems/file-writer/",
+      "built_at": null,
+      "error": null
+    }
+  },
+  "history": [
+    {
+      "event": "design",
+      "at": "2026-05-28T05:12:33Z",
+      "architecture_sha256": "bb23257a8f817937143a412d9f777d07ea0aab2f9f39920d5f05efb6c61dc8be"
+    },
+    {
+      "event": "approve",
+      "at": "2026-05-28T05:12:48Z",
+      "architecture_sha256": "bb23257a8f817937143a412d9f777d07ea0aab2f9f39920d5f05efb6c61dc8be"
+    },
+    {
+      "event": "approve",
+      "at": "2026-05-29T00:52:02Z",
+      "architecture_sha256": "ef30a894d5a56559f0b9755adad2f121c353d13366131aeeb1a9013304ce3789",
+      "diff": {
+        "surviving_unchanged": 3,
+        "modified": 1,
+        "added": 0,
+        "removed": 0,
+        "cascade_size": 3
+      }
+    },
+    {
+      "event": "approve",
+      "at": "2026-05-29T00:52:43Z",
+      "architecture_sha256": "ef30a894d5a56559f0b9755adad2f121c353d13366131aeeb1a9013304ce3789",
+      "diff": {
+        "surviving_unchanged": 3,
+        "modified": 1,
+        "added": 0,
+        "removed": 0,
+        "cascade_size": 3
+      }
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-30T01:47:38Z",
+      "targets": [
+        "file-reader"
+      ],
+      "only": "file-reader"
+    },
+    {
+      "event": "build_pause",
+      "at": "2026-05-30T01:50:46Z",
+      "failed": "file-reader",
+      "error": "phase=`cross_file` status=failed",
+      "blocked": [
+        "csv-parser",
+        "file-writer",
+        "markdown-formatter"
+      ],
+      "succeeded": []
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-30T05:04:52Z",
+      "targets": [
+        "file-reader"
+      ],
+      "only": "file-reader"
+    },
+    {
+      "event": "build_complete",
+      "at": "2026-05-30T05:08:35Z",
+      "built": [
+        "file-reader"
+      ],
+      "elapsed_seconds": 223.4
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-30T23:38:10Z",
+      "targets": [
+        "csv-parser"
+      ],
+      "only": "csv-parser"
+    },
+    {
+      "event": "build_complete",
+      "at": "2026-05-30T23:43:21Z",
+      "built": [
+        "csv-parser"
+      ],
+      "elapsed_seconds": 310.5
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-31T19:33:49Z",
+      "targets": [
+        "markdown-formatter",
+        "file-writer"
+      ],
+      "only": null
+    },
+    {
+      "event": "build_pause",
+      "at": "2026-05-31T19:38:58Z",
+      "failed": "markdown-formatter",
+      "error": "phase=`cross_file` status=failed \u2014 sub-gate `contracts` failed",
+      "blocked": [
+        "file-writer"
+      ],
+      "succeeded": []
+    }
+  ],
+  "last_session_at": "2026-05-31T19:38:58Z"
+}
