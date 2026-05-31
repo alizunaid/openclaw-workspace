@@ -41,20 +41,30 @@
       ]
     },
     "markdown-formatter": {
-      "status": "failed",
+      "status": "done",
       "spec_sha256": "2b176be4108bb28ed90417d98078e1e42bd27b75d0c6315cb016b0532ea4b563",
-      "ocb_run_id": "run_1780256029",
+      "ocb_run_id": "run_1780262881",
       "source_dir": "subsystems/markdown-formatter/",
-      "built_at": null,
-      "error": "phase=`cross_file` status=failed \u2014 sub-gate `contracts` failed"
+      "built_at": "2026-05-31T21:32:48Z",
+      "error": null,
+      "generated_files": [
+        "main.py",
+        "markdown_formatter.py",
+        "test_main.py"
+      ]
     },
     "file-writer": {
-      "status": "pending",
+      "status": "done",
       "spec_sha256": "39ba0779716ab94cd0f8d8c826cd56ca14004aef2ba719fcc3f895eaa6946d9f",
-      "ocb_run_id": null,
+      "ocb_run_id": "run_1780263191",
       "source_dir": "subsystems/file-writer/",
-      "built_at": null,
-      "error": null
+      "built_at": "2026-05-31T21:35:25Z",
+      "error": null,
+      "generated_files": [
+        "file_writer.py",
+        "main.py",
+        "smoke_test.py"
+      ]
     }
   },
   "history": [
@@ -162,7 +172,69 @@
         "file-writer"
       ],
       "succeeded": []
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-31T21:17:40Z",
+      "targets": [
+        "markdown-formatter"
+      ],
+      "only": "markdown-formatter"
+    },
+    {
+      "event": "build_pause",
+      "at": "2026-05-31T21:21:47Z",
+      "failed": "markdown-formatter",
+      "error": "phase=`cross_file` status=failed \u2014 sub-gate `contracts` failed",
+      "blocked": [
+        "file-writer"
+      ],
+      "succeeded": []
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-31T21:28:01Z",
+      "targets": [
+        "markdown-formatter"
+      ],
+      "only": "markdown-formatter"
+    },
+    {
+      "event": "build_complete",
+      "at": "2026-05-31T21:32:48Z",
+      "built": [
+        "markdown-formatter"
+      ],
+      "elapsed_seconds": 287.5
+    },
+    {
+      "event": "build_start",
+      "at": "2026-05-31T21:33:11Z",
+      "targets": [
+        "file-writer"
+      ],
+      "only": null
+    },
+    {
+      "event": "build_complete",
+      "at": "2026-05-31T21:35:25Z",
+      "built": [
+        "file-writer"
+      ],
+      "elapsed_seconds": 134.3
+    },
+    {
+      "event": "smoke",
+      "at": "2026-05-31T21:35:25Z",
+      "ok": true,
+      "summary": "chain composes end-to-end on disk (file-reader:read_csv_file -> csv-parser:parse_csv -> markdown-formatter:rows_to_markdown -> file-writer:write_markdown_to_file); all 7 cells intact incl. quoted-comma row",
+      "entries": {
+        "file-reader": "read_csv_file",
+        "csv-parser": "parse_csv",
+        "markdown-formatter": "rows_to_markdown",
+        "file-writer": "write_markdown_to_file"
+      }
     }
   ],
-  "last_session_at": "2026-05-31T19:38:58Z"
+  "last_session_at": "2026-05-31T21:35:25Z"
 }
