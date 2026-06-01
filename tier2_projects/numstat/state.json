@@ -41,10 +41,10 @@
     "histogram-builder": {
       "status": "failed",
       "spec_sha256": "35f3e27042d66bda2cec32cbd31e5a629796ce3db03d792f1762de3ef1e27e71",
-      "ocb_run_id": "run_1780267494",
+      "ocb_run_id": "run_1780273462",
       "source_dir": "subsystems/histogram-builder/",
       "built_at": null,
-      "error": "phase=`cross_file` status=failed \u2014 sub-gate `dep_honesty` failed"
+      "error": "phase=`cross_file` status=failed"
     },
     "report-generator": {
       "status": "pending",
@@ -140,7 +140,26 @@
         "statistics-computer"
       ],
       "elapsed_seconds": 175.0
+    },
+    {
+      "event": "build_start",
+      "at": "2026-06-01T00:24:21Z",
+      "targets": [
+        "histogram-builder"
+      ],
+      "only": "histogram-builder"
+    },
+    {
+      "event": "build_pause",
+      "at": "2026-06-01T00:25:47Z",
+      "failed": "histogram-builder",
+      "error": "phase=`cross_file` status=failed",
+      "blocked": [
+        "file-writer",
+        "report-generator"
+      ],
+      "succeeded": []
     }
   ],
-  "last_session_at": "2026-05-31T22:53:17Z"
+  "last_session_at": "2026-06-01T00:25:47Z"
 }
