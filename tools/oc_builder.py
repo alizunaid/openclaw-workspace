@@ -45,6 +45,22 @@ LEGACY_RUN_TIMEOUT = 120
 DRY_IMPORT_TIMEOUT = 30
 SMOKE_TEST_TIMEOUT = 60
 
+# --- Regen-with-error-feedback loop (S13, design/tier1_regen_feedback_v1.md) ---
+# A bounded self-repair LAYER (not a gate): when a runtime/consistency gate
+# fails, feed the error back to the model for ONE corrective regeneration of the
+# ENTRY file, then re-verify. Generalizes the existing regenerate_for_main_guards
+# template (which the main_guards gate already uses) to two later gates. v1
+# smallest-viable scope = entry_execution + smoke_tests ONLY (the gates the real
+# evidence hit: the Step-1 I/O one-liner; the S11 histogram assert-mismatch).
+# REGEN_FEEDBACK_ENABLED is the kill switch + measurement lever: when False the
+# two gates halt exactly as they did pre-S13 (byte-for-byte). The budgets are
+# intentionally tiny — RUN_CAP_SECONDS only fits ~2-4 LLM round-trips, so this is
+# a real ceiling. See guards in _RegenFeedback (no-progress + cycle).
+REGEN_FEEDBACK_ENABLED = True
+REGEN_FEEDBACK_PER_GATE = 1     # max corrective regens per gate
+REGEN_FEEDBACK_GLOBAL = 3       # max corrective regens across the whole build
+REGEN_FEEDBACK_GATES = ("entry_execution", "smoke_tests")
+
 INSPECTION_EXTS = {".csv", ".md", ".json", ".yaml", ".yml", ".txt", ".tsv", ".sh", ".py"}
 INSPECTION_SUBDIRS = ("projects", "scripts", "tools", "tasks")
 MAX_INSPECT_FILES = 5
@@ -902,6 +918,211 @@ def regenerate_for_main_guards(entry, manifest, generated_sources, task, info, i
     return code, ""
 
 
+# ---------------------------------------------------------------------------
+# Regen-with-error-feedback loop (S13) — generalizes the main-guard template
+# to the entry_execution + smoke_tests gates. See REGEN_FEEDBACK_* constants.
+# ---------------------------------------------------------------------------
+
+def _normalize_error_line(line):
+    """Normalize an error line so the SAME logical error matches across regens
+    (strip paths, run-ids, line numbers, addresses, and any remaining digits)."""
+    line = (line or "").strip().lower()
+    line = re.sub(r"/[^\s'\"]+", "", line)        # filesystem paths
+    line = re.sub(r"\brun_\d+\b", "", line)       # run-ids
+    line = re.sub(r"line \d+", "line", line)       # line numbers
+    line = re.sub(r"0x[0-9a-f]+", "", line)        # hex addresses
+    line = re.sub(r"\d+", "", line)                # any remaining digits
+    line = re.sub(r"\s+", " ", line).strip()
+    return line
+
+
+def _error_signature(gate, text):
+    """(gate, normalized last-non-blank error line). The last line of a Python
+    traceback is the exception type+message — the stable fingerprint of WHAT
+    failed, independent of where."""
+    lines = [l.strip() for l in (text or "").splitlines() if l.strip()]
+    basis = lines[-1] if lines else ""
+    return (gate, _normalize_error_line(basis))
+
+
+def _corrective_for_runtime(gate, path, error_text, smoke_path=None):
+    """The gate-specific corrective message. entry_execution -> fix a real bug
+    in the entry. smoke_tests -> fix a real entry bug WITHOUT corrupting correct
+    behavior to satisfy the test (the #7 pin); the test is never edited."""
+    err = (error_text or "").strip()[-1500:]
+    if gate == "smoke_tests":
+        return (
+            f"A smoke test ({smoke_path}) failed while exercising your entry "
+            f"point {path}. The failure was:\n\n{err}\n\n"
+            f"If {path} has a genuine logic bug, fix ONLY that bug. Do NOT change "
+            "correct program behavior or output merely to satisfy the test's "
+            "assertion — if your output is already correct, return the file "
+            "UNCHANGED. You may not edit the test. Return the complete file for "
+            f"'{path}'. Valid Python, no markdown fences, no commentary."
+        )
+    # entry_execution (default)
+    return (
+        f"Running `python3 {path}` with NO arguments exited non-zero. The error "
+        f"output was:\n\n{err}\n\n"
+        f"Fix ONLY this bug in {path}; change nothing else. The no-argument "
+        "invocation must print a one-line confirmation and exit 0 (it is a "
+        "self-check, not real work). Return the complete corrected file for "
+        f"'{path}'. Valid Python, no markdown fences, no commentary."
+    )
+
+
+def regenerate_for_runtime_failure(entry, manifest, generated_sources, task, info,
+                                   inspections, prior_code, gate, error_text,
+                                   smoke_path=None):
+    """One corrective LLM round-trip to fix a runtime/consistency failure in the
+    ENTRY file. Mirrors regenerate_for_main_guards exactly (system + task +
+    prior_code + corrective), differing only in the corrective message.
+
+    Returns (code|None, err). code is None on LLM/AST failure."""
+    system = _build_per_file_system_prompt(entry, manifest, generated_sources, info, inspections, task=task)
+    corrective = _corrective_for_runtime(gate, entry["path"], error_text, smoke_path)
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": task},
+        {"role": "assistant", "content": prior_code},
+        {"role": "user", "content": corrective},
+    ]
+    try:
+        resp = client.chat.completions.create(
+            model=MODEL, messages=messages, timeout=PER_LLM_TIMEOUT,
+        )
+    except Exception as e:
+        return None, f"LLM error: {e}"
+    code = clean_code(resp.choices[0].message.content or "")
+    code = split_manifest_sections(code, manifest, entry["path"])
+    ok, err = ast_check(code)
+    if not ok:
+        return None, err
+    return code, ""
+
+
+class _RegenFeedback:
+    """Tracks the regen-feedback budgets + guards for one build, and records
+    every attempt into a log list that lands in the state file."""
+
+    def __init__(self):
+        self.global_used = 0
+        self.per_gate = {g: 0 for g in REGEN_FEEDBACK_GATES}
+        self.seen = set()        # (gate, signature) tuples — no-progress + cycle
+        self.log = []            # forensic record for the state log
+
+    def consider(self, gate, error_text):
+        """Decide whether a corrective regen is allowed for this failure.
+        Returns (allowed: bool, reason: str). Records the decision. Does NOT
+        perform the regen — the caller does that on allowed=True."""
+        if not REGEN_FEEDBACK_ENABLED:
+            return False, "feedback disabled"
+        sig = _error_signature(gate, error_text)
+        # no-progress / cycle: this exact (gate, signature) already occurred.
+        if sig in self.seen:
+            self.log.append({"gate": gate, "signature": sig[1],
+                             "decision": "halt", "reason": "no-progress/cycle"})
+            return False, "no-progress/cycle (same error signature recurred)"
+        if self.per_gate.get(gate, 0) >= REGEN_FEEDBACK_PER_GATE:
+            self.log.append({"gate": gate, "signature": sig[1],
+                             "decision": "halt", "reason": "per-gate budget"})
+            return False, f"per-gate budget ({REGEN_FEEDBACK_PER_GATE}) exhausted"
+        if self.global_used >= REGEN_FEEDBACK_GLOBAL:
+            self.log.append({"gate": gate, "signature": sig[1],
+                             "decision": "halt", "reason": "global budget"})
+            return False, f"global budget ({REGEN_FEEDBACK_GLOBAL}) exhausted"
+        self.seen.add(sig)
+        return True, "allowed"
+
+    def record_regen(self, gate, error_text, accepted, detail=""):
+        """Record the outcome of an attempted regen (after consider() allowed it)."""
+        sig = _error_signature(gate, error_text)
+        if accepted:
+            self.per_gate[gate] = self.per_gate.get(gate, 0) + 1
+            self.global_used += 1
+        self.log.append({
+            "gate": gate, "signature": sig[1],
+            "decision": "regen" if accepted else "regen-failed",
+            "detail": detail,
+            "global_used": self.global_used,
+            "per_gate": dict(self.per_gate),
+        })
+
+
+def run_runtime_gates(entry_point, smoke_files, run_dir, regen_fb, *,
+                      execute_fn, smoke_fn, do_regen, check_cap=None):
+    """Run the entry_execution + smoke_tests gates with the bounded
+    regen-feedback layer (S13). Pure of state-log / sys.exit so it is
+    unit-testable with fakes — the caller (build) translates the result into the
+    state log + dump + exit, and owns the per-gate budgets via `regen_fb`.
+
+    Injected (so tests can script broken->fixed sequences without ollama):
+      execute_fn(entry_path, run_dir) -> (rc, stdout, stderr)
+      smoke_fn(path, run_dir)         -> (rc, stdout, stderr)
+      do_regen(gate, error_text, smoke_path) -> (ok: bool, detail: str)
+        performs ONE corrective regen of the ENTRY (writes the file in prod).
+        The budget/guard DECISION is made here via regen_fb.consider() BEFORE
+        do_regen is called, so guards are exercised through this loop.
+      check_cap(label) -> None  (optional run-cap backstop)
+
+    Returns a dict: {status: "ok"|"fail", gate, message, reason,
+                     entry_execution, smoke_tests}. On an accepted regen the loop
+    re-verifies from entry_execution forward.
+    """
+    entry_path = entry_point["path"]
+    cap = check_cap or (lambda label: None)
+    result = {"entry_execution": None, "smoke_tests": []}
+
+    def _attempt(gate, error_text, smoke_path=None):
+        allowed, reason = regen_fb.consider(gate, error_text)
+        if not allowed:
+            return False, reason
+        ok, detail = do_regen(gate, error_text, smoke_path)
+        regen_fb.record_regen(gate, error_text, accepted=ok, detail=detail or "")
+        if not ok:
+            return False, f"regeneration failed: {detail}"
+        return True, "regenerated"
+
+    while True:
+        cap(f"execute[{entry_path}]")
+        ex_rc, ex_out, ex_err = execute_fn(entry_path, run_dir)
+        result["entry_execution"] = {
+            "rc": ex_rc, "stdout": ex_out[-2000:], "stderr": ex_err[-2000:],
+        }
+        if ex_rc != 0:
+            retried, reason = _attempt("entry_execution", ex_err or ex_out)
+            if retried:
+                continue
+            return {**result, "status": "fail", "gate": "entry_execution",
+                    "message": f"entry-point {entry_path} exited {ex_rc}:\n{ex_err}",
+                    "reason": reason}
+        print(f"[builder] Entry execution OK", flush=True)
+
+        result["smoke_tests"] = []
+        smoke_fail = None
+        for sf in smoke_files:
+            cap(f"smoke[{sf['path']}]")
+            rc, sout, serr = smoke_fn(sf["path"], run_dir)
+            result["smoke_tests"].append({
+                "path": sf["path"], "rc": rc,
+                "stdout": sout[-2000:], "stderr": serr[-2000:],
+            })
+            if rc != 0:
+                smoke_fail = (sf["path"], rc, serr)
+                break
+            print(f"[builder] Smoke test {sf['path']} OK", flush=True)
+        if smoke_fail is not None:
+            sf_path, sf_rc, sf_serr = smoke_fail
+            # #7: regen the ENTRY only, NEVER the test.
+            retried, reason = _attempt("smoke_tests", sf_serr, smoke_path=sf_path)
+            if retried:
+                continue
+            return {**result, "status": "fail", "gate": "smoke_tests",
+                    "message": f"smoke test {sf_path} exited {sf_rc}:\n{sf_serr}",
+                    "reason": reason}
+        return {**result, "status": "ok", "gate": None, "message": None, "reason": None}
+
+
 def verify_export_contracts(run_dir, manifest_entries):
     """Confirm each manifest entry's declared `exports` are actually defined.
 
@@ -1724,40 +1945,57 @@ def build(task, project=None):
         sys.exit(1)
     print(f"[builder] Dry-import OK", flush=True)
 
-    check_cap(f"execute[{entry_point['path']}]")
-    ex_rc, ex_stdout, ex_stderr = execute_entry(entry_point["path"], run_dir)
-    cross["entry_execution"] = {
-        "rc": ex_rc,
-        "stdout": ex_stdout[-2000:],
-        "stderr": ex_stderr[-2000:],
-    }
-    if ex_rc != 0:
-        state["phases"]["cross_file"] = {"status": "failed", **cross}
-        dump_state(state, log_path)
-        print(
-            f"[builder] FAILED: entry-point {entry_point['path']} exited {ex_rc}:\n{ex_stderr}",
-            flush=True,
-        )
-        sys.exit(1)
-    print(f"[builder] Entry execution OK", flush=True)
-
+    # entry_execution + smoke_tests, via the bounded regen-feedback layer (S13).
+    # When REGEN_FEEDBACK_ENABLED is False, consider() short-circuits so the gates
+    # halt on first failure exactly as pre-S13 (no regen path, no regen_feedback
+    # key in the log). When True, a failing gate gets up to one corrective regen
+    # of the ENTRY, then re-verifies from entry_execution forward, bounded by the
+    # per-gate/global budgets + no-progress/cycle guards.
+    regen_fb = _RegenFeedback()
+    entry_path = entry_point["path"]
     smoke_files = [
         e for e in topo_order
         if "test" in e["purpose"].lower() or "smoke" in e["purpose"].lower()
     ]
-    for sf in smoke_files:
-        check_cap(f"smoke[{sf['path']}]")
-        rc, sout, serr = run_smoke(sf["path"], run_dir)
-        cross["smoke_tests"].append({
-            "path": sf["path"], "rc": rc,
-            "stdout": sout[-2000:], "stderr": serr[-2000:],
-        })
-        if rc != 0:
-            state["phases"]["cross_file"] = {"status": "failed", **cross}
-            dump_state(state, log_path)
-            print(f"[builder] FAILED: smoke test {sf['path']} exited {rc}:\n{serr}", flush=True)
-            sys.exit(1)
-        print(f"[builder] Smoke test {sf['path']} OK", flush=True)
+
+    def _production_regen(gate, error_text, smoke_path=None):
+        """The production do_regen: one corrective LLM regen of the entry, write
+        it back. Returns (ok, detail)."""
+        print(f"[builder]   regen-feedback: {gate} failed; one corrective regen "
+              f"of {entry_path}...", flush=True)
+        new_code, err = regenerate_for_runtime_failure(
+            entry_point, topo_order, generated_sources, task, info, inspections,
+            generated_sources[entry_path], gate, error_text, smoke_path=smoke_path,
+        )
+        if new_code is None:
+            print(f"[builder]   regen-feedback: regeneration failed: {err}", flush=True)
+            return False, err
+        (run_dir / entry_path).write_text(new_code)
+        generated_sources[entry_path] = new_code
+        print(f"[builder]   regen-feedback: {entry_path} regenerated; re-verifying.", flush=True)
+        return True, ""
+
+    gate_result = run_runtime_gates(
+        entry_point, smoke_files, run_dir, regen_fb,
+        execute_fn=execute_entry, smoke_fn=run_smoke, do_regen=_production_regen,
+        check_cap=check_cap,
+    )
+    cross["entry_execution"] = gate_result["entry_execution"]
+    cross["smoke_tests"] = gate_result["smoke_tests"]
+    if REGEN_FEEDBACK_ENABLED and regen_fb.log:
+        cross["regen_feedback"] = regen_fb.log
+
+    if gate_result["status"] == "fail":
+        state["phases"]["cross_file"] = {"status": "failed", **cross}
+        dump_state(state, log_path)
+        print(f"[builder] FAILED: {gate_result['message']}", flush=True)
+        if REGEN_FEEDBACK_ENABLED and gate_result.get("reason"):
+            extra = gate_result["reason"]
+            if gate_result["gate"] == "smoke_tests":
+                extra += (". The entry may be correct and the test assertion bogus "
+                          "— by policy the smoke test is never regenerated.")
+            print(f"[builder]   regen-feedback gave up: {extra}", flush=True)
+        sys.exit(1)
     state["phases"]["cross_file"] = {"status": "ok", **cross}
 
     # ---- PHASE 4: COMMIT ----
