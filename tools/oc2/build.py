@@ -111,15 +111,53 @@ def _extract_failed_gate(log_path: Path | None) -> str:
             continue
         status = phase_body.get("status")
         if status and status != "ok":
-            # If the phase nests sub-gate detail (e.g., cross_file.contracts),
-            # surface what we can in one short line.
-            detail = ""
-            for k, v in phase_body.items():
-                if isinstance(v, dict) and v.get("ok") is False:
-                    detail = f" — sub-gate `{k}` failed"
-                    break
+            detail = _failed_subgate_detail(phase_body)
             return f"phase=`{phase_name}` status={status}{detail}"
     return f"ocb exited non-zero; no failed phase in log (see {log_path})"
+
+
+def _first_error_line(*texts: str) -> str:
+    """First non-blank line across the given text fields (a traceback's last
+    line is the most informative, but the first non-blank is cheap + stable);
+    returns '' if none. Used to enrich a one-line gate diagnostic."""
+    for t in texts:
+        if not t:
+            continue
+        for line in str(t).splitlines():
+            line = line.strip()
+            if line:
+                return line
+    return ""
+
+
+def _failed_subgate_detail(phase_body: dict) -> str:
+    """Find the failing sub-gate inside a phase body and return a one-line
+    `— sub-gate ...` suffix. Handles the three real sub-gate log shapes (S11):
+      - dict with `ok: False`           (contracts, dep_honesty, dry_import, ...)
+      - dict with `rc != 0` and no `ok` (entry_execution)
+      - list of dicts each with `rc`    (smoke_tests)
+    The pre-S11 extractor only knew the first shape, so a smoke_tests failure
+    surfaced as a bare `status=failed` with no sub-gate. Returns '' if no
+    failing sub-gate is identifiable."""
+    for k, v in phase_body.items():
+        if isinstance(v, dict):
+            if v.get("ok") is False:
+                return f" — sub-gate `{k}` failed"
+            # rc-shaped sub-gate (e.g. entry_execution): rc present, no `ok`.
+            if "ok" not in v and isinstance(v.get("rc"), int) and v["rc"] != 0:
+                err = _first_error_line(v.get("stderr", ""), v.get("stdout", ""))
+                tail = f": {err}" if err else ""
+                return f" — sub-gate `{k}` rc={v['rc']}{tail}"
+        elif isinstance(v, list):
+            # list-shaped sub-gate (e.g. smoke_tests): each item has rc/path.
+            for item in v:
+                if isinstance(item, dict) and isinstance(item.get("rc"), int) and item["rc"] != 0:
+                    err = _first_error_line(item.get("stderr", ""), item.get("stdout", ""))
+                    where = item.get("path", "")
+                    loc = f" ({where})" if where else ""
+                    tail = f": {err}" if err else ""
+                    return f" — sub-gate `{k}`{loc} rc={item['rc']}{tail}"
+    return ""
 
 
 def _ocb_subprocess_env(project_dir: Path) -> dict:
