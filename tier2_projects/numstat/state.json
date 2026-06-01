@@ -39,28 +39,39 @@
       ]
     },
     "histogram-builder": {
-      "status": "failed",
+      "status": "done",
       "spec_sha256": "35f3e27042d66bda2cec32cbd31e5a629796ce3db03d792f1762de3ef1e27e71",
-      "ocb_run_id": "run_1780273462",
+      "ocb_run_id": "run_1780336318",
       "source_dir": "subsystems/histogram-builder/",
-      "built_at": null,
-      "error": "phase=`cross_file` status=failed"
+      "built_at": "2026-06-01T17:53:32Z",
+      "error": null,
+      "generated_files": [
+        "histogram_builder.py",
+        "histogram_utils.py"
+      ]
     },
     "report-generator": {
-      "status": "pending",
+      "status": "done",
       "spec_sha256": "46c9a5bd301884ef25fd6c57f8b85ab94d7edb9f22035a1ee5cf4dc415017812",
-      "ocb_run_id": null,
+      "ocb_run_id": "run_1780336412",
       "source_dir": "subsystems/report-generator/",
-      "built_at": null,
-      "error": null
+      "built_at": "2026-06-01T17:55:37Z",
+      "error": null,
+      "generated_files": [
+        "formatter.py",
+        "report_generator.py"
+      ]
     },
     "file-writer": {
-      "status": "pending",
+      "status": "done",
       "spec_sha256": "96e5d9490ad541e054a0dcc9314c178597a57a978931b62543c148c94a4b39e6",
-      "ocb_run_id": null,
+      "ocb_run_id": "run_1780336537",
       "source_dir": "subsystems/file-writer/",
-      "built_at": null,
-      "error": null
+      "built_at": "2026-06-01T17:56:36Z",
+      "error": null,
+      "generated_files": [
+        "build_subsystem_file_writer_purpose_writ.py"
+      ]
     }
   },
   "history": [
@@ -159,7 +170,34 @@
         "report-generator"
       ],
       "succeeded": []
+    },
+    {
+      "event": "build_start",
+      "at": "2026-06-01T17:51:58Z",
+      "targets": [
+        "histogram-builder",
+        "report-generator",
+        "file-writer"
+      ],
+      "only": null
+    },
+    {
+      "event": "build_complete",
+      "at": "2026-06-01T17:56:36Z",
+      "built": [
+        "histogram-builder",
+        "report-generator",
+        "file-writer"
+      ],
+      "elapsed_seconds": 278.7
+    },
+    {
+      "event": "smoke",
+      "at": "2026-06-01T17:56:36Z",
+      "ok": false,
+      "summary": "import of file-writer failed",
+      "entries": {}
     }
   ],
-  "last_session_at": "2026-06-01T00:25:47Z"
+  "last_session_at": "2026-06-01T17:56:36Z"
 }
