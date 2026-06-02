@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
+import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -74,29 +75,72 @@ def _entry_module_name(subsystem_name: str) -> str:
     return subsystem_name.replace("-", "_")
 
 
+# Stems that are NOT the entry module: tests, smoke harnesses, helper/util
+# modules, package markers. Used by _resolve_entry_file's discovery fallback.
+_NON_ENTRY_STEM_RE = re.compile(r"(^test_|_test$|smoke|conftest|^__init__$|_utils$|^utils$)")
+
+
+def _resolve_entry_file(subsystem_dir: Path, subsystem_name: str) -> Path:
+    """Locate the subsystem's entry `.py` module.
+
+    Prefers the canonical `<name with _>.py`. When that is ABSENT — e.g. Tier 1
+    degraded to its single-file legacy path and slugged the filename from the
+    prompt header (the S14 file-writer finding: `build_subsystem_file_writer_…py`
+    instead of `file_writer.py`) — DISCOVER the entry instead of hard-failing:
+    take the `.py` files that don't look like tests/smoke/helpers and pick the
+    best by name-hint (the same hints discover_entry uses for the function).
+    With one non-helper module this is just "that module". Raises
+    FileNotFoundError only when there is genuinely no candidate.
+
+    This makes smoke TOLERANT of a degraded build (a down payment on the
+    DAG-aware runner) rather than dying at import on a non-canonical filename.
+    """
+    subsystem_dir = Path(subsystem_dir)
+    canonical = subsystem_dir / f"{_entry_module_name(subsystem_name)}.py"
+    if canonical.exists():
+        return canonical
+    pyfiles = sorted(subsystem_dir.glob("*.py"))
+    if not pyfiles:
+        raise FileNotFoundError(
+            f"no entry module for `{subsystem_name}` in {subsystem_dir} "
+            f"(no .py files at all; not built?)"
+        )
+    non_helper = [p for p in pyfiles if not _NON_ENTRY_STEM_RE.search(p.stem)]
+    candidates = non_helper or pyfiles  # if everything looks like a helper, fall back
+    hints = _name_hints(subsystem_name)
+
+    def score(p: Path) -> int:
+        low = p.stem.lower()
+        return sum(2 for h in hints if h and h in low)
+
+    # Highest hint score wins; ties break alphabetically (pyfiles is sorted, and
+    # max returns the first maximal element). Deterministic.
+    return max(candidates, key=score)
+
+
 def _import_entry(subsystem_dir: Path, subsystem_name: str):
-    """Import a subsystem's canonical entry module in ISOLATION and return the
-    live module object.
+    """Import a subsystem's entry module in ISOLATION and return the live module
+    object.
+
+    The entry module is resolved by _resolve_entry_file: the canonical
+    `<name with _>.py` when present, else discovered (handles a degraded/slugged
+    filename). The module is loaded under its real file-stem name, so sibling
+    imports (`from writer_utils import …`) resolve via sys.path.
 
     Isolation matters: subsystems may ship same-named helpers (csv-parser ships
     `utils.py`; another subsystem could too). We put the subsystem's own dir on
-    sys.path so its sibling imports (`from utils import parse_csv`) resolve to
-    ITS files, exec the entry module, then strip the dir from sys.path and purge
-    the modules this import added. The returned module object stays alive via
-    our reference, and the functions inside keep their globals — so a later
-    subsystem's `utils` can't shadow an earlier one's.
+    sys.path so its sibling imports resolve to ITS files, exec the entry module,
+    then strip the dir from sys.path and purge the modules this import added. The
+    returned module object stays alive via our reference, and the functions
+    inside keep their globals — so a later subsystem's `utils` can't shadow an
+    earlier one's.
 
     Importing never triggers the subsystem's `__main__` self-check: the module
     is loaded under its real name, not "__main__" (the S7-confirmed contract).
     """
     subsystem_dir = Path(subsystem_dir)
-    modname = _entry_module_name(subsystem_name)
-    entry_file = subsystem_dir / f"{modname}.py"
-    if not entry_file.exists():
-        raise FileNotFoundError(
-            f"no canonical entry module {modname}.py in {subsystem_dir} "
-            f"(expected `{subsystem_name}` -> {modname}.py)"
-        )
+    entry_file = _resolve_entry_file(subsystem_dir, subsystem_name)
+    modname = entry_file.stem
 
     dir_str = str(subsystem_dir)
     added = dir_str not in sys.path

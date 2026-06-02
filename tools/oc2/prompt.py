@@ -104,6 +104,8 @@ def build_task_prompt(
     # caller passed `subsystems/x` or `subsystems/x/`.
     deps_str = {name: str(p) for name, p in dep_source_paths.items()}
     sub_dir_str = str(subsystem_dir).rstrip("/")
+    # Canonical underscore module name for this subsystem (kebab -> snake).
+    entry_module = subsystem.name.replace("-", "_")
 
     purpose = subsystem.purpose.strip() or "(no purpose recorded)"
     owns_state = subsystem.owns_state.strip() or "stateless"
@@ -139,4 +141,11 @@ def build_task_prompt(
         "\n"
         "Build as a single coherent script or as a small set of files. Do not\n"
         f"split unless the work is genuinely multi-file. Output to {sub_dir_str}/.\n"
+        "\n"
+        "Name every Python file you create with a bare, importable module name —\n"
+        "letters, digits, and underscores only, ending in `.py`. NO hyphens: a\n"
+        "hyphenated filename is not a valid Python module and Tier 1 will reject\n"
+        "the file plan and silently fall back to a single mangled file. This\n"
+        f"subsystem is named `{subsystem.name}`, so name its entry module\n"
+        f"`{entry_module}.py` (hyphens become underscores), NOT `{subsystem.name}.py`.\n"
     )

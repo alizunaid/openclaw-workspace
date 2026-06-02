@@ -22,6 +22,7 @@ from oc2.smoke import (  # noqa: E402
     SmokeResult,
     _import_entry,
     _name_hints,
+    _resolve_entry_file,
     discover_entry,
     run_smoke,
 )
@@ -192,10 +193,41 @@ class TestImportIsolation(SmokeTestBase):
         mod = _import_entry(d, "file-reader")
         self.assertTrue(hasattr(mod, "read_csv_file"))
 
-    def test_missing_canonical_entry_module_raises(self):
+    def test_prefers_canonical_entry_module(self):
+        # When the canonical <name>.py exists, it wins even over a hint-y slug.
+        d = self.tmp / "subsystems" / "file-writer"
+        d.mkdir(parents=True)
+        (d / "file_writer.py").write_text("def write_x(c, p): pass\n", encoding="utf-8")
+        (d / "build_subsystem_file_writer_slug.py").write_text("y = 1\n", encoding="utf-8")
+        self.assertEqual(_resolve_entry_file(d, "file-writer").name, "file_writer.py")
+
+    def test_discovers_slugged_entry_module_when_canonical_absent(self):
+        # The S14 degrade shape: ocb slugged the filename from the prompt header,
+        # so the canonical file_writer.py does NOT exist. Smoke must DISCOVER the
+        # slugged module rather than hard-fail.
+        d = self.tmp / "subsystems" / "file-writer"
+        d.mkdir(parents=True)
+        (d / "build_subsystem_file_writer_purpose_writ.py").write_text(
+            "def write_markdown_report(c, p):\n    open(p, 'w').write(c)\n",
+            encoding="utf-8")
+        resolved = _resolve_entry_file(d, "file-writer")
+        self.assertEqual(resolved.name, "build_subsystem_file_writer_purpose_writ.py")
+        mod = _import_entry(d, "file-writer")
+        self.assertTrue(hasattr(mod, "write_markdown_report"))
+
+    def test_discovery_skips_test_and_helper_modules(self):
+        # The entry must be the non-helper module even when tests/utils sit beside it.
+        d = self.tmp / "subsystems" / "file-writer"
+        d.mkdir(parents=True)
+        (d / "writer_main.py").write_text("def write_md(c, p): pass\n", encoding="utf-8")
+        (d / "test_writer.py").write_text("def test_x(): pass\n", encoding="utf-8")
+        (d / "writer_utils.py").write_text("def helper(): pass\n", encoding="utf-8")
+        self.assertEqual(_resolve_entry_file(d, "file-writer").name, "writer_main.py")
+
+    def test_no_py_files_at_all_raises(self):
+        # The genuine "not built" case still raises (only when there is NOTHING).
         d = self.tmp / "subsystems" / "file-reader"
         d.mkdir(parents=True)
-        (d / "something_else.py").write_text("x = 1\n", encoding="utf-8")
         with self.assertRaises(FileNotFoundError):
             _import_entry(d, "file-reader")
 

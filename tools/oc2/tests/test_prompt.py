@@ -138,6 +138,23 @@ class TestBuildTaskPrompt(unittest.TestCase):
             build_task_prompt(s, order2, "ip", "subsystems/x/"),
         )
 
+    def test_filename_instruction_steers_underscore_for_hyphenated_name(self):
+        """S15 prompt fix: a hyphenated subsystem name must steer the model to an
+        underscore module filename, preventing the FILENAME_RE reject -> legacy
+        degrade -> slugged-name path (the S14 file-writer finding)."""
+        s = mk_sub(name="file-writer")
+        out = build_task_prompt(s, {}, "ip", "subsystems/file-writer/")
+        self.assertIn("NO hyphens", out)
+        # The concrete steer: name it file_writer.py, not file-writer.py.
+        self.assertIn("`file_writer.py`", out)
+        self.assertIn("NOT `file-writer.py`", out)
+
+    def test_filename_instruction_uses_each_subsystems_own_name(self):
+        s = mk_sub(name="report-generator")
+        out = build_task_prompt(s, {}, "ip", "subsystems/report-generator/")
+        self.assertIn("`report_generator.py`", out)
+        self.assertIn("NOT `report-generator.py`", out)
+
 
 if __name__ == "__main__":
     unittest.main()

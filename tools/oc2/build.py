@@ -116,6 +116,34 @@ def _extract_failed_gate(log_path: Path | None) -> str:
     return f"ocb exited non-zero; no failed phase in log (see {log_path})"
 
 
+def _manifest_degrade_detail(log_path: Path | None) -> str | None:
+    """If ocb's manifest phase DEGRADED (the planner's file plan was rejected,
+    so ocb fell back to its single-file legacy path), return a one-line reason;
+    else None.
+
+    A degrade still produces a GREEN build, but the entry module is named by the
+    legacy path's prompt-slug heuristic rather than the canonical name (the S14
+    file-writer finding: a hyphenated manifest entry path `file-writer.py` is
+    rejected by ocb's FILENAME_RE → degrade → `build_subsystem_file_writer_…py`).
+    ocb logs this and prints a WARNING to its own stdout, but oc2 reported the
+    subsystem green with no trace — a silent landmine. Surfacing it here makes
+    the degrade LOUD in oc2's build output, state, and BUILD_REPORT."""
+    if not log_path or not log_path.exists():
+        return None
+    try:
+        data = json.loads(log_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    manifest = data.get("phases", {}).get("manifest", {})
+    if not isinstance(manifest, dict) or manifest.get("status") != "degraded":
+        return None
+    reason = manifest.get("reason") or "manifest planner output rejected"
+    errors = manifest.get("errors")
+    if isinstance(errors, list) and errors:
+        return f"{reason}: {errors[0]}"
+    return str(reason)
+
+
 def _first_error_line(*texts: str) -> str:
     """First non-blank line across the given text fields (a traceback's last
     line is the most informative, but the first non-blank is cheap + stable);
@@ -333,6 +361,17 @@ def build_report_markdown(state: dict, topo_order: list[str], project_name: str,
         )
     lines.append("")
 
+    # Surface any manifest degrades — green builds, but the file plan was
+    # rejected and ocb fell back to its single-file legacy path (slugged name).
+    degraded = [(n, subs.get(n, {}).get("manifest_degraded"))
+                for n in topo_order if subs.get(n, {}).get("manifest_degraded")]
+    if degraded:
+        lines.append("## Manifest degrades (built green via legacy fallback)")
+        lines.append("")
+        for n, reason in degraded:
+            lines.append(f"- `{n}`: {reason}")
+        lines.append("")
+
     verdict = "PASS" if smoke_ok else "FAIL"
     lines.append("## Integration smoke")
     lines.append("")
@@ -535,9 +574,23 @@ def build_project(project_dir: Path, name: str, only: str | None = None,
                 "generated_files": copied,
             })
             entry.pop("started_at", None)
+            # A degraded manifest still builds green, but the file plan was
+            # rejected and ocb slugged the filename — surface it LOUDLY instead
+            # of leaving a silent landmine (S15). Recorded on the entry so it
+            # also shows up in BUILD_REPORT.
+            degrade = _manifest_degrade_detail(result.log_path)
+            if degrade:
+                entry["manifest_degraded"] = degrade
+            else:
+                entry.pop("manifest_degraded", None)
             write_state(project_dir, state)
             print(f"[oc2 build]   <- {sub_name} done in {elapsed:.1f}s "
                   f"(run {result.run_id}, {len(copied)} files)", flush=True)
+            if degrade:
+                print(f"[oc2 build]   !! {sub_name}: manifest DEGRADED to legacy "
+                      f"single-file mode — {degrade}", flush=True)
+                _ntfy("oc2 build: manifest degraded",
+                      f"{project_name}/{sub_name}: {degrade}", "high")
             _ntfy("oc2 build: subsystem built",
                   f"{project_name}/{sub_name} done in {elapsed:.0f}s")
             succeeded.append(sub_name)
