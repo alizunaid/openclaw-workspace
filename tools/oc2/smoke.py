@@ -55,6 +55,45 @@ EXPECTED_CELLS = [
     "Bob, Jr.", "Los Angeles, CA",
 ]
 
+# numstat is numbers, not CSV cells. A small fixture with known values so the
+# assertion can check the on-disk report contains the right COMPUTED stats.
+# count=10, sum=62.0, mean=6.2, min=1.0, max=12.0 — the report-generator's
+# formatter prints Mean/Min/Max (Median/Mode/StdDev/Variance fall to N/A, a
+# benign upstream-contract gap), so we assert on those three values.
+NUMSTAT_NUMBERS = "1\n2\n3\n4\n5\n10\n10\n12\n7\n8\n"
+NUMSTAT_EXPECTED = ["6.2", "1.0", "12.0"]
+
+
+@dataclass
+class SmokeSpec:
+    """Per-project smoke fixture + assertion.
+
+    THE PROJECT-AWARE SEAM (flagged): the DAG WALK below is fully general — it
+    composes any single-source/single-sink DAG by feeding each node its upstream
+    results. But what to FEED the source and what to ASSERT on the output are
+    inherently project-specific (csvmd wants a CSV in + cell-strings out;
+    numstat wants numbers in + computed stats out). v1 keeps these in a small
+    per-project registry rather than trying to synthesize a fixture from the
+    architecture. A project with no registered spec is a FINDING (the runner
+    refuses to guess what input shape the source expects), not a silent pass."""
+    input_filename: str          # the source's input file, e.g. "input.csv"
+    input_content: str           # fixture text written to that file
+    assert_contains: list        # substrings that MUST appear in the output file
+    label: str = ""              # short human description for the verdict line
+
+
+SMOKE_SPECS = {
+    "csvmd": SmokeSpec("input.csv", SMOKE_CSV, EXPECTED_CELLS,
+                       "csv cells incl. quoted-comma row"),
+    "numstat": SmokeSpec("input.txt", NUMSTAT_NUMBERS, NUMSTAT_EXPECTED,
+                         "computed mean/min/max"),
+}
+
+
+def smoke_spec_for(project_name: str):
+    """The registered SmokeSpec for a project, or None (a FINDING upstream)."""
+    return SMOKE_SPECS.get(project_name)
+
 
 @dataclass
 class SmokeResult:
@@ -253,13 +292,83 @@ def discover_entry(module, subsystem_name: str, want_arity: int):
     return best_name, best_fn
 
 
+# --- DAG ordering -----------------------------------------------------------
+
+def _order_upstreams(sub, upstreams: list[str]):
+    """Order a JOIN node's upstreams to match its entry-function call signature.
+
+    The order is derived from the architecture's `Inputs:` declaration order:
+    each upstream must be named in a distinct Inputs bullet, and the call order
+    follows the bullets. For numstat's report-generator —
+        generate_report(summary, histogram)
+    with Inputs `- summary statistics from statistics-computer` then
+    `- histogram data from histogram-builder` — this maps statistics-computer
+    (summary) before histogram-builder (histogram), NOT alphabetically or by
+    topo-arbitrary order.
+
+    Returns (ordered_list, None) on success, or (None, reason) when the order
+    can't be unambiguously derived — THE SUBTLE PART is a FINDING, never a
+    silent guess. Zero/one upstream is trivially ordered.
+    """
+    ups = list(upstreams)
+    if len(ups) <= 1:
+        return ups, None
+    inputs = list(getattr(sub, "inputs", []) or [])
+    pos: dict[str, int | None] = {}
+    for u in ups:
+        # Match the upstream name as a WHOLE token (word-boundary), not an
+        # arbitrary substring — else a short name would spuriously match inside
+        # an unrelated word. Accept the kebab, spaced, and snake spellings.
+        variants = {u.lower(), u.replace("-", " ").lower(), u.replace("-", "_").lower()}
+        pats = [re.compile(r"\b" + re.escape(v) + r"\b") for v in variants]
+        found = None
+        for i, bullet in enumerate(inputs):
+            b = bullet.lower()
+            if any(p.search(b) for p in pats):
+                found = i
+                break
+        pos[u] = found
+    missing = [u for u in ups if pos[u] is None]
+    if missing:
+        return None, (f"multi-upstream join: cannot map upstream(s) {missing} to any "
+                      f"`Inputs:` bullet {inputs!r} — argument order is ambiguous")
+    if len({pos[u] for u in ups}) != len(ups):
+        return None, (f"multi-upstream join: upstreams map to overlapping `Inputs:` "
+                      f"bullets ({pos}) — argument order is ambiguous")
+    return sorted(ups, key=lambda u: pos[u]), None
+
+
+def _format_chain(topo_order, ordered_ups, entries, source, sink) -> str:
+    """A readable rendering of the DAG that was actually composed."""
+    parts = []
+    for n in topo_order:
+        if n == source:
+            role, ins = "source", "(input file)"
+        else:
+            role = "sink" if n == sink else ("join" if len(ordered_ups[n]) > 1 else "transform")
+            ins = "+".join(ordered_ups[n])
+        parts.append(f"{n}:{entries[n]}({ins})[{role}]")
+    return " ; ".join(parts)
+
+
 # --- the chain --------------------------------------------------------------
 
-def run_smoke(project_dir: Path, topo_order: list[str]) -> SmokeResult:
-    """Compose the built subsystems end-to-end and verify the on-disk output.
+def run_smoke(project_dir: Path, arch, topo_order: list[str], spec) -> SmokeResult:
+    """Compose the built subsystems as a DAG and verify the on-disk output.
 
     project_dir: tier2_projects/<name>/ (real or a tmpdir in tests).
-    topo_order:  subsystem names, deps before dependents (from validate()).
+    arch:        the parsed Architecture — supplies each node's UPSTREAMS
+                 (depends_on) and `Inputs:` declarations (the DAG edges).
+    topo_order:  subsystem names, deps before dependents.
+    spec:        the per-project SmokeSpec (source input + output assertion).
+
+    The runner walks topo order keeping a results map {node -> output}. Each node
+    is fed its upstreams' results per the DAG edges (NOT a single threaded value):
+      - SOURCE (no upstreams): entry(input_path)
+      - single-upstream transform: entry(results[upstream])
+      - MULTI-upstream JOIN: entry(*[results[u] for u in ordered upstreams]),
+        ordered by the architecture's Inputs declaration (see _order_upstreams)
+      - SINK (topo-last / no dependents): entry(*upstream_results, out_path)
 
     Returns a SmokeResult; never raises for a composition break — that is the
     thing under test, so it comes back as ok=False + findings.
@@ -272,6 +381,30 @@ def run_smoke(project_dir: Path, topo_order: list[str]) -> SmokeResult:
     if len(topo_order) < 2:
         return SmokeResult(False, f"need >=2 subsystems to smoke; got {topo_order}",
                            findings=["architecture has fewer than 2 subsystems"])
+    if spec is None:
+        return SmokeResult(
+            False, "no smoke fixture registered for this project",
+            findings=["no SmokeSpec: the runner needs a per-project input fixture "
+                      "+ output assertion (add one to SMOKE_SPECS) — it will not "
+                      "guess what input the source expects"])
+
+    # DAG edges from the architecture (NOT topo position).
+    by_name = arch.by_name()
+    upstreams = {n: [u for u in by_name[n].depends_on if u in topo_order]
+                 for n in topo_order}
+    dependents: dict[str, list[str]] = {n: [] for n in topo_order}
+    for n in topo_order:
+        for u in upstreams[n]:
+            dependents[u].append(n)
+    sources = [n for n in topo_order if not upstreams[n]]
+    sinks = [n for n in topo_order if not dependents[n]]
+    if len(sources) != 1:
+        findings.append(f"v1 models a single-source pipeline; found sources={sources}")
+        return SmokeResult(False, "not a single-source DAG", findings=findings)
+    if len(sinks) != 1:
+        findings.append(f"v1 models a single-sink pipeline; found sinks={sinks}")
+        return SmokeResult(False, "not a single-sink DAG", findings=findings)
+    source, sink = sources[0], sinks[0]
 
     # Import every entry module up front, in topo order, so an ImportError is
     # reported against the exact subsystem (and proves import-safety — the
@@ -288,12 +421,21 @@ def run_smoke(project_dir: Path, topo_order: list[str]) -> SmokeResult:
             findings.append(f"{name}: import failed — {type(e).__name__}: {e}")
             return SmokeResult(False, f"import of {name} failed", findings=findings)
 
-    # Resolve entry callables. Roles by topo position: first=source(arity 1),
-    # last=sink(arity 2), middle=unary transform(arity 1).
-    first, last = topo_order[0], topo_order[-1]
+    # Order each node's upstreams (the join arg-ordering — a FINDING if ambiguous).
+    ordered_ups: dict[str, list[str]] = {}
+    for name in topo_order:
+        ordered, why = _order_upstreams(by_name[name], upstreams[name])
+        if ordered is None:
+            findings.append(f"{name}: {why}")
+            return SmokeResult(False, f"cannot order inputs for {name}",
+                               findings=findings, entries=entries)
+        ordered_ups[name] = ordered
+
+    # Resolve entry callables with per-node wanted arity (#inputs, +1 for sink).
     fns: dict[str, object] = {}
     for name in topo_order:
-        want = 2 if name == last else 1
+        n_inputs = 1 if name == source else len(ordered_ups[name])
+        want = n_inputs + (1 if name == sink else 0)
         try:
             ename, fn = discover_entry(modules[name], name, want)
         except LookupError as e:
@@ -302,24 +444,41 @@ def run_smoke(project_dir: Path, topo_order: list[str]) -> SmokeResult:
         entries[name] = ename
         fns[name] = fn
 
-    # Write the fixture CSV + run the chain, all under one tmp dir.
+    # Write the source fixture + run the DAG, all under one tmp dir.
     import tempfile
     tmpdir = Path(tempfile.mkdtemp(prefix="oc2_smoke_"))
-    csv_path = tmpdir / "input.csv"
+    in_path = tmpdir / spec.input_filename
     out_path = tmpdir / "output.md"
-    csv_path.write_text(SMOKE_CSV, encoding="utf-8")
+    in_path.write_text(spec.input_content, encoding="utf-8")
 
     try:
-        value = None
+        results: dict[str, object] = {}
         for name in topo_order:
             fn = fns[name]
+            if name == source:
+                call_args = [str(in_path)]
+            else:
+                call_args = [results[u] for u in ordered_ups[name]]
+                if name == sink:
+                    call_args.append(str(out_path))
+
+            # Arity pre-check: a required parameter the DAG can't supply is a
+            # FINDING, not a raw TypeError. (numstat's histogram-builder entry
+            # calculate_histogram(number_stream, bucket_size) needs a bucket_size
+            # that no upstream provides — exactly this case.)
+            req, tot = _arity(fn)
+            if not (req <= len(call_args) <= tot):
+                extra = ", + out_path" if name == sink else ""
+                findings.append(
+                    f"{name} (entry `{entries[name]}`) requires {req}..{tot} positional "
+                    f"arg(s) but the DAG supplies {len(call_args)} "
+                    f"(upstreams={ordered_ups[name]}{extra}) — a required parameter has "
+                    f"no upstream source."
+                )
+                return SmokeResult(False, f"{name} arity mismatch",
+                                   findings=findings, entries=entries)
             try:
-                if name == first:
-                    value = fn(str(csv_path))
-                elif name == last:
-                    value = fn(value, str(out_path))
-                else:
-                    value = fn(value)
+                results[name] = fn(*call_args)
             except Exception as e:  # noqa: BLE001 — a runtime break is a finding
                 findings.append(
                     f"{name} (entry `{entries[name]}`) raised "
@@ -327,33 +486,29 @@ def run_smoke(project_dir: Path, topo_order: list[str]) -> SmokeResult:
                 )
                 return SmokeResult(False, f"{name} raised at runtime",
                                    findings=findings, entries=entries)
-            # Type sanity between stages (a shape mismatch is a finding, not a crash).
-            if name == first and not isinstance(value, str):
-                findings.append(f"{first} returned {type(value).__name__}, expected str (raw CSV)")
-                return SmokeResult(False, "source did not return a string",
-                                   findings=findings, entries=entries)
 
-        # The sink wrote to disk — read it back and assert the cells survived.
+        # The sink wrote to disk — read it back and assert expected content survived.
         if not out_path.exists():
-            findings.append(f"{last} (entry `{entries[last]}`) did not create {out_path.name}")
+            findings.append(f"{sink} (entry `{entries[sink]}`) did not create {out_path.name}")
             return SmokeResult(False, "writer produced no file",
                                out_path=str(out_path), findings=findings, entries=entries)
         markdown = out_path.read_text(encoding="utf-8")
-        missing = [c for c in EXPECTED_CELLS if c not in markdown]
+        missing = [c for c in spec.assert_contains if c not in markdown]
         if missing:
             findings.append(
-                f"on-disk markdown is missing expected cell(s): {missing} "
-                f"(quoting or formatting broke in the chain)"
+                f"on-disk output is missing expected content {missing} "
+                f"({spec.label or 'expected values'} did not survive the chain)"
             )
-            return SmokeResult(False, f"output missing {len(missing)} cell(s)",
+            return SmokeResult(False, f"output missing {len(missing)} item(s)",
                                out_path=str(out_path), markdown=markdown,
                                findings=findings, entries=entries)
 
-        chain = " -> ".join(f"{n}:{entries[n]}" for n in topo_order)
+        chain = _format_chain(topo_order, ordered_ups, entries, source, sink)
+        label = f" [{spec.label}]" if spec.label else ""
         return SmokeResult(
             True,
-            f"chain composes end-to-end on disk ({chain}); "
-            f"all {len(EXPECTED_CELLS)} cells intact incl. quoted-comma row",
+            f"DAG composes end-to-end on disk ({chain}); "
+            f"all {len(spec.assert_contains)} expected item(s) present{label}",
             out_path=str(out_path), markdown=markdown, entries=entries,
         )
     finally:
@@ -404,8 +559,8 @@ def cmd_smoke(args) -> int:
         return 1
 
     print(f"[oc2 smoke] {name}: importing {len(res.topo_order)} subsystem(s) "
-          f"in topo order and running the chain...", flush=True)
-    result = run_smoke(project_dir, res.topo_order)
+          f"in topo order and running the DAG chain...", flush=True)
+    result = run_smoke(project_dir, arch, res.topo_order, smoke_spec_for(name))
     print(f"[oc2 smoke] entries: "
           + ", ".join(f"{k}->{v}" for k, v in result.entries.items()))
     if result.ok:

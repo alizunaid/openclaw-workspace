@@ -31,3 +31,6 @@ review_bundle/
 # because the global `*.json` rule above would otherwise hide it (doc Section 4).
 tier2_projects/**/runs/
 !tier2_projects/**/state.json
+
+# Persistent session handoff (canonical, read by the `cchand` alias). Local-only.
+.last_cc_output.md

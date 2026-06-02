@@ -34,7 +34,7 @@ from oc2.approve import resolve_project
 from oc2.architecture import ParseError, parse, validate
 from oc2.diff import propagate_pending
 from oc2.prompt import build_task_prompt
-from oc2.smoke import run_smoke
+from oc2.smoke import run_smoke, smoke_spec_for
 from oc2.state import append_history, now_iso, read_state, write_state
 
 # Paths the real ocb_runner needs to discover its outputs.
@@ -405,7 +405,7 @@ def _finalize_full_build(project_dir: Path, state: dict, arch, topo_order: list[
     flag. Never raises — a smoke crash is itself a finding written to the
     report (we must not let it mask a successful build's other state)."""
     try:
-        result = run_smoke(project_dir, topo_order)
+        result = run_smoke(project_dir, arch, topo_order, smoke_spec_for(project_name))
         smoke_ok, summary = result.ok, result.summary
         entries, findings = result.entries, result.findings
     except Exception as e:  # noqa: BLE001 — defensive; run_smoke shouldn't raise
