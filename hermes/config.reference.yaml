@@ -1,0 +1,41 @@
+# hermes/config.reference.yaml
+# ============================================================================
+# Reproducible reference for the Hermes AGENT configuration (Session 18).
+# NOT loaded by Hermes directly — Hermes reads ~/.hermes/config.yaml. This file
+# records the settings that differ from Hermes' install defaults so the agent
+# config can be rebuilt after a fresh clone/reinstall.
+#
+# NO SECRETS HERE. API keys/tokens live ONLY in ~/.hermes/.env (gitignored,
+# never committed). The local Ollama endpoint needs no real key — a dummy
+# OPENAI_API_KEY in ~/.hermes/.env satisfies the OpenAI-compatible client.
+#
+# To apply: merge these keys into ~/.hermes/config.yaml (Hermes will normalize
+# the file's structure on next load; these VALUES persist), then restart:
+#   hermes gateway stop ; nohup hermes gateway run > ~/.hermes/logs/gateway.run.log 2>&1 &
+# ============================================================================
+
+model:
+  # Hermes AGENT model ONLY. The OpenClaw ENGINE is independent — it pins
+  # qwen2.5-coder:32b in its own source (tools/oc_builder.py:38,
+  # tools/oc2/design.py:36) with its own Ollama client, and does NOT read this
+  # file. qwen3-coder:30b is used for the agent because qwen2.5-coder:32b emits
+  # tool calls as TEXT (not structured tool_calls) via Ollama /v1, so the agent
+  # could not auto-execute skills (the S17 finding). qwen3-coder:30b returns
+  # proper tool_calls — verified by direct /v1 probe and live e2e (S18).
+  default: qwen3-coder:30b
+  provider: ollama                      # alias -> custom (OpenAI-compatible)
+  base_url: http://localhost:11434/v1
+  # Hermes requires >=64K context; Ollama advertises qwen at 32K. These two
+  # raise the displayed + runtime (num_ctx) window WITHOUT changing the model.
+  context_length: 65536
+  ollama_num_ctx: 65536
+
+terminal:
+  # Raised from the install default (60s) so the agent can drive real OpenClaw
+  # engine builds, which take ~250-300s of LLM generation plus VRAM model-reload
+  # time (the agent and engine models cannot co-reside on a 24GB GPU — each
+  # agent->engine->agent handoff forces a full reload; see STATE.md S18).
+  timeout: 600
+  lifetime_seconds: 900
+
+# Everything else in ~/.hermes/config.yaml is Hermes' normalized defaults.
