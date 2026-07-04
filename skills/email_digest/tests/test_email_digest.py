@@ -181,6 +181,64 @@ def test_t5_digest_written_and_grouped(classified, config, tmp_path):
         f"expected {len(classified)} item lines, found {line_count}")
 
 
+REAL_DIR = INBOX_DIR / "real"
+
+
+# --- T7: real .eml parsing --------------------------------------------------
+def test_t7_real_eml_parsing():
+    if not REAL_DIR.is_dir():
+        pytest.skip(f"no {REAL_DIR} — real .eml corpus not present")
+    files = sorted(list(REAL_DIR.glob("*.eml")) + list(REAL_DIR.glob("*.txt")))
+    if not files:
+        pytest.skip(f"{REAL_DIR} is empty — no real emails to parse")
+    for path in files:
+        email = digest.parse_email(path, max_body_chars=4000)  # must not raise
+        for key in ("from", "subject", "body"):
+            assert email.get(key) and email[key].strip(), (
+                f"{path.name}: empty {key!r} after .eml parse")
+        assert email["filename"] == path.name
+        # body must be real content, not a MIME/base64 blob left undecoded
+        assert "Content-Transfer-Encoding" not in email["body"], (
+            f"{path.name}: raw MIME leaked into body")
+
+
+# --- T7b: body truncation to config max -------------------------------------
+def test_t7b_body_truncation(tmp_path):
+    p = tmp_path / "long.txt"
+    p.write_text("From: a@b.com\nSubject: s\nDate: d\n\n" + ("x" * 9000))
+    email = digest.parse_email(p, max_body_chars=4000)
+    assert email["body"].startswith("x")
+    assert len(email["body"]) <= 4000 + len(digest._TRUNCATION_MARKER) + 4
+    assert email["body"].rstrip().endswith("[truncated]")
+    # no truncation when body is under the cap
+    short = digest.parse_email(p, max_body_chars=None)
+    assert "[truncated]" not in short["body"]
+
+
+# --- T8: condensed alert body (ntfy) ----------------------------------------
+def test_t8_build_alert_actionable_only():
+    items = [
+        {"filename": "a", "status": "WAITING_ON_YOU", "category": "FINANCE",
+         "summary": "pay invoice 4471", "next_step": "pay it"},
+        {"filename": "b", "status": "BLOCKED", "category": "VENDORS_EQUIPMENT",
+         "summary": "customs hold on FFUs", "next_step": "wait on CBP"},
+        {"filename": "c", "status": "WAITING", "category": "PERMITS_INSPECTIONS",
+         "summary": "inspection queued", "next_step": "await date"},
+        {"filename": "d", "status": "OPEN", "category": "LEGAL",
+         "summary": "entity docs filed", "next_step": "file them"},
+    ]
+    cfg = digest.load_config(CONFIG_PATH)
+    alert = digest.build_alert(items, cfg, "2026-07-04", digest_path="/x/y.md")
+    assert "4 emails" in alert and "1 waiting on you" in alert and "1 blocked" in alert
+    assert "pay invoice 4471" in alert          # WAITING_ON_YOU included
+    assert "customs hold on FFUs" in alert       # BLOCKED included
+    assert "inspection queued" not in alert       # WAITING excluded
+    assert "entity docs filed" not in alert        # OPEN excluded
+    assert "/x/y.md" in alert
+    # no ntfy topic / URL ever embedded in the alert body
+    assert "ntfy.sh" not in alert
+
+
 # --- T6: read-only / local-only proof (source grep) -------------------------
 def test_t6_no_write_or_remote_network():
     src = (SKILL_DIR / "digest.py").read_text()
