@@ -37,7 +37,20 @@ fallback:
   status: OPEN
   category: UNCLASSIFIED
 
-# Short glosses fed to the classifier prompt to sharpen labels. Config-driven
+# Full status DEFINITIONS fed to the classifier prompt (S21) to sharpen the
+# hard distinctions — chiefly BLOCKED (external dependency) vs WAITING (routine
+# response pending) and REVIEW (deliverable to eyeball) vs WAITING_ON_YOU (ball
+# in the operator's court). Config-driven so tenant vocabulary never gets
+# hardcoded into the machinery. The prompt prefers `definitions` over the short
+# `status_descriptions` glosses below when a status appears in both.
+definitions:
+  BLOCKED: "progress is stopped until an EXTERNAL party acts (customs hold, permit dependency, third-party approval). Nothing the operator does today moves it forward."
+  WAITING_ON_YOU: "the ball is in the operator's court — includes approving quotes, paying invoices, and sending revisions."
+  WAITING: "the operator has already acted; now awaiting a routine response (inspection queued, scheduled callback)."
+  REVIEW: "a deliverable has been received and needs the operator's eyes (stamped plans, executed documents)."
+  OPEN: "informational, or no clear action required."
+
+# Short glosses (fallback when a status is not in `definitions`). Config-driven
 # so tenant vocabulary never gets hardcoded into the machinery.
 status_descriptions:
   WAITING_ON_YOU: "needs your action, reply, or decision to move forward"
@@ -58,6 +71,11 @@ category_descriptions:
 # Ollama agent model (local only, localhost:11434). Read-only email in, digest
 # out; the only network call the module makes is to the local Ollama endpoint.
 model: qwen3-coder:30b
+
+# Longest email body (in characters) fed to the classifier. Real .eml threads
+# can be huge; truncating keeps the prompt bounded and the model focused on the
+# top of the message. Applied at parse time, before classification.
+max_body_chars: 4000
 
 # Paths are workspace-relative unless absolute. input_dir holds exported .eml /
 # .txt files (v1 reads files only — no live mailbox). output_dir receives the

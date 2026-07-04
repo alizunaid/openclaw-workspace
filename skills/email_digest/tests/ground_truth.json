@@ -1,8 +1,8 @@
 {
-  "_note": "Intended labels for the 10 synthetic sample emails. Category is graded (T4 requires >=7/10 exact-match). Status is judgment-dependent and only logged, never failed, per the session brief.",
+  "_note": "Intended labels for the 10 synthetic sample emails. Category is graded (T4 requires >=7/10 exact-match). Status is judgment-dependent and only logged, never failed, per the session brief. S21: 02_cleanroom_quote status moved REVIEW->WAITING_ON_YOU to accept the model's read (a quote awaiting the operator's approve/pay decision is in the operator's court); 08 and 10 remain BLOCKED (external permit/customs dependency).",
   "labels": {
     "01_permits_examiner.txt":     { "category": "PERMITS_INSPECTIONS", "status": "WAITING_ON_YOU" },
-    "02_cleanroom_quote.txt":      { "category": "VENDORS_EQUIPMENT",   "status": "REVIEW" },
+    "02_cleanroom_quote.txt":      { "category": "VENDORS_EQUIPMENT",   "status": "WAITING_ON_YOU" },
     "03_fire_protection_plans.txt":{ "category": "ENGINEERING",         "status": "REVIEW" },
     "04_invoice_due.txt":          { "category": "FINANCE",             "status": "WAITING_ON_YOU" },
     "05_attorney_entity.txt":      { "category": "LEGAL",               "status": "OPEN" },
