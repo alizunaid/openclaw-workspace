@@ -1,0 +1,66 @@
+# NexaDose email-digest configuration.
+# ---------------------------------------------------------------------------
+# The digest machinery (digest.py) is TENANT-AGNOSTIC. Every NexaDose-specific
+# value — the taxonomy, ordering, model, and paths — lives HERE, never in code.
+# To run the digest for a different tenant, copy this file and edit it; the
+# module reads the taxonomy from whichever config it is pointed at.
+# ---------------------------------------------------------------------------
+
+# Valid classification labels. The classifier may ONLY emit values from these
+# lists; anything else is rejected and retried, then falls back (see below).
+statuses:
+  - WAITING_ON_YOU
+  - REVIEW
+  - OPEN
+  - WAITING
+  - BLOCKED
+
+categories:
+  - PERMITS_INSPECTIONS
+  - ENGINEERING
+  - FINANCE
+  - VENDORS_EQUIPMENT
+  - LEGAL
+  - CLEANROOM_USP
+  - UNCLASSIFIED
+
+# Order the digest presents status sections, most-actionable first.
+digest_order:
+  - WAITING_ON_YOU
+  - BLOCKED
+  - REVIEW
+  - OPEN
+  - WAITING
+
+# Applied when the model output is unusable after one retry.
+fallback:
+  status: OPEN
+  category: UNCLASSIFIED
+
+# Short glosses fed to the classifier prompt to sharpen labels. Config-driven
+# so tenant vocabulary never gets hardcoded into the machinery.
+status_descriptions:
+  WAITING_ON_YOU: "needs your action, reply, or decision to move forward"
+  REVIEW: "an invoice, quote, plan, or document awaiting your approval decision"
+  OPEN: "an active item received/acknowledged but not yet routed to an action"
+  WAITING: "you have acted; now waiting on a vendor or external party to reply"
+  BLOCKED: "cannot progress until some other dependency resolves first"
+
+category_descriptions:
+  PERMITS_INSPECTIONS: "city permits, plan review comments, code inspections"
+  ENGINEERING: "structural, MEP, fire-protection engineering and stamped drawings"
+  FINANCE: "invoices, payments, budgets, financing"
+  VENDORS_EQUIPMENT: "vendor quotes, equipment orders, freight, deliveries"
+  LEGAL: "attorneys, entity formation, contracts, leases"
+  CLEANROOM_USP: "USP 797/800 cleanroom certification, testing, compliance"
+  UNCLASSIFIED: "newsletters, spam, or anything that fits no category above"
+
+# Ollama agent model (local only, localhost:11434). Read-only email in, digest
+# out; the only network call the module makes is to the local Ollama endpoint.
+model: qwen3-coder:30b
+
+# Paths are workspace-relative unless absolute. input_dir holds exported .eml /
+# .txt files (v1 reads files only — no live mailbox). output_dir receives the
+# dated markdown digest.
+input_dir: skills/email_digest/inbox_export/
+output_dir: digests/
