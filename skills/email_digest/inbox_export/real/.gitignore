@@ -1,0 +1,8 @@
+# Real exported mailbox data — LOCAL-ONLY, never committed.
+# These .eml/.txt files contain real vendor/project PII (addresses, invoice and
+# container numbers, etc.). Only the DERIVED digest is committed (digests/real/),
+# not the raw source mail. Drop exported .eml/.txt here to enable the real-corpus
+# path; on a fresh clone this dir is empty, so tests/test_email_digest.py::T7
+# skips gracefully.
+*
+!.gitignore
