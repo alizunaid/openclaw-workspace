@@ -34,3 +34,9 @@ tier2_projects/**/runs/
 
 # Persistent session handoff (canonical, read by the `cchand` alias). Local-only.
 .last_cc_output.md
+
+# Mailbox pipeline (Brick A): raw Gmail Takeout export + SQLite db are RAW
+# PERSONAL DATA — never commit. Only derived report/contacts drafts (which carry
+# addresses/names/counts, never bodies) are tracked, and they live outside these.
+mail_export/
+skills/mail_pipeline/db/
