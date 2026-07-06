@@ -1,0 +1,6527 @@
+# Contact candidates — DRAFT for operator review (Brick A).
+# Auto-generated; deterministic. Fill in `role:` and `org:`; flip
+# `noise:` as needed. `noise:true` was auto-prefilled for no-reply
+# style senders and addresses seen ONLY inside Category Promotions/Updates/Personal/Travel.
+# Sorted by message_count desc.
+- email: admin@nexadose.com
+  names:
+  - NexaDose RX
+  domain: nexadose.com
+  message_count: 2428
+  count_received_from: 788
+  count_sent_to: 1643
+  first_seen: '2025-05-20T22:47:33+00:00'
+  last_seen: '2026-07-04T19:28:39+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Promotions
+  - Category Purchases
+  - Category Travel
+  - Category Updates
+  - ESA
+  - IMAP_$Forwarded
+  - Important
+  - Inbox
+  - Leasing
+  - Opened
+  - Sent
+  - Sourcing agent
+  - Starred
+  - Template Response
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: imranrali88@gmail.com
+  names:
+  - imran ali
+  domain: gmail.com
+  message_count: 357
+  count_received_from: 24
+  count_sent_to: 333
+  first_seen: '2025-05-21T14:56:46+00:00'
+  last_seen: '2026-06-29T17:46:54+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - IMAP_$Forwarded
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: emails@search.crexi.com
+  names:
+  - Crexi
+  domain: search.crexi.com
+  message_count: 328
+  count_received_from: 328
+  count_sent_to: 0
+  first_seen: '2025-06-17T22:12:24+00:00'
+  last_seen: '2026-07-04T19:28:39+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: sheri@ssbdesigns.com
+  names:
+  - Sheri Bumgardner
+  domain: ssbdesigns.com
+  message_count: 269
+  count_received_from: 113
+  count_sent_to: 156
+  first_seen: '2025-11-06T03:26:53+00:00'
+  last_seen: '2026-06-29T17:46:54+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: afconstructionandpainting@gmail.com
+  names:
+  - Adrian Aponte
+  domain: gmail.com
+  message_count: 185
+  count_received_from: 32
+  count_sent_to: 153
+  first_seen: '2025-12-19T17:52:06+00:00'
+  last_seen: '2026-07-02T23:18:58+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: florian.chauvin@js-sourcing.com
+  names:
+  - Florian JS
+  - "Florian\x810\x842CHAUVIN"
+  - Florian CHAUVIN
+  domain: js-sourcing.com
+  message_count: 165
+  count_received_from: 70
+  count_sent_to: 96
+  first_seen: '2025-05-28T08:07:11+00:00'
+  last_seen: '2026-05-29T23:32:04+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: tcraig@ffb1.com
+  names:
+  - Teresa Craig
+  domain: ffb1.com
+  message_count: 86
+  count_received_from: 42
+  count_sent_to: 44
+  first_seen: '2026-01-12T21:05:18+00:00'
+  last_seen: '2026-04-10T14:48:35+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: alizunaid@hotmail.com
+  names:
+  - Zunaid Ali
+  domain: hotmail.com
+  message_count: 85
+  count_received_from: 5
+  count_sent_to: 80
+  first_seen: '2025-06-13T18:18:03+00:00'
+  last_seen: '2026-06-05T04:22:26+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: bglaze@ffb1.com
+  names:
+  - Bobby Glaze
+  domain: ffb1.com
+  message_count: 85
+  count_received_from: 30
+  count_sent_to: 55
+  first_seen: '2025-05-21T17:14:39+00:00'
+  last_seen: '2026-06-02T16:27:21+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - IMAP_$Forwarded
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: asa.atkinson@carr.us
+  names:
+  - Asa Atkinson
+  domain: carr.us
+  message_count: 82
+  count_received_from: 36
+  count_sent_to: 46
+  first_seen: '2025-06-20T17:55:42+00:00'
+  last_seen: '2026-06-24T17:40:00+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: john@strategiclegalservice.com
+  names:
+  - John Chay
+  domain: strategiclegalservice.com
+  message_count: 73
+  count_received_from: 31
+  count_sent_to: 42
+  first_seen: '2025-09-02T14:41:44+00:00'
+  last_seen: '2025-12-29T23:02:36+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ops@txintlfreight.com
+  names:
+  - Ops
+  domain: txintlfreight.com
+  message_count: 62
+  count_received_from: 24
+  count_sent_to: 38
+  first_seen: '2026-04-06T21:52:09+00:00'
+  last_seen: '2026-06-08T20:06:31+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: hector@ddsg.us
+  names:
+  - Hector Reyes
+  domain: ddsg.us
+  message_count: 61
+  count_received_from: 12
+  count_sent_to: 49
+  first_seen: '2026-02-26T17:21:07+00:00'
+  last_seen: '2026-06-29T17:46:54+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: emails@notifications.crexi.com
+  names:
+  - Crexi
+  domain: notifications.crexi.com
+  message_count: 60
+  count_received_from: 59
+  count_sent_to: 1
+  first_seen: '2025-06-11T14:45:09+00:00'
+  last_seen: '2025-08-20T23:29:20+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: michael@txintlfreight.com
+  names:
+  - Michael Dyll
+  domain: txintlfreight.com
+  message_count: 53
+  count_received_from: 5
+  count_sent_to: 48
+  first_seen: '2026-04-04T21:50:22+00:00'
+  last_seen: '2026-06-09T00:16:09+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: amanda@ssbdesigns.com
+  names:
+  - Amanda Moore
+  domain: ssbdesigns.com
+  message_count: 52
+  count_received_from: 17
+  count_sent_to: 35
+  first_seen: '2025-11-12T20:51:08+00:00'
+  last_seen: '2026-05-14T02:04:48+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: kate@title.law
+  names:
+  - Kate Tucker
+  domain: title.law
+  message_count: 52
+  count_received_from: 27
+  count_sent_to: 27
+  first_seen: '2025-09-08T21:38:09+00:00'
+  last_seen: '2025-12-29T23:02:36+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: eden@dersionclean.com
+  names:
+  - Eden Pan
+  - eden@dersionclean.com
+  domain: dersionclean.com
+  message_count: 48
+  count_received_from: 23
+  count_sent_to: 25
+  first_seen: '2025-10-14T02:34:19+00:00'
+  last_seen: '2026-05-29T23:32:04+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: jonathan.saldana@ddsg.us
+  names:
+  - Jonathan Saldana
+  domain: ddsg.us
+  message_count: 46
+  count_received_from: 4
+  count_sent_to: 42
+  first_seen: '2026-03-03T19:52:23+00:00'
+  last_seen: '2026-06-29T17:46:54+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: service01@js-sourcing.com
+  names: []
+  domain: js-sourcing.com
+  message_count: 45
+  count_received_from: 0
+  count_sent_to: 45
+  first_seen: '2025-10-11T09:26:40+00:00'
+  last_seen: '2026-05-29T23:32:04+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: mklemenz@ranfpe.com
+  names:
+  - Michael Klemenz, PE
+  domain: ranfpe.com
+  message_count: 40
+  count_received_from: 17
+  count_sent_to: 23
+  first_seen: '2026-03-25T16:41:58+00:00'
+  last_seen: '2026-06-04T20:11:48+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: aponte.adrian@gmail.com
+  names:
+  - Adrian Aponte
+  domain: gmail.com
+  message_count: 39
+  count_received_from: 2
+  count_sent_to: 37
+  first_seen: '2026-01-13T22:51:39+00:00'
+  last_seen: '2026-05-28T00:19:50+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: shogan@ffb1.com
+  names:
+  - Shelly Hogan
+  domain: ffb1.com
+  message_count: 31
+  count_received_from: 14
+  count_sent_to: 17
+  first_seen: '2026-04-16T15:54:12+00:00'
+  last_seen: '2026-06-26T13:21:50+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: castroderrick@outlook.com
+  names:
+  - Derrick Castro
+  domain: outlook.com
+  message_count: 27
+  count_received_from: 22
+  count_sent_to: 5
+  first_seen: '2025-10-13T08:10:38+00:00'
+  last_seen: '2025-11-03T16:06:40+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: cody@bannistereng.com
+  names:
+  - Cody Brooks
+  domain: bannistereng.com
+  message_count: 27
+  count_received_from: 11
+  count_sent_to: 16
+  first_seen: '2025-12-02T15:37:39+00:00'
+  last_seen: '2026-02-12T19:43:16+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: gracesyn@title.law
+  names: []
+  domain: title.law
+  message_count: 27
+  count_received_from: 0
+  count_sent_to: 27
+  first_seen: '2025-09-08T21:38:09+00:00'
+  last_seen: '2025-12-22T23:03:53+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: hanner@texasins.net
+  names:
+  - Hanner Shipley
+  domain: texasins.net
+  message_count: 23
+  count_received_from: 13
+  count_sent_to: 10
+  first_seen: '2025-12-15T20:33:24+00:00'
+  last_seen: '2025-12-18T21:57:29+00:00'
+  labels:
+  - Category Personal
+  - IMAP_$Forwarded
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: isaac.alva@txdot.gov
+  names:
+  - Isaac Alva
+  domain: txdot.gov
+  message_count: 23
+  count_received_from: 11
+  count_sent_to: 12
+  first_seen: '2025-08-07T20:48:09+00:00'
+  last_seen: '2026-01-09T20:07:08+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: workspace-noreply@google.com
+  names:
+  - The Google Workspace Team
+  domain: google.com
+  message_count: 22
+  count_received_from: 22
+  count_sent_to: 0
+  first_seen: '2025-05-20T22:47:33+00:00'
+  last_seen: '2026-06-29T20:40:54+00:00'
+  labels:
+  - Archived
+  - Category Purchases
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: arty.wheaton-rodriguez@mansfieldtexas.gov
+  names:
+  - Arty Wheaton-Rodriguez
+  domain: mansfieldtexas.gov
+  message_count: 21
+  count_received_from: 5
+  count_sent_to: 16
+  first_seen: '2025-08-07T18:12:39+00:00'
+  last_seen: '2026-05-26T16:57:27+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: cyle@ccrookconsulting.com
+  names:
+  - Cyle Cox
+  domain: ccrookconsulting.com
+  message_count: 20
+  count_received_from: 9
+  count_sent_to: 11
+  first_seen: '2025-12-02T15:38:15+00:00'
+  last_seen: '2026-02-10T17:59:30+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: michael.roberts@mansfieldtexas.gov
+  names:
+  - Michael Roberts
+  domain: mansfieldtexas.gov
+  message_count: 19
+  count_received_from: 5
+  count_sent_to: 14
+  first_seen: '2025-08-22T10:40:00+00:00'
+  last_seen: '2026-06-04T20:11:48+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ld@cpgsourcing.com
+  names:
+  - Laura Dow
+  domain: cpgsourcing.com
+  message_count: 18
+  count_received_from: 13
+  count_sent_to: 5
+  first_seen: '2025-05-28T15:54:38+00:00'
+  last_seen: '2025-06-24T18:08:09+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Sourcing agent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: ljcleaver@4wayinvestments.com
+  names:
+  - LJ Cleaver
+  domain: 4wayinvestments.com
+  message_count: 18
+  count_received_from: 11
+  count_sent_to: 7
+  first_seen: '2025-05-21T14:56:46+00:00'
+  last_seen: '2025-06-09T22:16:06+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: scott.lingo@mansfieldtexas.gov
+  names:
+  - Scott Lingo
+  domain: mansfieldtexas.gov
+  message_count: 18
+  count_received_from: 4
+  count_sent_to: 14
+  first_seen: '2025-12-04T18:49:31+00:00'
+  last_seen: '2026-06-04T20:11:48+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mollie.carroll@mansfieldtexas.gov
+  names:
+  - Mollie Carroll
+  domain: mansfieldtexas.gov
+  message_count: 17
+  count_received_from: 3
+  count_sent_to: 14
+  first_seen: '2026-04-02T15:56:27+00:00'
+  last_seen: '2026-05-28T19:45:54+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jenny.cai@js-sourcing.com
+  names:
+  - Jenny-JS
+  domain: js-sourcing.com
+  message_count: 16
+  count_received_from: 4
+  count_sent_to: 12
+  first_seen: '2025-05-29T05:16:15+00:00'
+  last_seen: '2026-04-01T08:41:29+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: marketing@germfree.com
+  names:
+  - Germfree Laboratories
+  domain: germfree.com
+  message_count: 16
+  count_received_from: 16
+  count_sent_to: 0
+  first_seen: '2025-05-27T14:15:09+00:00'
+  last_seen: '2026-06-30T19:01:53+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: sfranklin@dfwcad.com
+  names:
+  - Seth Franklin
+  domain: dfwcad.com
+  message_count: 16
+  count_received_from: 11
+  count_sent_to: 5
+  first_seen: '2025-09-24T19:32:03+00:00'
+  last_seen: '2026-02-28T13:41:58+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: quickbooks@notification.intuit.com
+  names:
+  - D&M Enterprize
+  - GAP Consultants, Inc.
+  - QuickBooks Payments
+  - SSB Designs, Inc.
+  - Texas International Freight
+  - VICTOR ASHE
+  domain: notification.intuit.com
+  message_count: 15
+  count_received_from: 15
+  count_sent_to: 0
+  first_seen: '2025-11-17T19:37:30+00:00'
+  last_seen: '2026-06-24T17:40:00+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: hello@info.n8n.io
+  names:
+  - n8n.io
+  domain: info.n8n.io
+  message_count: 14
+  count_received_from: 14
+  count_sent_to: 0
+  first_seen: '2025-05-29T20:32:39+00:00'
+  last_seen: '2025-11-17T07:00:18+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: mike.mcelwee@hughesmarino.com
+  names:
+  - Mike McElwee
+  domain: hughesmarino.com
+  message_count: 14
+  count_received_from: 8
+  count_sent_to: 6
+  first_seen: '2025-06-20T00:42:56+00:00'
+  last_seen: '2025-07-03T15:54:43+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ourbetterway@gmail.com
+  names:
+  - Roger & Beth Steinke, Better Way Realty Group
+  - Roger and Beth Steinke 682-777-5745
+  domain: gmail.com
+  message_count: 14
+  count_received_from: 2
+  count_sent_to: 12
+  first_seen: '2025-11-07T18:48:24+00:00'
+  last_seen: '2025-12-21T18:10:10+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: tcbytiffany@gmail.com
+  names:
+  - Tiffany Scherer
+  domain: gmail.com
+  message_count: 14
+  count_received_from: 1
+  count_sent_to: 13
+  first_seen: '2025-11-07T18:48:24+00:00'
+  last_seen: '2025-12-21T18:10:10+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: falogisticsinc@outlook.com
+  names:
+  - FA Logistics
+  domain: outlook.com
+  message_count: 13
+  count_received_from: 5
+  count_sent_to: 8
+  first_seen: '2026-05-28T17:08:29+00:00'
+  last_seen: '2026-07-04T14:19:50+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: ghidalti.fernandez@ddsg.us
+  names:
+  - Ghidalti Fernandez
+  domain: ddsg.us
+  message_count: 13
+  count_received_from: 2
+  count_sent_to: 11
+  first_seen: '2026-03-03T19:52:23+00:00'
+  last_seen: '2026-05-07T18:14:02+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: janine.fabros@china2west.com
+  names:
+  - Janine Fabros
+  domain: china2west.com
+  message_count: 13
+  count_received_from: 6
+  count_sent_to: 7
+  first_seen: '2025-05-28T06:52:34+00:00'
+  last_seen: '2025-06-09T04:56:57+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: no-reply@accounts.google.com
+  names:
+  - Google
+  domain: accounts.google.com
+  message_count: 13
+  count_received_from: 13
+  count_sent_to: 0
+  first_seen: '2025-06-25T20:22:06+00:00'
+  last_seen: '2026-03-06T08:02:16+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: aemad@udctx.com
+  names:
+  - Abdullah Emad
+  domain: udctx.com
+  message_count: 12
+  count_received_from: 7
+  count_sent_to: 5
+  first_seen: '2025-12-08T16:33:33+00:00'
+  last_seen: '2025-12-16T23:44:12+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: coo.buildingllc@gmail.com
+  names:
+  - Coo buildingLLC
+  domain: gmail.com
+  message_count: 12
+  count_received_from: 12
+  count_sent_to: 0
+  first_seen: '2025-10-28T00:09:43+00:00'
+  last_seen: '2025-12-02T15:29:53+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: dse_na2@docusign.net
+  names:
+  - Asa B. Atkinson III via Docusign
+  domain: docusign.net
+  message_count: 12
+  count_received_from: 12
+  count_sent_to: 0
+  first_seen: '2025-07-07T16:13:11+00:00'
+  last_seen: '2025-12-12T15:09:36+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: hipoffice_notifications@homeinspectorpro.com
+  names:
+  - Home Inspector Pro Office Notifications
+  - Straight 4WARD Property Inspections PLLC
+  domain: homeinspectorpro.com
+  message_count: 12
+  count_received_from: 10
+  count_sent_to: 2
+  first_seen: '2025-10-13T19:07:42+00:00'
+  last_seen: '2025-10-26T00:52:02+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jdavis@bamolaw.com
+  names:
+  - Joshua Davis
+  domain: bamolaw.com
+  message_count: 12
+  count_received_from: 8
+  count_sent_to: 4
+  first_seen: '2025-09-02T20:45:17+00:00'
+  last_seen: '2025-10-31T11:29:01+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: nick.cunningham@china2west.com
+  names:
+  - Nick Cunningham
+  domain: china2west.com
+  message_count: 12
+  count_received_from: 4
+  count_sent_to: 8
+  first_seen: '2025-05-28T06:52:34+00:00'
+  last_seen: '2025-06-09T04:56:57+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jobs@heltoningramseptic.com
+  names: []
+  domain: heltoningramseptic.com
+  message_count: 11
+  count_received_from: 6
+  count_sent_to: 5
+  first_seen: '2026-01-05T22:47:42+00:00'
+  last_seen: '2026-05-22T14:28:39+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mailer-daemon@googlemail.com
+  names:
+  - Mail Delivery Subsystem
+  domain: googlemail.com
+  message_count: 11
+  count_received_from: 11
+  count_sent_to: 0
+  first_seen: '2025-08-22T10:34:49+00:00'
+  last_seen: '2025-12-22T20:28:38+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: no-reply@eecu.org
+  names:
+  - EECU
+  - EECU Investment & Retirement Services
+  domain: eecu.org
+  message_count: 11
+  count_received_from: 11
+  count_sent_to: 0
+  first_seen: '2026-01-19T12:01:31+00:00'
+  last_seen: '2026-07-03T13:04:47+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: pro.engineer0727@gmail.com
+  names:
+  - Pro Engineer
+  domain: gmail.com
+  message_count: 11
+  count_received_from: 7
+  count_sent_to: 4
+  first_seen: '2025-12-08T00:54:12+00:00'
+  last_seen: '2025-12-15T19:18:22+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: stephen@bannistereng.com
+  names:
+  - Stephen Alexander
+  domain: bannistereng.com
+  message_count: 11
+  count_received_from: 2
+  count_sent_to: 9
+  first_seen: '2026-01-14T18:04:14+00:00'
+  last_seen: '2026-02-12T19:43:16+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: adam@buildengllc.com
+  names:
+  - Adam Hoss
+  domain: buildengllc.com
+  message_count: 10
+  count_received_from: 3
+  count_sent_to: 7
+  first_seen: '2026-01-26T21:02:50+00:00'
+  last_seen: '2026-03-20T19:03:19+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: drew@arielhi.com
+  names:
+  - Drew Thacker
+  domain: arielhi.com
+  message_count: 10
+  count_received_from: 6
+  count_sent_to: 4
+  first_seen: '2025-07-11T21:01:45+00:00'
+  last_seen: '2025-07-17T18:50:15+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: joseph.zari@zaricode.com
+  names:
+  - Joseph P. Zari, PE
+  domain: zaricode.com
+  message_count: 10
+  count_received_from: 6
+  count_sent_to: 4
+  first_seen: '2026-03-24T17:23:04+00:00'
+  last_seen: '2026-06-08T20:25:24+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: makayla.rau@waxlerfpe.com
+  names:
+  - Makayla Rau
+  domain: waxlerfpe.com
+  message_count: 10
+  count_received_from: 5
+  count_sent_to: 6
+  first_seen: '2026-03-24T20:12:56+00:00'
+  last_seen: '2026-06-08T20:10:36+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: monty@buildengllc.com
+  names:
+  - Monty Amini
+  domain: buildengllc.com
+  message_count: 10
+  count_received_from: 4
+  count_sent_to: 6
+  first_seen: '2026-01-26T21:02:50+00:00'
+  last_seen: '2026-03-20T19:03:19+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: no-reply@comms.runwayml.com
+  names:
+  - Runway
+  - Runway API
+  domain: comms.runwayml.com
+  message_count: 10
+  count_received_from: 10
+  count_sent_to: 0
+  first_seen: '2025-06-03T19:18:28+00:00'
+  last_seen: '2026-06-22T14:04:39+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Travel
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: omar@straight4wardinspections.com
+  names:
+  - The Straight 4WARD Inspector
+  domain: straight4wardinspections.com
+  message_count: 10
+  count_received_from: 9
+  count_sent_to: 1
+  first_seen: '2025-10-23T01:07:33+00:00'
+  last_seen: '2026-05-05T22:39:44+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: support@e.read.ai
+  names:
+  - Read Support
+  - Team at Read
+  domain: e.read.ai
+  message_count: 10
+  count_received_from: 10
+  count_sent_to: 0
+  first_seen: '2025-05-30T14:51:57+00:00'
+  last_seen: '2025-08-05T17:01:39+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: tim.james@pmca.agency
+  names:
+  - Tim James
+  domain: pmca.agency
+  message_count: 10
+  count_received_from: 5
+  count_sent_to: 5
+  first_seen: '2025-12-11T22:15:10+00:00'
+  last_seen: '2025-12-19T15:16:22+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: ameido@airkey.cn
+  names:
+  - Ameido
+  domain: airkey.cn
+  message_count: 9
+  count_received_from: 6
+  count_sent_to: 3
+  first_seen: '2025-10-15T05:41:57+00:00'
+  last_seen: '2025-11-11T07:14:30+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: clarissa.carrasco@mansfieldtexas.gov
+  names:
+  - Clarissa Carrasco
+  domain: mansfieldtexas.gov
+  message_count: 9
+  count_received_from: 4
+  count_sent_to: 5
+  first_seen: '2025-08-07T18:12:39+00:00'
+  last_seen: '2025-12-10T16:00:18+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: gaonainsurance@aol.com
+  names:
+  - Deya
+  domain: aol.com
+  message_count: 9
+  count_received_from: 5
+  count_sent_to: 4
+  first_seen: '2025-12-18T18:24:49+00:00'
+  last_seen: '2026-01-12T22:55:46+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: richard.laub@dragonsourcing.com
+  names:
+  - richard.laub
+  domain: dragonsourcing.com
+  message_count: 9
+  count_received_from: 6
+  count_sent_to: 3
+  first_seen: '2025-05-28T09:30:10+00:00'
+  last_seen: '2025-05-30T15:29:02+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: scott.ranft@waxlerfpe.com
+  names:
+  - Scott Ranft
+  domain: waxlerfpe.com
+  message_count: 9
+  count_received_from: 1
+  count_sent_to: 8
+  first_seen: '2026-03-24T20:12:56+00:00'
+  last_seen: '2026-06-08T20:10:36+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: vic46066@gmail.com
+  names:
+  - victor Ashe
+  domain: gmail.com
+  message_count: 9
+  count_received_from: 5
+  count_sent_to: 4
+  first_seen: '2025-12-17T01:10:57+00:00'
+  last_seen: '2026-05-20T05:45:49+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: vincent.calcagno@waxlerfpe.com
+  names:
+  - Vincent Calcagno
+  domain: waxlerfpe.com
+  message_count: 9
+  count_received_from: 3
+  count_sent_to: 6
+  first_seen: '2026-03-24T20:12:56+00:00'
+  last_seen: '2026-06-08T20:10:36+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: wmb08@airkey.cn
+  names: []
+  domain: airkey.cn
+  message_count: 9
+  count_received_from: 0
+  count_sent_to: 9
+  first_seen: '2025-10-15T05:41:57+00:00'
+  last_seen: '2025-11-11T07:14:30+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: wmb09@airkey.cn
+  names: []
+  domain: airkey.cn
+  message_count: 9
+  count_received_from: 0
+  count_sent_to: 9
+  first_seen: '2025-10-15T05:41:57+00:00'
+  last_seen: '2025-11-11T07:14:30+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Starred
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: agarland@ffb1.com
+  names:
+  - Ashley Garland
+  domain: ffb1.com
+  message_count: 8
+  count_received_from: 4
+  count_sent_to: 4
+  first_seen: '2026-01-05T14:14:28+00:00'
+  last_seen: '2026-01-14T15:00:32+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: cecelia.nelson@arlingtontx.gov
+  names:
+  - Cecelia Lynn Nelson
+  domain: arlingtontx.gov
+  message_count: 8
+  count_received_from: 3
+  count_sent_to: 5
+  first_seen: '2025-07-11T14:01:08+00:00'
+  last_seen: '2025-07-14T21:09:06+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jhertz@aeiconsultants.com
+  names:
+  - Justin Hertz
+  domain: aeiconsultants.com
+  message_count: 8
+  count_received_from: 8
+  count_sent_to: 0
+  first_seen: '2025-10-20T20:29:58+00:00'
+  last_seen: '2026-06-09T12:43:19+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Promotions
+  - ESA
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jwalla@fobare.com
+  names:
+  - Jerrod Walla
+  domain: fobare.com
+  message_count: 8
+  count_received_from: 4
+  count_sent_to: 4
+  first_seen: '2025-06-11T12:23:09+00:00'
+  last_seen: '2025-06-16T02:09:59+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: laura@arcadiasourcing.net
+  names: []
+  domain: arcadiasourcing.net
+  message_count: 8
+  count_received_from: 6
+  count_sent_to: 2
+  first_seen: '2025-06-04T02:19:31+00:00'
+  last_seen: '2025-07-25T03:58:59+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mszurgot@bannistereng.com
+  names:
+  - Mike Szurgot
+  domain: bannistereng.com
+  message_count: 8
+  count_received_from: 1
+  count_sent_to: 7
+  first_seen: '2026-01-19T11:50:35+00:00'
+  last_seen: '2026-02-12T19:43:16+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: noreply@rocketlawyer.com
+  names:
+  - Mark Campos via Rocket Lawyer
+  domain: rocketlawyer.com
+  message_count: 8
+  count_received_from: 8
+  count_sent_to: 0
+  first_seen: '2025-09-29T19:35:58+00:00'
+  last_seen: '2025-10-01T18:31:38+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: patrick.johnson@hughesmarino.com
+  names:
+  - Patrick Johnson
+  domain: hughesmarino.com
+  message_count: 8
+  count_received_from: 4
+  count_sent_to: 4
+  first_seen: '2025-06-20T21:39:14+00:00'
+  last_seen: '2025-07-02T19:43:32+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: raul@planbdsgn.com
+  names:
+  - Raul Wong
+  domain: planbdsgn.com
+  message_count: 8
+  count_received_from: 3
+  count_sent_to: 5
+  first_seen: '2025-05-28T01:34:12+00:00'
+  last_seen: '2026-06-02T20:41:12+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: art.wright@mansfieldtexas.gov
+  names:
+  - Art Wright
+  domain: mansfieldtexas.gov
+  message_count: 7
+  count_received_from: 1
+  count_sent_to: 6
+  first_seen: '2026-04-02T21:45:31+00:00'
+  last_seen: '2026-05-26T16:57:27+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: chris.valtierra@mansfieldtexas.gov
+  names:
+  - Chris Valtierra
+  domain: mansfieldtexas.gov
+  message_count: 7
+  count_received_from: 1
+  count_sent_to: 6
+  first_seen: '2025-12-10T15:49:02+00:00'
+  last_seen: '2026-05-28T19:45:54+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ftw_districtaccesspermits@txdot.gov
+  names: []
+  domain: txdot.gov
+  message_count: 7
+  count_received_from: 0
+  count_sent_to: 7
+  first_seen: '2025-08-22T11:28:56+00:00'
+  last_seen: '2025-12-16T14:57:25+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jennifer.longoria@waxlerfpe.com
+  names: []
+  domain: waxlerfpe.com
+  message_count: 7
+  count_received_from: 0
+  count_sent_to: 7
+  first_seen: '2026-03-24T20:12:56+00:00'
+  last_seen: '2026-06-08T20:10:36+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: nick.miller@colliers.com
+  names:
+  - Miller, Nick
+  domain: colliers.com
+  message_count: 7
+  count_received_from: 3
+  count_sent_to: 4
+  first_seen: '2025-06-11T14:59:39+00:00'
+  last_seen: '2025-06-13T17:23:03+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: roger@arcadiasourcing.net
+  names: []
+  domain: arcadiasourcing.net
+  message_count: 7
+  count_received_from: 0
+  count_sent_to: 7
+  first_seen: '2025-05-28T16:08:15+00:00'
+  last_seen: '2025-07-25T03:58:59+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: roger@chinasourcingintl.com
+  names: []
+  domain: chinasourcingintl.com
+  message_count: 7
+  count_received_from: 3
+  count_sent_to: 4
+  first_seen: '2025-05-30T02:15:17+00:00'
+  last_seen: '2025-06-05T14:36:02+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ship@txintlfreight.com
+  names:
+  - Ship
+  domain: txintlfreight.com
+  message_count: 7
+  count_received_from: 1
+  count_sent_to: 6
+  first_seen: '2026-02-11T19:26:43+00:00'
+  last_seen: '2026-06-04T14:58:42+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: welcome@zenrows.com
+  names:
+  - ZenRows
+  domain: zenrows.com
+  message_count: 7
+  count_received_from: 7
+  count_sent_to: 0
+  first_seen: '2025-06-17T15:14:19+00:00'
+  last_seen: '2025-07-02T15:14:49+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: william.carr@matthews.com
+  names:
+  - William Carr
+  domain: matthews.com
+  message_count: 7
+  count_received_from: 5
+  count_sent_to: 2
+  first_seen: '2025-06-11T02:58:03+00:00'
+  last_seen: '2025-08-20T22:10:29+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: cloudplatform-noreply@google.com
+  names:
+  - Google Cloud
+  - Google Cloud Platform
+  domain: google.com
+  message_count: 6
+  count_received_from: 6
+  count_sent_to: 0
+  first_seen: '2025-06-05T17:35:15+00:00'
+  last_seen: '2026-05-26T19:21:28+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: contact@ayrshare.com
+  names:
+  - Ayrshare
+  domain: ayrshare.com
+  message_count: 6
+  count_received_from: 6
+  count_sent_to: 0
+  first_seen: '2025-06-05T13:07:36+00:00'
+  last_seen: '2025-12-18T21:02:38+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: d.campbell@txbuiltconstruction.com
+  names:
+  - Dylan Campbell
+  domain: txbuiltconstruction.com
+  message_count: 6
+  count_received_from: 4
+  count_sent_to: 2
+  first_seen: '2025-09-24T19:12:27+00:00'
+  last_seen: '2025-09-25T18:58:20+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: dmcgill@carlisle-interests.com
+  names:
+  - Drew McGill
+  domain: carlisle-interests.com
+  message_count: 6
+  count_received_from: 3
+  count_sent_to: 3
+  first_seen: '2025-06-11T01:51:36+00:00'
+  last_seen: '2025-06-19T05:00:53+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: emily.hutchins@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 6
+  count_received_from: 0
+  count_sent_to: 6
+  first_seen: '2025-08-22T13:19:33+00:00'
+  last_seen: '2026-01-20T14:44:56+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: gapcbo@gmail.com
+  names:
+  - George Patterson
+  domain: gmail.com
+  message_count: 6
+  count_received_from: 3
+  count_sent_to: 3
+  first_seen: '2026-04-02T15:44:24+00:00'
+  last_seen: '2026-05-18T15:26:20+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: google-maps-noreply@google.com
+  names:
+  - Google Maps
+  domain: google.com
+  message_count: 6
+  count_received_from: 6
+  count_sent_to: 0
+  first_seen: '2026-02-02T15:48:26+00:00'
+  last_seen: '2026-03-17T23:18:31+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jgreenwood@bradford.com
+  names:
+  - Justin Greenwood
+  domain: bradford.com
+  message_count: 6
+  count_received_from: 5
+  count_sent_to: 1
+  first_seen: '2025-06-11T02:22:11+00:00'
+  last_seen: '2025-06-19T17:00:58+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jose.rodriguezreyes@txdot.gov
+  names: []
+  domain: txdot.gov
+  message_count: 6
+  count_received_from: 0
+  count_sent_to: 6
+  first_seen: '2025-12-08T15:17:46+00:00'
+  last_seen: '2026-01-09T20:07:08+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jreinhardt@lee-associates.com
+  names:
+  - Jessica Reinhardt
+  domain: lee-associates.com
+  message_count: 6
+  count_received_from: 2
+  count_sent_to: 4
+  first_seen: '2025-06-11T12:06:22+00:00'
+  last_seen: '2025-06-13T15:37:31+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: justin.thomey@txdot.gov
+  names:
+  - Justin Thomey
+  domain: txdot.gov
+  message_count: 6
+  count_received_from: 1
+  count_sent_to: 5
+  first_seen: '2025-08-22T11:28:56+00:00'
+  last_seen: '2025-12-05T19:19:39+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: melissa@waxlerfpe.com
+  names: []
+  domain: waxlerfpe.com
+  message_count: 6
+  count_received_from: 0
+  count_sent_to: 6
+  first_seen: '2026-03-24T20:57:48+00:00'
+  last_seen: '2026-06-08T20:10:36+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: noreply@express.sea1.medallia.com
+  names:
+  - 'EōS Fitness Euless: Rio Grande Blvd'
+  domain: express.sea1.medallia.com
+  message_count: 6
+  count_received_from: 6
+  count_sent_to: 0
+  first_seen: '2025-10-15T02:18:05+00:00'
+  last_seen: '2026-02-01T17:20:27+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Important
+  - Opened
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: sonia@cadcrowd.com
+  names:
+  - Sonia Rivas
+  domain: cadcrowd.com
+  message_count: 6
+  count_received_from: 5
+  count_sent_to: 1
+  first_seen: '2025-06-19T16:35:47+00:00'
+  last_seen: '2025-06-28T23:23:13+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: team@email.anthropic.com
+  names:
+  - Anthropic Team
+  domain: email.anthropic.com
+  message_count: 6
+  count_received_from: 6
+  count_sent_to: 0
+  first_seen: '2025-12-18T16:18:47+00:00'
+  last_seen: '2025-12-29T16:18:46+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: upwork@email.upwork.com
+  names:
+  - Upwork
+  domain: email.upwork.com
+  message_count: 6
+  count_received_from: 6
+  count_sent_to: 0
+  first_seen: '2025-06-20T23:32:46+00:00'
+  last_seen: '2025-08-15T04:03:37+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: aashforth@crexi.com
+  names:
+  - Afton Ashforth
+  domain: crexi.com
+  message_count: 5
+  count_received_from: 5
+  count_sent_to: 0
+  first_seen: '2025-06-27T14:57:41+00:00'
+  last_seen: '2025-07-11T13:03:40+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Promotions
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: consumer@e.mail.realtor.com
+  names:
+  - realtor.com
+  domain: e.mail.realtor.com
+  message_count: 5
+  count_received_from: 5
+  count_sent_to: 0
+  first_seen: '2026-02-16T12:18:12+00:00'
+  last_seen: '2026-02-17T18:05:31+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: donalrgreen@yahoo.com
+  names:
+  - Donal Green
+  domain: yahoo.com
+  message_count: 5
+  count_received_from: 2
+  count_sent_to: 3
+  first_seen: '2025-09-11T13:34:48+00:00'
+  last_seen: '2025-09-16T00:21:15+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: googledev-noreply@google.com
+  names:
+  - Google Developer Program
+  domain: google.com
+  message_count: 5
+  count_received_from: 5
+  count_sent_to: 0
+  first_seen: '2026-03-05T14:26:25+00:00'
+  last_seen: '2026-07-03T05:18:52+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jfinch@bradford.com
+  names: []
+  domain: bradford.com
+  message_count: 5
+  count_received_from: 0
+  count_sent_to: 5
+  first_seen: '2025-06-11T01:46:52+00:00'
+  last_seen: '2025-06-16T21:58:26+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jolvera@udctx.com
+  names: []
+  domain: udctx.com
+  message_count: 5
+  count_received_from: 0
+  count_sent_to: 5
+  first_seen: '2025-12-11T03:39:51+00:00'
+  last_seen: '2025-12-16T23:44:12+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: letstalk@archpatchstudios.com
+  names: []
+  domain: archpatchstudios.com
+  message_count: 5
+  count_received_from: 4
+  count_sent_to: 1
+  first_seen: '2025-09-09T18:08:50+00:00'
+  last_seen: '2025-09-18T21:01:46+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: lyndon.todd@transwestern.com
+  names:
+  - Lyndon Todd
+  domain: transwestern.com
+  message_count: 5
+  count_received_from: 3
+  count_sent_to: 2
+  first_seen: '2025-06-11T13:07:39+00:00'
+  last_seen: '2025-06-12T18:56:43+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mbiswas@archiphy.com
+  names: []
+  domain: archiphy.com
+  message_count: 5
+  count_received_from: 2
+  count_sent_to: 3
+  first_seen: '2025-09-02T18:08:37+00:00'
+  last_seen: '2025-09-02T21:48:10+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: rubenjuarezh@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 5
+  count_received_from: 0
+  count_sent_to: 5
+  first_seen: '2025-12-10T16:04:00+00:00'
+  last_seen: '2026-01-06T20:29:07+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: adobesign@adobesign.com
+  names:
+  - Sam Hutchins via Adobe Acrobat Sign
+  domain: adobesign.com
+  message_count: 4
+  count_received_from: 4
+  count_sent_to: 0
+  first_seen: '2025-10-13T22:39:58+00:00'
+  last_seen: '2025-10-21T07:09:11+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: alizunaid2025@gmail.com
+  names:
+  - zunaid
+  domain: gmail.com
+  message_count: 4
+  count_received_from: 2
+  count_sent_to: 2
+  first_seen: '2025-05-21T14:56:46+00:00'
+  last_seen: '2025-05-23T18:00:15+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ayu@owlsourcing.com
+  names:
+  - Andy Yu
+  domain: owlsourcing.com
+  message_count: 4
+  count_received_from: 1
+  count_sent_to: 3
+  first_seen: '2025-05-27T20:09:45+00:00'
+  last_seen: '2025-06-08T23:31:09+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: c.brooks@txbuiltconstruction.com
+  names: []
+  domain: txbuiltconstruction.com
+  message_count: 4
+  count_received_from: 0
+  count_sent_to: 4
+  first_seen: '2025-09-24T19:12:27+00:00'
+  last_seen: '2025-09-25T18:57:59+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: dfwimp@coppersmith.com
+  names:
+  - DFW Imports
+  domain: coppersmith.com
+  message_count: 4
+  count_received_from: 1
+  count_sent_to: 4
+  first_seen: '2026-04-08T21:29:25+00:00'
+  last_seen: '2026-04-14T20:41:55+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: gapcboclaudia@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 4
+  count_received_from: 0
+  count_sent_to: 4
+  first_seen: '2026-04-21T15:35:59+00:00'
+  last_seen: '2026-05-18T15:20:33+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: gapcbojoseline@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 4
+  count_received_from: 0
+  count_sent_to: 4
+  first_seen: '2026-04-21T15:35:59+00:00'
+  last_seen: '2026-05-18T15:20:33+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: hello@community.apify.com
+  names:
+  - Apify Community
+  domain: community.apify.com
+  message_count: 4
+  count_received_from: 4
+  count_sent_to: 0
+  first_seen: '2025-07-15T00:15:22+00:00'
+  last_seen: '2025-08-15T00:15:24+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: hello@crexi.com
+  names:
+  - Crexi
+  domain: crexi.com
+  message_count: 4
+  count_received_from: 4
+  count_sent_to: 0
+  first_seen: '2025-06-13T14:51:36+00:00'
+  last_seen: '2025-06-22T14:51:38+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: info@dfwcad.com
+  names: []
+  domain: dfwcad.com
+  message_count: 4
+  count_received_from: 0
+  count_sent_to: 4
+  first_seen: '2025-09-24T18:59:10+00:00'
+  last_seen: '2025-09-25T18:10:57+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jkelsey@gtaeng.com
+  names:
+  - Jeromi Kelsey
+  domain: gtaeng.com
+  message_count: 4
+  count_received_from: 2
+  count_sent_to: 2
+  first_seen: '2026-01-26T20:50:49+00:00'
+  last_seen: '2026-02-09T17:21:47+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: julio@parchstudio.com
+  names:
+  - Julio Perez
+  domain: parchstudio.com
+  message_count: 4
+  count_received_from: 2
+  count_sent_to: 2
+  first_seen: '2025-11-17T20:36:25+00:00'
+  last_seen: '2025-11-20T06:47:03+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: larry@s-rp.com
+  names:
+  - Larry Rose Jr
+  domain: s-rp.com
+  message_count: 4
+  count_received_from: 1
+  count_sent_to: 3
+  first_seen: '2025-06-11T01:17:42+00:00'
+  last_seen: '2025-06-14T11:57:34+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: marc@ayrshare.com
+  names:
+  - Ayrshare
+  domain: ayrshare.com
+  message_count: 4
+  count_received_from: 4
+  count_sent_to: 0
+  first_seen: '2026-02-27T16:10:27+00:00'
+  last_seen: '2026-07-02T13:07:49+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: marybeth@idgfw.com
+  names:
+  - Mary Beth Clark
+  domain: idgfw.com
+  message_count: 4
+  count_received_from: 1
+  count_sent_to: 3
+  first_seen: '2025-09-08T09:57:27+00:00'
+  last_seen: '2025-09-11T16:55:24+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mhenry@germfree.com
+  names:
+  - Matt
+  - Matthew Henry
+  domain: germfree.com
+  message_count: 4
+  count_received_from: 4
+  count_sent_to: 0
+  first_seen: '2025-05-27T13:26:41+00:00'
+  last_seen: '2026-05-27T13:15:06+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: nmartinez@palterlaw.com
+  names:
+  - Nathanial Martinez
+  domain: palterlaw.com
+  message_count: 4
+  count_received_from: 2
+  count_sent_to: 2
+  first_seen: '2025-09-02T13:56:23+00:00'
+  last_seen: '2025-09-03T19:48:18+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: parviz.azizi@mansfieldtexas.gov
+  names:
+  - Parviz Azizi
+  domain: mansfieldtexas.gov
+  message_count: 4
+  count_received_from: 2
+  count_sent_to: 2
+  first_seen: '2026-01-15T20:07:58+00:00'
+  last_seen: '2026-01-20T14:44:56+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: phanahan@fobare.com
+  names: []
+  domain: fobare.com
+  message_count: 4
+  count_received_from: 0
+  count_sent_to: 4
+  first_seen: '2025-06-11T12:23:09+00:00'
+  last_seen: '2025-06-13T19:31:11+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: planning@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 4
+  count_received_from: 0
+  count_sent_to: 4
+  first_seen: '2025-08-06T21:30:34+00:00'
+  last_seen: '2025-12-02T15:58:08+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: rudy.martinez@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 4
+  count_received_from: 0
+  count_sent_to: 4
+  first_seen: '2025-12-04T18:49:31+00:00'
+  last_seen: '2026-05-01T17:06:22+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: team@rocketlawyer.com
+  names:
+  - Mark Campos via Rocket Lawyer
+  domain: rocketlawyer.com
+  message_count: 4
+  count_received_from: 1
+  count_sent_to: 3
+  first_seen: '2025-09-15T17:49:41+00:00'
+  last_seen: '2025-09-22T23:34:12+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: a.harwell@orioncrg.com
+  names:
+  - Angela Harwell, CCIM
+  domain: orioncrg.com
+  message_count: 3
+  count_received_from: 2
+  count_sent_to: 2
+  first_seen: '2025-06-11T12:12:04+00:00'
+  last_seen: '2025-06-13T16:00:00+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: admin@armedicinalmarijuana.com
+  names:
+  - Isaac Masey
+  domain: armedicinalmarijuana.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2025-11-17T20:55:01+00:00'
+  last_seen: '2026-01-09T20:19:13+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: bdoyle@lancartecre.com
+  names:
+  - Brittany Doyle
+  domain: lancartecre.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-06-11T12:28:01+00:00'
+  last_seen: '2025-06-12T00:05:59+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: c.campbell@txbuiltconstruction.com
+  names: []
+  domain: txbuiltconstruction.com
+  message_count: 3
+  count_received_from: 0
+  count_sent_to: 3
+  first_seen: '2025-09-24T19:12:27+00:00'
+  last_seen: '2025-09-25T18:18:29+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: caleb.tandy@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 3
+  count_received_from: 0
+  count_sent_to: 3
+  first_seen: '2025-12-04T18:49:31+00:00'
+  last_seen: '2025-12-10T16:00:18+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: charles@sfrpros.com
+  names: []
+  domain: sfrpros.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-09-25T18:55:09+00:00'
+  last_seen: '2025-09-26T22:14:02+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: communications@aeiconsultants.com
+  names:
+  - AEI Consultants
+  domain: aeiconsultants.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2025-12-11T16:46:19+00:00'
+  last_seen: '2026-04-03T13:13:50+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: cwoodyard@coppersmith.com
+  names:
+  - Cheryl Woodyard
+  domain: coppersmith.com
+  message_count: 3
+  count_received_from: 2
+  count_sent_to: 1
+  first_seen: '2026-04-08T21:40:28+00:00'
+  last_seen: '2026-04-14T20:41:55+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: dillon.richey@arlingtontx.gov
+  names:
+  - Dillon Richey
+  domain: arlingtontx.gov
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-07-11T14:01:08+00:00'
+  last_seen: '2025-07-11T18:51:15+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: donotreply@mktg.pmca.agency
+  names:
+  - PMC Advantage Insurance Services
+  domain: mktg.pmca.agency
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2025-12-24T14:03:44+00:00'
+  last_seen: '2026-01-22T23:46:17+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Important
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: iah@coppersmith.com
+  names: []
+  domain: coppersmith.com
+  message_count: 3
+  count_received_from: 0
+  count_sent_to: 3
+  first_seen: '2026-04-07T07:36:31+00:00'
+  last_seen: '2026-04-08T21:29:25+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ibelong@elitedevelopmentgroups.com
+  names:
+  - MARK CAMPOS
+  domain: elitedevelopmentgroups.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-09-11T13:23:05+00:00'
+  last_seen: '2025-09-25T18:11:54+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jhuston@bamolaw.com
+  names: []
+  domain: bamolaw.com
+  message_count: 3
+  count_received_from: 0
+  count_sent_to: 3
+  first_seen: '2025-09-02T20:45:17+00:00'
+  last_seen: '2025-10-21T13:45:09+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jmaibach@peycosouthwest.com
+  names:
+  - Jim Maibach
+  domain: peycosouthwest.com
+  message_count: 3
+  count_received_from: 2
+  count_sent_to: 1
+  first_seen: '2025-06-11T20:55:22+00:00'
+  last_seen: '2025-06-12T01:19:48+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: justin@level5arch.com
+  names:
+  - Justin Gilmore
+  domain: level5arch.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-09-22T22:21:52+00:00'
+  last_seen: '2025-09-22T22:39:45+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: katasha.smithers@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 3
+  count_received_from: 0
+  count_sent_to: 3
+  first_seen: '2025-12-04T18:49:31+00:00'
+  last_seen: '2025-12-10T16:00:18+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: luke.goralski@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 3
+  count_received_from: 0
+  count_sent_to: 3
+  first_seen: '2025-12-10T20:04:11+00:00'
+  last_seen: '2026-01-13T17:21:57+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: lulu.he@carryhigh.com
+  names: []
+  domain: carryhigh.com
+  message_count: 3
+  count_received_from: 0
+  count_sent_to: 3
+  first_seen: '2026-06-11T16:25:43+00:00'
+  last_seen: '2026-06-29T16:36:46+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: marketing@info.sunbeltrentals.com
+  names:
+  - Sunbelt Rentals
+  domain: info.sunbeltrentals.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2026-06-04T12:20:57+00:00'
+  last_seen: '2026-06-18T12:21:05+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: noreply@sunbeltrentals.com
+  names:
+  - Sunbelt Rentals
+  domain: sunbeltrentals.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2026-06-03T13:08:29+00:00'
+  last_seen: '2026-06-03T13:22:13+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: notifications@link.com
+  names:
+  - Link
+  domain: link.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2025-06-03T19:02:30+00:00'
+  last_seen: '2025-12-02T05:52:09+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: officeofmatthew@gmail.com
+  names:
+  - Matthew Office
+  domain: gmail.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-09-17T22:29:10+00:00'
+  last_seen: '2025-09-19T15:27:31+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: payment.systems@eecu.org
+  names:
+  - Payment Systems
+  domain: eecu.org
+  message_count: 3
+  count_received_from: 2
+  count_sent_to: 1
+  first_seen: '2026-04-30T16:36:19+00:00'
+  last_seen: '2026-04-30T20:06:26+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: plansexam@arlingtontx.gov
+  names:
+  - Plans Exam
+  domain: arlingtontx.gov
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 3
+  first_seen: '2025-07-11T14:01:08+00:00'
+  last_seen: '2025-07-11T18:51:15+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: rdooney@crexi.com
+  names:
+  - Ronan Dooney
+  domain: crexi.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2026-05-14T14:38:16+00:00'
+  last_seen: '2026-05-26T10:16:36+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Promotions
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: shawn@dfwcad.com
+  names:
+  - Shawn Mansell
+  domain: dfwcad.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-09-24T19:32:03+00:00'
+  last_seen: '2025-09-25T20:18:31+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: svo@smartviewonline.net
+  names:
+  - Kate Tucker via smartview
+  domain: smartviewonline.net
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2025-09-08T21:38:09+00:00'
+  last_seen: '2025-10-09T16:24:25+00:00'
+  labels:
+  - 1360 documents
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  - Starred
+  noise: false
+  role: ''
+  org: ''
+- email: team@announce.fiverr.com
+  names:
+  - Fiverr
+  domain: announce.fiverr.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2025-10-27T10:13:12+00:00'
+  last_seen: '2025-12-07T16:09:53+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: trace.hilton@mansfieldtexas.gov
+  names:
+  - Trace Hilton
+  domain: mansfieldtexas.gov
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-08-22T10:39:18+00:00'
+  last_seen: '2025-08-27T10:07:55+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: txmastercraft@gmail.com
+  names:
+  - Alex Aguayo
+  domain: gmail.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-09-11T13:45:27+00:00'
+  last_seen: '2025-09-16T00:37:25+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: wendy@justchinait.com
+  names:
+  - Wendy
+  domain: justchinait.com
+  message_count: 3
+  count_received_from: 1
+  count_sent_to: 2
+  first_seen: '2025-05-29T04:17:44+00:00'
+  last_seen: '2025-06-02T19:13:00+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: zunaidalipharmd@gmail.com
+  names:
+  - Zunaid Ali
+  domain: gmail.com
+  message_count: 3
+  count_received_from: 3
+  count_sent_to: 0
+  first_seen: '2025-12-13T12:16:21+00:00'
+  last_seen: '2026-01-14T11:01:22+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: abby@ddsg.us
+  names:
+  - Abby Caracheo
+  domain: ddsg.us
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2026-03-30T18:35:52+00:00'
+  last_seen: '2026-04-01T19:57:30+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: alex@justchinait.com
+  names:
+  - Alex Lu
+  domain: justchinait.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-05-27T09:33:29+00:00'
+  last_seen: '2025-05-29T04:17:44+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Category Promotions
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: assistant_usa@biobase.com
+  names: []
+  domain: biobase.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-10-11T05:11:15+00:00'
+  last_seen: '2025-10-18T08:36:22+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: bgehrke@lancartecre.com
+  names: []
+  domain: lancartecre.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-06-11T12:28:01+00:00'
+  last_seen: '2025-06-11T16:56:21+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: bjhall@peycosouthwest.com
+  names: []
+  domain: peycosouthwest.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-06-11T20:55:22+00:00'
+  last_seen: '2025-06-12T01:19:48+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: bobby@dfwconstructionservices.com
+  names: []
+  domain: dfwconstructionservices.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-09-25T17:55:24+00:00'
+  last_seen: '2025-09-25T19:16:18+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: clearforkconstruction@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-09-25T17:51:06+00:00'
+  last_seen: '2025-09-25T17:52:25+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: daytonm@macatee-engineering.com
+  names: []
+  domain: macatee-engineering.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-12-02T15:38:59+00:00'
+  last_seen: '2025-12-03T14:58:28+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: deya@bannistereng.com
+  names: []
+  domain: bannistereng.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-12-12T15:07:15+00:00'
+  last_seen: '2025-12-12T21:07:08+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: droberts@reedfire.com
+  names: []
+  domain: reedfire.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2026-03-25T15:59:38+00:00'
+  last_seen: '2026-03-25T16:05:28+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: eblais@bradford.com
+  names:
+  - Erik E. Blais
+  domain: bradford.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-06-11T02:26:49+00:00'
+  last_seen: '2025-06-11T17:08:18+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: finance@metroplexprobuilders.com
+  names: []
+  domain: metroplexprobuilders.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-09-11T14:03:40+00:00'
+  last_seen: '2025-09-15T23:53:16+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: googlecloud@google.com
+  names:
+  - Google Cloud
+  domain: google.com
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-06-06T00:50:05+00:00'
+  last_seen: '2025-07-16T15:45:32+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: googlepay-noreply@google.com
+  names:
+  - Google Pay
+  domain: google.com
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-06-04T19:25:01+00:00'
+  last_seen: '2025-10-14T19:24:06+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: hmoncrief@bamolaw.com
+  names: []
+  domain: bamolaw.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-09-02T20:45:17+00:00'
+  last_seen: '2025-10-22T18:08:57+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: imports@accb.us
+  names:
+  - All Cleared Customs Brokerage
+  domain: accb.us
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2026-04-07T07:38:20+00:00'
+  last_seen: '2026-04-07T22:06:32+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@pkwycon.com
+  names: []
+  domain: pkwycon.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-09-25T17:49:32+00:00'
+  last_seen: '2025-09-25T17:49:48+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jackson@getayrshare.com
+  names:
+  - Ayrshare
+  domain: getayrshare.com
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-11-10T14:03:16+00:00'
+  last_seen: '2026-02-06T12:00:08+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jadevore5@gmail.com
+  names:
+  - Jason DeVore
+  domain: gmail.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-09-12T19:51:35+00:00'
+  last_seen: '2025-10-02T19:59:07+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: john@sbpcommercial.com
+  names:
+  - John Turner
+  domain: sbpcommercial.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-06-11T14:45:09+00:00'
+  last_seen: '2025-06-12T00:02:34+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: kbennett@holtlunsford.com
+  names: []
+  domain: holtlunsford.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-06-16T04:19:50+00:00'
+  last_seen: '2025-06-17T22:12:19+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: kespie@bradford.com
+  names:
+  - Kyle Espie
+  domain: bradford.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-06-11T01:46:52+00:00'
+  last_seen: '2025-06-11T21:54:35+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: kevin@crgtexas.com
+  names:
+  - Kevin Casler
+  domain: crgtexas.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-10-20T19:19:55+00:00'
+  last_seen: '2025-11-04T22:35:50+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: ksalmon@bamolaw.com
+  names: []
+  domain: bamolaw.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-10-20T18:54:21+00:00'
+  last_seen: '2025-10-21T13:45:09+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ksims@palterlaw.com
+  names: []
+  domain: palterlaw.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-09-02T13:56:23+00:00'
+  last_seen: '2025-09-02T14:02:53+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mail@sf-notifications.com
+  names:
+  - Teresa Craig
+  domain: sf-notifications.com
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2026-04-09T17:29:22+00:00'
+  last_seen: '2026-04-09T18:31:46+00:00'
+  labels:
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: monabatian@gmail.com
+  names:
+  - Mohammad Nabatian
+  domain: gmail.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-09-17T22:32:40+00:00'
+  last_seen: '2025-09-19T13:51:23+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: no-reply@pb.com
+  names: []
+  domain: pb.com
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2026-01-30T21:18:03+00:00'
+  last_seen: '2026-02-02T19:01:26+00:00'
+  labels:
+  - Archived
+  - Category Purchases
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: noreply@transactional.n8n.io
+  names:
+  - n8n.io
+  domain: transactional.n8n.io
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-05-29T20:32:08+00:00'
+  last_seen: '2025-10-29T19:48:12+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  noise: true
+  role: ''
+  org: ''
+- email: notifications@clio.com
+  names:
+  - John P. Chay PLLC (via Clio Notifications)
+  domain: clio.com
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-12-02T03:25:45+00:00'
+  last_seen: '2026-01-02T00:27:15+00:00'
+  labels:
+  - Archived
+  - Category Bills
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: true
+  role: ''
+  org: ''
+- email: orders@prolinesurveyors.com
+  names: []
+  domain: prolinesurveyors.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-12-18T15:29:05+00:00'
+  last_seen: '2025-12-19T17:09:05+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: product@zenrows.com
+  names:
+  - ZenRows
+  domain: zenrows.com
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-06-23T09:40:23+00:00'
+  last_seen: '2025-06-25T12:04:48+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: rebecca@localista.club
+  names:
+  - Rebecca Laub
+  domain: localista.club
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-06-10T10:34:14+00:00'
+  last_seen: '2025-06-10T17:16:38+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: rhesprich@hdfpe.com
+  names:
+  - Rhett Hesprich
+  domain: hdfpe.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2026-03-25T01:25:00+00:00'
+  last_seen: '2026-03-25T08:15:06+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: richard.zhang@owlsourcing.com
+  names: []
+  domain: owlsourcing.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-05-28T23:51:00+00:00'
+  last_seen: '2025-06-08T23:31:09+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: sales2_usa@biobase.com
+  names: []
+  domain: biobase.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-10-11T05:11:15+00:00'
+  last_seen: '2025-10-18T08:36:22+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: santos.catalan@studiomasarchitects.com
+  names:
+  - santos catalan
+  domain: studiomasarchitects.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-09-11T13:25:48+00:00'
+  last_seen: '2025-09-16T19:25:03+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: slyle@lja.com
+  names:
+  - Skylar Lyle
+  domain: lja.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-12-03T20:23:01+00:00'
+  last_seen: '2025-12-03T20:54:07+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: sschwind@lja.com
+  names:
+  - Stephen Schwind
+  domain: lja.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-12-03T20:54:07+00:00'
+  last_seen: '2025-12-04T21:12:07+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: steve.yi@cleanroomlogic.com
+  names:
+  - Steve Yi
+  domain: cleanroomlogic.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-06-06T23:19:51+00:00'
+  last_seen: '2025-06-09T23:06:31+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: support@supplyia.com
+  names: []
+  domain: supplyia.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-05-27T09:25:34+00:00'
+  last_seen: '2025-05-28T17:07:01+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: swood@holtlunsford.com
+  names:
+  - Saunders Wood
+  domain: holtlunsford.com
+  message_count: 2
+  count_received_from: 1
+  count_sent_to: 1
+  first_seen: '2025-06-16T04:19:50+00:00'
+  last_seen: '2025-06-17T22:12:19+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: team@ocr.space
+  names:
+  - OCR.space Free OCR API
+  domain: ocr.space
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-05-29T20:34:48+00:00'
+  last_seen: '2025-05-29T20:35:12+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: tstell@lee-associates.com
+  names: []
+  domain: lee-associates.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-06-11T23:10:08+00:00'
+  last_seen: '2025-06-11T23:23:49+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: twirth@gtaeng.com
+  names: []
+  domain: gtaeng.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2026-01-26T20:50:49+00:00'
+  last_seen: '2026-01-26T20:58:57+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: wbn@engineer.com
+  names: []
+  domain: engineer.com
+  message_count: 2
+  count_received_from: 0
+  count_sent_to: 2
+  first_seen: '2025-12-05T20:56:38+00:00'
+  last_seen: '2025-12-08T15:46:33+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: zoe@mail.notion.so
+  names:
+  - Zoe at Notion
+  domain: mail.notion.so
+  message_count: 2
+  count_received_from: 2
+  count_sent_to: 0
+  first_seen: '2025-08-22T11:20:50+00:00'
+  last_seen: '2025-08-23T11:20:53+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Category Updates
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: accinfo@arlingtontx.gov
+  names: []
+  domain: arlingtontx.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-07-11T01:32:00+00:00'
+  last_seen: '2025-07-11T01:32:00+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: adam.farber@youngerpartners.com
+  names: []
+  domain: youngerpartners.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T02:37:14+00:00'
+  last_seen: '2025-06-11T02:37:14+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: admin@digitalinsight.com
+  names: []
+  domain: digitalinsight.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-01-07T19:08:43+00:00'
+  last_seen: '2026-01-07T19:08:43+00:00'
+  labels:
+  - Category Updates
+  - Important
+  - Inbox
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: aesinfo@alliancetg.com
+  names:
+  - AES Info
+  domain: alliancetg.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-20T19:42:41+00:00'
+  last_seen: '2025-10-20T19:42:41+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: amy@justchinait.com
+  names: []
+  domain: justchinait.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-05-29T04:17:44+00:00'
+  last_seen: '2025-05-29T04:17:44+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: aracely.rodriguez@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-08-22T13:19:33+00:00'
+  last_seen: '2025-08-22T13:19:33+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: b.moser@s24alarms.com
+  names:
+  - Byron Moser
+  domain: s24alarms.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-12-10T18:26:55+00:00'
+  last_seen: '2025-12-10T18:26:55+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: besa@besadesign.com
+  names: []
+  domain: besadesign.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:06:54+00:00'
+  last_seen: '2025-09-02T18:06:54+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: bids@venusconstruction.com
+  names: []
+  domain: venusconstruction.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-17T22:00:48+00:00'
+  last_seen: '2025-09-17T22:00:48+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: bkesanta@gmail.com
+  names:
+  - Healing God
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-04-02T15:41:20+00:00'
+  last_seen: '2026-04-02T15:41:20+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: blowry@jw.com
+  names: []
+  domain: jw.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T13:54:55+00:00'
+  last_seen: '2025-09-02T13:54:55+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: brian@precisionenviro.net
+  names: []
+  domain: precisionenviro.net
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-10-20T21:11:00+00:00'
+  last_seen: '2025-10-20T21:11:00+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: bryson@envirophase.com
+  names:
+  - Bryson Wallace
+  domain: envirophase.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-20T20:28:57+00:00'
+  last_seen: '2025-10-20T20:28:57+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: cameron@hartselldevelopment.com
+  names: []
+  domain: hartselldevelopment.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T22:52:49+00:00'
+  last_seen: '2025-06-11T22:52:49+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: carson.mitchell@youngerpartners.com
+  names: []
+  domain: youngerpartners.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T02:37:14+00:00'
+  last_seen: '2025-06-11T02:37:14+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ccarter@peycosouthwest.com
+  names: []
+  domain: peycosouthwest.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T20:55:22+00:00'
+  last_seen: '2025-06-11T20:55:22+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: chaitanya.mulye@alliancetg.com
+  names: []
+  domain: alliancetg.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-10-20T19:42:41+00:00'
+  last_seen: '2025-10-20T19:42:41+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: ckennedy@bradford.com
+  names: []
+  domain: bradford.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T22:41:32+00:00'
+  last_seen: '2025-06-11T22:41:32+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: clay@lightedwayhomeinspections.com
+  names:
+  - Clay Hughes
+  domain: lightedwayhomeinspections.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-13T19:02:13+00:00'
+  last_seen: '2025-10-13T19:02:13+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: clayton.comstock@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-01-13T17:21:57+00:00'
+  last_seen: '2026-01-13T17:21:57+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: cnavarro@bradford.com
+  names: []
+  domain: bradford.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T22:41:32+00:00'
+  last_seen: '2025-06-11T22:41:32+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: contact@ejet.com
+  names:
+  - contact@ejet.com
+  domain: ejet.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-27T11:48:36+00:00'
+  last_seen: '2025-05-27T11:48:36+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: contact@pacificbridgemedical.com
+  names: []
+  domain: pacificbridgemedical.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-05-28T16:07:15+00:00'
+  last_seen: '2025-05-28T16:07:15+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: cp@plummerdevelopment.com
+  names: []
+  domain: plummerdevelopment.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T22:52:49+00:00'
+  last_seen: '2025-06-11T22:52:49+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: drafting@prolinesurveyors.com
+  names:
+  - Proline
+  domain: prolinesurveyors.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-12-19T17:09:05+00:00'
+  last_seen: '2025-12-19T17:09:05+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: egad1258@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-05T20:49:10+00:00'
+  last_seen: '2025-12-05T20:49:10+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ejames@nairl.com
+  names: []
+  domain: nairl.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T23:31:48+00:00'
+  last_seen: '2025-06-11T23:31:48+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: elaine.xu@youngerpartners.com
+  names: []
+  domain: youngerpartners.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T12:03:20+00:00'
+  last_seen: '2025-06-11T12:03:20+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: erez.zundelevich@fiverr.com
+  names:
+  - Erez Zundelevich
+  domain: fiverr.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-07-13T13:53:49+00:00'
+  last_seen: '2025-07-13T13:53:49+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: esmith@haltomcitytx.com
+  names: []
+  domain: haltomcitytx.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-08-07T13:48:24+00:00'
+  last_seen: '2025-08-07T13:48:24+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: executiveassistant@e.read.ai
+  names:
+  - Janine Fabros via Read AI
+  domain: e.read.ai
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-30T12:17:42+00:00'
+  last_seen: '2025-05-30T12:17:42+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: frontdesk@nationwideconstruction.us
+  names: []
+  domain: nationwideconstruction.us
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-24T18:53:16+00:00'
+  last_seen: '2025-09-24T18:53:16+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: gbatchelor@haltomcitytx.com
+  names:
+  - Glenna Batchelor
+  domain: haltomcitytx.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-08-07T13:48:24+00:00'
+  last_seen: '2025-08-07T13:48:24+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: george@lee-associates.com
+  names: []
+  domain: lee-associates.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T12:06:22+00:00'
+  last_seen: '2025-06-11T12:06:22+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: gfleitz@holtlunsford.com
+  names:
+  - Grayson Fleitz
+  domain: holtlunsford.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-16T20:09:12+00:00'
+  last_seen: '2025-06-16T20:09:12+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: hello@apify.com
+  names:
+  - Apify
+  domain: apify.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-07-01T13:18:20+00:00'
+  last_seen: '2025-07-01T13:18:20+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: hello@marketing.candlescience.com
+  names:
+  - CandleScience
+  domain: marketing.candlescience.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-03-17T20:30:49+00:00'
+  last_seen: '2026-03-17T20:30:49+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: hello@memarcg.com
+  names: []
+  domain: memarcg.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-25T17:48:28+00:00'
+  last_seen: '2025-09-25T17:48:28+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: hsseptic@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-15T18:30:54+00:00'
+  last_seen: '2025-12-15T18:30:54+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: imran.ali@texashealth.org
+  names: []
+  domain: texashealth.org
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-01-05T16:23:47+00:00'
+  last_seen: '2026-01-05T16:23:47+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@alliancearch.com
+  names: []
+  domain: alliancearch.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:09:11+00:00'
+  last_seen: '2025-09-02T18:09:11+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@anchorconstruction.com
+  names: []
+  domain: anchorconstruction.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-25T17:49:13+00:00'
+  last_seen: '2025-09-25T17:49:13+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@callahanfreeman.com
+  names: []
+  domain: callahanfreeman.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:05:07+00:00'
+  last_seen: '2025-09-02T18:05:07+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@cargoimportbrokers.com
+  names: []
+  domain: cargoimportbrokers.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-04-07T07:36:25+00:00'
+  last_seen: '2026-04-07T07:36:25+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@carr.us
+  names:
+  - CARR
+  domain: carr.us
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-05-20T11:09:28+00:00'
+  last_seen: '2026-05-20T11:09:28+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: info@chinameddevice.com
+  names: []
+  domain: chinameddevice.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-05-28T17:05:58+00:00'
+  last_seen: '2025-05-28T17:05:58+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@crossarchitects.com
+  names: []
+  domain: crossarchitects.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:08:54+00:00'
+  last_seen: '2025-09-02T18:08:54+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@gallaghertransport.com
+  names: []
+  domain: gallaghertransport.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-04-07T07:36:10+00:00'
+  last_seen: '2026-04-07T07:36:10+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@germfree.com
+  names:
+  - Germfree Laboratories
+  domain: germfree.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-27T09:28:24+00:00'
+  last_seen: '2025-05-27T09:28:24+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: info@grossmandesignbuild.com
+  names: []
+  domain: grossmandesignbuild.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-24T18:55:18+00:00'
+  last_seen: '2025-09-24T18:55:18+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@h3-construction.com
+  names: []
+  domain: h3-construction.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-25T17:50:06+00:00'
+  last_seen: '2025-09-25T17:50:06+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@healthcap.com
+  names: []
+  domain: healthcap.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-20T00:33:29+00:00'
+  last_seen: '2025-06-20T00:33:29+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@hhctx.co
+  names: []
+  domain: hhctx.co
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-25T17:53:52+00:00'
+  last_seen: '2025-09-25T17:53:52+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@linc.realty
+  names: []
+  domain: linc.realty
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-20T00:36:13+00:00'
+  last_seen: '2025-06-20T00:36:13+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@nortexsepticdesigns.com
+  names: []
+  domain: nortexsepticdesigns.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-15T18:30:14+00:00'
+  last_seen: '2025-12-15T18:30:14+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@obrienarch.com
+  names: []
+  domain: obrienarch.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:07:22+00:00'
+  last_seen: '2025-09-02T18:07:22+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@packardservice.com
+  names: []
+  domain: packardservice.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-24T18:54:11+00:00'
+  last_seen: '2025-09-24T18:54:11+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Sent
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: info@rafterpconstruction.com
+  names: []
+  domain: rafterpconstruction.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-24T19:01:11+00:00'
+  last_seen: '2025-09-24T19:01:11+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@royalflushseptics.com
+  names: []
+  domain: royalflushseptics.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-15T18:28:49+00:00'
+  last_seen: '2025-12-15T18:28:49+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@schwarzhanson.com
+  names: []
+  domain: schwarzhanson.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:07:12+00:00'
+  last_seen: '2025-09-02T18:07:12+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@sharpcon.us
+  names: []
+  domain: sharpcon.us
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-25T17:53:20+00:00'
+  last_seen: '2025-09-25T17:53:20+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@studioparkarchitecture.com
+  names: []
+  domain: studioparkarchitecture.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:07:36+00:00'
+  last_seen: '2025-09-02T18:07:36+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@txbusinessparks.com
+  names: []
+  domain: txbusinessparks.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T15:19:52+00:00'
+  last_seen: '2025-06-11T15:19:52+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@united-septic.com
+  names: []
+  domain: united-septic.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-15T18:29:42+00:00'
+  last_seen: '2025-12-15T18:29:42+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: info@venusconstruction.com
+  names: []
+  domain: venusconstruction.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-17T22:00:48+00:00'
+  last_seen: '2025-09-17T22:00:48+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: information@griffithdavison.com
+  names: []
+  domain: griffithdavison.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T13:57:13+00:00'
+  last_seen: '2025-09-02T13:57:13+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: invoice+statements@runwayml.com
+  names:
+  - Runway AI, Inc.
+  domain: runwayml.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-03T19:02:38+00:00'
+  last_seen: '2025-06-03T19:02:38+00:00'
+  labels:
+  - Archived
+  - Category Purchases
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: jakob.nunez@colliers.com
+  names:
+  - Nunez, Jakob
+  domain: colliers.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-20T15:29:07+00:00'
+  last_seen: '2025-06-20T15:29:07+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jdavis@nairl.com
+  names: []
+  domain: nairl.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T23:31:48+00:00'
+  last_seen: '2025-06-11T23:31:48+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jeff@mitchelldesignllc.com
+  names: []
+  domain: mitchelldesignllc.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-22T22:06:17+00:00'
+  last_seen: '2025-09-22T22:06:17+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jerika.ruck@gallaghertransport.com
+  names: []
+  domain: gallaghertransport.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-04-07T18:10:18+00:00'
+  last_seen: '2026-04-07T18:10:18+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: jeroberts@lja.com
+  names: []
+  domain: lja.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-03T20:54:07+00:00'
+  last_seen: '2025-12-03T20:54:07+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: jlaake@bradford.com
+  names: []
+  domain: bradford.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T02:26:49+00:00'
+  last_seen: '2025-06-11T02:26:49+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: johns@motiverealestategroup.com
+  names:
+  - John Staab
+  domain: motiverealestategroup.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-19T02:51:06+00:00'
+  last_seen: '2025-06-19T02:51:06+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: karen@cadcrowd.com
+  names:
+  - Karen Animo
+  domain: cadcrowd.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-26T01:40:29+00:00'
+  last_seen: '2025-06-26T01:40:29+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: karlene.barnes@sunbeltrentals.com
+  names:
+  - Karlene Barnes
+  domain: sunbeltrentals.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-06-03T18:19:39+00:00'
+  last_seen: '2026-06-03T18:19:39+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: khg@cpgsourcing.com
+  names:
+  - Karla Huerta
+  domain: cpgsourcing.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-28T14:04:16+00:00'
+  last_seen: '2025-05-28T14:04:16+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: larry@tunnellarch.com
+  names: []
+  domain: tunnellarch.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:06:40+00:00'
+  last_seen: '2025-09-02T18:06:40+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: leahmcada@venusconstruction.com
+  names: []
+  domain: venusconstruction.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-17T22:00:48+00:00'
+  last_seen: '2025-09-17T22:00:48+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: leandro.kravik@archpatchstudios.com
+  names: []
+  domain: archpatchstudios.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-09-18T21:02:23+00:00'
+  last_seen: '2025-09-18T21:02:23+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: leasing@855alltrades.com
+  names: []
+  domain: 855alltrades.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T02:13:03+00:00'
+  last_seen: '2025-06-11T02:13:03+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: logistics@capcustomsbroker.com
+  names: []
+  domain: capcustomsbroker.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-04-07T07:36:17+00:00'
+  last_seen: '2026-04-07T07:36:17+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: luz@ddsg.us
+  names: []
+  domain: ddsg.us
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-04-01T19:57:30+00:00'
+  last_seen: '2026-04-01T19:57:30+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: marketing@aeiconsultants.com
+  names:
+  - AEI Consultants
+  domain: aeiconsultants.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-06-15T18:09:56+00:00'
+  last_seen: '2026-06-15T18:09:56+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: marketing@vaiarchitects.com
+  names: []
+  domain: vaiarchitects.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T18:08:25+00:00'
+  last_seen: '2025-09-02T18:08:25+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mary@crgtexas.com
+  names:
+  - Mary Hobbs
+  domain: crgtexas.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-20T19:19:55+00:00'
+  last_seen: '2025-10-20T19:19:55+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: mastercraft@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-11T13:22:22+00:00'
+  last_seen: '2025-09-11T13:22:22+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mbrannon@texasins.net
+  names: []
+  domain: texasins.net
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-18T21:57:29+00:00'
+  last_seen: '2025-12-18T21:57:29+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mci@modularci.com
+  names: []
+  domain: modularci.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-25T17:50:29+00:00'
+  last_seen: '2025-09-25T17:50:29+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mehak0415@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-11-11T19:42:53+00:00'
+  last_seen: '2025-11-11T19:42:53+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: michael.roberts@mansfieldtx.gov
+  names: []
+  domain: mansfieldtx.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-08-22T10:37:56+00:00'
+  last_seen: '2025-08-22T10:37:56+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mmurff@lancartecre.com
+  names: []
+  domain: lancartecre.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T12:30:46+00:00'
+  last_seen: '2025-06-11T12:30:46+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mspain@bradford.com
+  names: []
+  domain: bradford.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T12:17:15+00:00'
+  last_seen: '2025-06-11T12:17:15+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mtambolleo@ranfpe.com
+  names:
+  - Morgan Tambolleo, MBA
+  domain: ranfpe.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-05-08T14:45:04+00:00'
+  last_seen: '2026-05-08T14:45:04+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: mvocque@griffithdavison.com
+  names: []
+  domain: griffithdavison.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T13:57:13+00:00'
+  last_seen: '2025-09-02T13:57:13+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: mwc4861@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-05-14T14:51:36+00:00'
+  last_seen: '2026-05-14T14:51:36+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: naeem@consortium-engineers.com
+  names:
+  - Naeem Ghani
+  domain: consortium-engineers.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-14T12:54:23+00:00'
+  last_seen: '2025-10-14T12:54:23+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: no-reply@announce.fiverr.com
+  names:
+  - Fiverr
+  domain: announce.fiverr.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-19T19:15:29+00:00'
+  last_seen: '2025-06-19T19:15:29+00:00'
+  labels:
+  - Archived
+  - Category Promotions
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: noreply.tabs@tdlr.texas.gov
+  names: []
+  domain: tdlr.texas.gov
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-04-01T20:06:56+00:00'
+  last_seen: '2026-04-01T20:06:56+00:00'
+  labels:
+  - Category Personal
+  - Inbox
+  - Opened
+  noise: true
+  role: ''
+  org: ''
+- email: noreply@civicplus.com
+  names:
+  - noreply@civicplus.com
+  domain: civicplus.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-08T11:47:20+00:00'
+  last_seen: '2025-10-08T11:47:20+00:00'
+  labels:
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: true
+  role: ''
+  org: ''
+- email: noreply@eecu.org
+  names: []
+  domain: eecu.org
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-01-07T21:20:16+00:00'
+  last_seen: '2026-01-07T21:20:16+00:00'
+  labels:
+  - Category Updates
+  - Important
+  - Inbox
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: noreply@infocuspay.com
+  names:
+  - Bannister Engineering, LLC
+  domain: infocuspay.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-01-13T22:35:01+00:00'
+  last_seen: '2026-01-13T22:35:01+00:00'
+  labels:
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  noise: true
+  role: ''
+  org: ''
+- email: noreply@sg-co.joistapp.com
+  names:
+  - Mastercraft Designs
+  domain: sg-co.joistapp.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-09-12T00:30:56+00:00'
+  last_seen: '2025-09-12T00:30:56+00:00'
+  labels:
+  - Category Personal
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: true
+  role: ''
+  org: ''
+- email: noreply@upwork.com
+  names:
+  - Upwork Notification
+  domain: upwork.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-12-09T08:28:49+00:00'
+  last_seen: '2025-12-09T08:28:49+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: notice@email.anthropic.com
+  names:
+  - Anthropic Team
+  domain: email.anthropic.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-06-26T04:34:47+00:00'
+  last_seen: '2026-06-26T04:34:47+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: notifications@e.zenrows.com
+  names:
+  - ZenRows Notifications
+  domain: e.zenrows.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-30T00:03:26+00:00'
+  last_seen: '2025-06-30T00:03:26+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: notifications@email.link.com
+  names:
+  - Link
+  domain: email.link.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-04T18:02:39+00:00'
+  last_seen: '2025-06-04T18:02:39+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: notifications@insgly.net
+  names:
+  - Janine Fabros
+  domain: insgly.net
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-27T09:17:56+00:00'
+  last_seen: '2025-05-27T09:17:56+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: true
+  role: ''
+  org: ''
+- email: notify-noreply@google.com
+  names:
+  - Google Notifications
+  domain: google.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-29T20:43:02+00:00'
+  last_seen: '2025-05-29T20:43:02+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: npidfw@gmail.com
+  names:
+  - Scott Hoenig
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-14T13:58:51+00:00'
+  last_seen: '2025-10-14T13:58:51+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: paula.klinkerman@gallaghertransport.com
+  names: []
+  domain: gallaghertransport.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-04-07T18:10:18+00:00'
+  last_seen: '2026-04-07T18:10:18+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: permits@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-04-06T16:22:36+00:00'
+  last_seen: '2026-04-06T16:22:36+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: phase1enviropros@gmail.com
+  names:
+  - Phase 1 Enviro Pros
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-20T18:15:00+00:00'
+  last_seen: '2025-10-20T18:15:00+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: plan.dev@arlingtontx.gov
+  names: []
+  domain: arlingtontx.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-07-11T01:32:00+00:00'
+  last_seen: '2025-07-11T01:32:00+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: planning@mansfiedltexas.gov
+  names: []
+  domain: mansfiedltexas.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-10-21T20:07:51+00:00'
+  last_seen: '2025-10-21T20:07:51+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: planningdevelopment@arlingtontx.gov
+  names: []
+  domain: arlingtontx.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-07-11T13:47:41+00:00'
+  last_seen: '2025-07-11T13:47:41+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: projects@txbuiltconstruction.com
+  names: []
+  domain: txbuiltconstruction.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-24T18:50:50+00:00'
+  last_seen: '2025-09-24T18:50:50+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: pwilliams@coppersmith.com
+  names:
+  - Patricia Williams
+  domain: coppersmith.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-04-08T21:29:25+00:00'
+  last_seen: '2026-04-08T21:29:25+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: ra@sofeast.com
+  names:
+  - ra@sofeast.com
+  domain: sofeast.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-27T09:19:11+00:00'
+  last_seen: '2025-05-27T09:19:11+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: rafat.mohammad@alliancetg.com
+  names: []
+  domain: alliancetg.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-10-20T19:42:41+00:00'
+  last_seen: '2025-10-20T19:42:41+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: raymond.coffman@mansfieldtexas.gov
+  names: []
+  domain: mansfieldtexas.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-01-13T17:21:57+00:00'
+  last_seen: '2026-01-13T17:21:57+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: resourceplanning@waxlerfpe.com
+  names: []
+  domain: waxlerfpe.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-03-24T20:57:48+00:00'
+  last_seen: '2026-03-24T20:57:48+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: ruben@luxehcr.com
+  names: []
+  domain: luxehcr.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-05-15T19:04:16+00:00'
+  last_seen: '2026-05-15T19:04:16+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: rubenjuar3zh@gmail.com
+  names: []
+  domain: gmail.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-12-22T20:28:27+00:00'
+  last_seen: '2025-12-22T20:28:27+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: sales@envirophase.com
+  names: []
+  domain: envirophase.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-10-20T20:28:57+00:00'
+  last_seen: '2025-10-20T20:28:57+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: sales@pharmavantage.com
+  names: []
+  domain: pharmavantage.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-05-28T16:07:47+00:00'
+  last_seen: '2025-05-28T16:07:47+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: sales@ramtechmodular.com
+  names: []
+  domain: ramtechmodular.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-24T18:52:36+00:00'
+  last_seen: '2025-09-24T18:52:36+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: sarah@lancartecre.com
+  names: []
+  domain: lancartecre.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T12:30:46+00:00'
+  last_seen: '2025-06-11T12:30:46+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: scancemi@lee-associates.com
+  names: []
+  domain: lee-associates.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T23:56:50+00:00'
+  last_seen: '2025-06-11T23:56:50+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: scott.whinery@knightfpe.com
+  names: []
+  domain: knightfpe.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2026-03-25T01:23:35+00:00'
+  last_seen: '2026-03-25T01:23:35+00:00'
+  labels:
+  - Archived
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: sgraves@landteceng.com
+  names:
+  - Scott Graves
+  domain: landteceng.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-01-27T14:26:55+00:00'
+  last_seen: '2026-01-27T14:26:55+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: sguthrie@ffb1.com
+  names:
+  - Sheila Guthrie
+  domain: ffb1.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-06-05T18:38:17+00:00'
+  last_seen: '2026-06-05T18:38:17+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: shana.ktistakis@gallaghertransport.com
+  names:
+  - Shana Ktistakis
+  domain: gallaghertransport.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-04-07T18:10:18+00:00'
+  last_seen: '2026-04-07T18:10:18+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: ssanchez@nairl.com
+  names: []
+  domain: nairl.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-06-11T23:31:48+00:00'
+  last_seen: '2025-06-11T23:31:48+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: success@zenrows.com
+  names:
+  - ZenRows
+  domain: zenrows.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-07-09T10:29:48+00:00'
+  last_seen: '2025-07-09T10:29:48+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: support@ayrshare.com
+  names:
+  - Ayrshare
+  domain: ayrshare.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-03T19:46:45+00:00'
+  last_seen: '2025-06-03T19:46:45+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: support@kraken.com
+  names:
+  - Kraken Support
+  domain: kraken.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-05-22T16:46:58+00:00'
+  last_seen: '2025-05-22T16:46:58+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: tan.nguyen@studiomasarchitects.com
+  names: []
+  domain: studiomasarchitects.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-16T19:25:03+00:00'
+  last_seen: '2025-09-16T19:25:03+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: ted.rea@855alltrades.com
+  names:
+  - Ted Rea
+  domain: 855alltrades.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-11T20:54:52+00:00'
+  last_seen: '2025-06-11T20:54:52+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Leasing
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: tharvath@bannistereng.com
+  names:
+  - Tracy Harvath
+  domain: bannistereng.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2026-01-13T22:40:49+00:00'
+  last_seen: '2026-01-13T22:40:49+00:00'
+  labels:
+  - Category Personal
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: tia@texasins.net
+  names: []
+  domain: texasins.net
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-12-17T20:07:18+00:00'
+  last_seen: '2025-12-17T20:07:18+00:00'
+  labels:
+  - Category Updates
+  - Important
+  - Inbox
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: trace.hilton@mansfieldtx.gov
+  names: []
+  domain: mansfieldtx.gov
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-08-22T10:34:37+00:00'
+  last_seen: '2025-08-22T10:34:37+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Opened
+  - Sent
+  noise: false
+  role: ''
+  org: ''
+- email: tyler@precisionenviro.net
+  names:
+  - Tyler Tate
+  domain: precisionenviro.net
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-10-20T21:11:00+00:00'
+  last_seen: '2025-10-20T21:11:00+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - ESA
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: weathersskylanepartnership@tx.rr.com
+  names:
+  - Isaac Weathers
+  domain: tx.rr.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-17T19:00:33+00:00'
+  last_seen: '2025-06-17T19:00:33+00:00'
+  labels:
+  - Archived
+  - Category Personal
+  - Important
+  - Opened
+  noise: false
+  role: ''
+  org: ''
+- email: welcome@loopnet.com
+  names:
+  - Loopnet Client Services
+  domain: loopnet.com
+  message_count: 1
+  count_received_from: 1
+  count_sent_to: 0
+  first_seen: '2025-06-11T01:12:10+00:00'
+  last_seen: '2025-06-11T01:12:10+00:00'
+  labels:
+  - Archived
+  - Category Updates
+  - Important
+  - Unread
+  noise: false
+  role: ''
+  org: ''
+- email: winstead@winstead.com
+  names: []
+  domain: winstead.com
+  message_count: 1
+  count_received_from: 0
+  count_sent_to: 1
+  first_seen: '2025-09-02T14:01:43+00:00'
+  last_seen: '2025-09-02T14:01:43+00:00'
+  labels:
+  - Archived
+  - Sent
+  noise: false
+  role: ''
+  org: ''
